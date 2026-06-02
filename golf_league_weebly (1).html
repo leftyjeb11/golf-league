@@ -1,0 +1,1042 @@
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<div id="golf-league-app">
+<style>
+#golf-league-app {
+  --gl-green-deep: #1a3a2a;
+  --gl-green-mid: #2d5a3d;
+  --gl-green-light: #4a8c5c;
+  --gl-green-pale: #e8f2eb;
+  --gl-gold: #c9a84c;
+  --gl-gold-pale: #fdf7e6;
+  --gl-cream: #faf8f3;
+  --gl-white: #ffffff;
+  --gl-text-dark: #1a2420;
+  --gl-text-mid: #3d5045;
+  --gl-text-light: #7a9080;
+  --gl-border: rgba(26,58,42,0.12);
+  --gl-border-strong: rgba(26,58,42,0.22);
+  --gl-radius: 10px;
+  --gl-radius-lg: 16px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--gl-text-dark);
+  font-size: 15px;
+  line-height: 1.6;
+}
+#golf-league-app * { box-sizing: border-box; margin: 0; padding: 0; }
+
+.gl-header { background: var(--gl-green-deep); padding: 36px 36px 32px; border-radius: var(--gl-radius-lg) var(--gl-radius-lg) 0 0; position: relative; overflow: hidden; }
+.gl-header::before { content:''; position:absolute; top:-40px; right:-40px; width:220px; height:220px; border-radius:50%; background:rgba(201,168,76,0.08); }
+.gl-eyebrow { font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gl-gold); font-weight:500; margin-bottom:10px; position:relative; }
+.gl-title { font-family:'Playfair Display',serif; font-size:30px; font-weight:600; color:#fff; line-height:1.2; margin-bottom:8px; position:relative; }
+.gl-subtitle { font-size:14px; color:rgba(255,255,255,0.45); font-weight:300; position:relative; letter-spacing:0.02em; }
+
+.gl-body { background:var(--gl-cream); padding:28px 24px 40px; border-radius:0 0 var(--gl-radius-lg) var(--gl-radius-lg); border:1px solid var(--gl-border); border-top:none; }
+
+.gl-tabs { display:flex; gap:2px; background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:4px; margin-bottom:28px; box-shadow:0 1px 4px rgba(26,58,42,0.08); }
+.gl-tab { flex:1; padding:10px 6px; font-size:13px; font-weight:500; cursor:pointer; border:none; background:none; color:var(--gl-text-light); border-radius:7px; transition:all 0.15s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap; }
+.gl-tab svg { width:14px; height:14px; flex-shrink:0; }
+.gl-tab:hover:not(.gl-tab-active) { color:var(--gl-text-dark); background:var(--gl-green-pale); }
+.gl-tab.gl-tab-active { background:var(--gl-green-deep); color:#fff; }
+
+.gl-subtabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.gl-subtab { padding:5px 16px; font-size:13px; font-weight:500; cursor:pointer; border:1px solid var(--gl-border-strong); background:none; color:var(--gl-text-light); border-radius:20px; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.gl-subtab:hover:not(.gl-subtab-active) { color:var(--gl-text-dark); }
+.gl-subtab.gl-subtab-active { background:var(--gl-green-deep); color:#fff; border-color:var(--gl-green-deep); }
+
+.gl-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.gl-metric { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:18px 20px; }
+.gl-metric-label { font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--gl-text-light); margin-bottom:6px; font-weight:500; }
+.gl-metric-value { font-family:'Playfair Display',serif; font-size:26px; color:var(--gl-text-dark); }
+.gl-metric-sub { font-size:12px; color:var(--gl-text-light); margin-top:2px; }
+
+.gl-card { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius-lg); padding:22px 24px; margin-bottom:16px; }
+.gl-card-title { font-family:'Playfair Display',serif; font-size:17px; font-weight:500; margin-bottom:18px; color:var(--gl-text-dark); }
+
+.gl-table-wrap { overflow-x:auto; }
+.gl-table { width:100%; border-collapse:collapse; font-size:14px; }
+.gl-table th { text-align:left; padding:9px 12px; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--gl-text-light); border-bottom:1px solid var(--gl-border); white-space:nowrap; }
+.gl-table td { padding:12px 12px; border-bottom:1px solid var(--gl-border); vertical-align:middle; }
+.gl-table tr:last-child td { border-bottom:none; }
+.gl-table tbody tr:hover td { background:var(--gl-green-pale); }
+.gl-pname { font-weight:500; }
+.gl-muted { color:var(--gl-text-light); font-size:13px; }
+
+.gl-badge { display:inline-block; font-size:12px; font-weight:500; padding:2px 9px; border-radius:20px; line-height:1.6; }
+.gl-badge-up { background:#e6f4eb; color:#1a6b33; }
+.gl-badge-down { background:#fcecea; color:#9b2828; }
+.gl-badge-even { background:var(--gl-green-pale); color:var(--gl-text-mid); }
+.gl-badge-sub { background:#fdf7e6; color:#7a5c10; font-size:11px; padding:1px 7px; }
+.gl-badge-win { background:#e6f4eb; color:#1a6b33; font-size:11px; padding:2px 8px; }
+.gl-badge-loss { background:#fcecea; color:#9b2828; font-size:11px; padding:2px 8px; }
+.gl-badge-tie { background:#f0f0ea; color:#5a5a4a; font-size:11px; padding:2px 8px; }
+.gl-badge-playoff { background:#e6f1fb; color:#185fa5; font-size:11px; padding:2px 8px; }
+.gl-badge-bye { background:#fdf7e6; color:#7a5c10; font-size:11px; padding:2px 8px; }
+.gl-net-pos { color:#1a6b33; font-weight:500; }
+.gl-net-neg { color:#9b2828; font-weight:500; }
+.gl-rank-num { font-size:13px; font-weight:500; color:var(--gl-text-light); }
+
+.gl-matchup-card { border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:16px 18px; margin-bottom:12px; background:var(--gl-white); }
+.gl-matchup-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.gl-matchup-title { font-size:13px; font-weight:500; color:var(--gl-text-mid); text-transform:uppercase; letter-spacing:0.07em; }
+.gl-vs-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin-bottom:14px; }
+.gl-team-side { }
+.gl-team-side-name { font-weight:500; font-size:15px; }
+.gl-team-side-detail { font-size:12px; color:var(--gl-text-light); margin-top:2px; }
+.gl-vs { font-size:13px; font-weight:500; color:var(--gl-text-light); text-align:center; }
+.gl-result-row { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--gl-text-mid); border-top:1px solid var(--gl-border); padding-top:10px; }
+
+.gl-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.gl-score-panel { background:var(--gl-green-pale); border-radius:var(--gl-radius); padding:14px 16px; }
+.gl-score-panel-title { font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--gl-text-mid); margin-bottom:10px; }
+
+.gl-form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; margin-bottom:14px; }
+.gl-field label { display:block; font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--gl-text-light); margin-bottom:5px; }
+#golf-league-app input[type="text"],
+#golf-league-app input[type="number"],
+#golf-league-app input[type="date"],
+#golf-league-app select { width:100%; padding:8px 11px; font-size:14px; font-family:'DM Sans',sans-serif; border:1px solid var(--gl-border-strong); border-radius:var(--gl-radius); background:var(--gl-white); color:var(--gl-text-dark); outline:none; }
+#golf-league-app input:focus, #golf-league-app select:focus { border-color:var(--gl-green-light); box-shadow:0 0 0 3px rgba(74,140,92,0.12); }
+
+.gl-hint { font-size:13px; color:var(--gl-text-mid); background:var(--gl-gold-pale); border:1px solid rgba(201,168,76,0.3); border-radius:var(--gl-radius); padding:8px 12px; margin-top:8px; }
+.gl-notice { font-size:13px; color:var(--gl-text-mid); background:var(--gl-green-pale); border-radius:var(--gl-radius); padding:9px 13px; margin-top:10px; border-left:3px solid var(--gl-green-light); }
+
+.gl-btn { background:var(--gl-green-deep); color:#fff; border:none; padding:9px 22px; border-radius:var(--gl-radius); font-size:14px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.15s; }
+.gl-btn:hover { background:var(--gl-green-mid); }
+.gl-btn-sm { background:none; border:1px solid var(--gl-border-strong); color:var(--gl-text-light); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:13px; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
+.gl-btn-sm:hover { color:#9b2828; border-color:#9b2828; }
+
+.gl-sep { border:none; border-top:1px solid var(--gl-border); margin:16px 0; }
+.gl-empty { text-align:center; padding:40px 20px; color:var(--gl-text-light); }
+.gl-empty svg { opacity:0.25; margin-bottom:10px; display:block; margin-left:auto; margin-right:auto; }
+.gl-empty p { font-size:14px; }
+
+.gl-week-selector { display:flex; align-items:center; gap:10px; margin-bottom:20px; }
+.gl-week-selector select { flex:1; max-width:280px; }
+.gl-week-label { font-size:13px; color:var(--gl-text-light); }
+
+.gl-playoff-bracket { display:flex; gap:20px; overflow-x:auto; padding-bottom:8px; }
+.gl-playoff-round { min-width:180px; }
+.gl-playoff-round-title { font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color:var(--gl-text-light); margin-bottom:12px; }
+.gl-playoff-match { border:1px solid var(--gl-border); border-radius:var(--gl-radius); margin-bottom:12px; overflow:hidden; }
+.gl-playoff-team { padding:9px 12px; font-size:13px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gl-border); }
+.gl-playoff-team:last-child { border-bottom:none; }
+.gl-playoff-team.winner { background:var(--gl-green-pale); font-weight:500; }
+.gl-playoff-team.tbd { color:var(--gl-text-light); font-style:italic; }
+.gl-seed { font-size:11px; color:var(--gl-text-light); margin-right:6px; }
+
+@media (max-width:600px) {
+  .gl-metrics { grid-template-columns:repeat(2,1fr); }
+  .gl-tab span { display:none; }
+  .gl-table th, .gl-table td { padding:8px 6px; font-size:13px; }
+  .gl-score-grid { grid-template-columns:1fr; }
+  .gl-vs-row { grid-template-columns:1fr auto 1fr; }
+}
+</style>
+
+<div class="gl-header">
+  <div class="gl-eyebrow">&#9968; Season Tracker</div>
+  <div class="gl-title">Men's Golf League</div>
+  <div class="gl-subtitle">Stableford &mdash; rotating matchups &mdash; top 6 to playoffs</div>
+</div>
+
+<div class="gl-body">
+  <div class="gl-tabs">
+    <button class="gl-tab gl-tab-active" onclick="glShowTab('standings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      <span>Standings</span>
+    </button>
+    <button class="gl-tab" onclick="glShowTab('schedule')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span>Schedule</span>
+    </button>
+    <button class="gl-tab" onclick="glShowTab('enter')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      <span>Enter</span>
+    </button>
+    <button class="gl-tab" onclick="glShowTab('roster')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Roster</span>
+    </button>
+    <button class="gl-tab" onclick="glShowTab('playoffs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      <span>Playoffs</span>
+    </button>
+    <button class="gl-tab" onclick="glShowTab('prizes')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      <span>Prizes</span>
+    </button>
+  </div>
+  <div id="gl-standings"></div>
+  <div id="gl-schedule" style="display:none"></div>
+  <div id="gl-enter" style="display:none"></div>
+  <div id="gl-roster" style="display:none"></div>
+  <div id="gl-playoffs" style="display:none"></div>
+  <div id="gl-prizes" style="display:none"></div>
+</div>
+</div>
+
+<script>
+(function(){
+
+// ── Default data ────────────────────────────────────────────────────────
+var DEFAULT_TEAMS = [
+  {id:"t01",name:"The Wreckid Playaz"},
+  {id:"t02",name:"The Warriors"},
+  {id:"t03",name:"The Cartwrights"},
+  {id:"t04",name:"The Rookies"},
+  {id:"t05",name:"Par Tee Animals"},
+  {id:"t06",name:"Nail Gunners"},
+  {id:"t07",name:"Spa Twins"},
+  {id:"t08",name:"Billy & The Kid"},
+  {id:"t09",name:"The Gangsters"},
+  {id:"t10",name:"The Toms"},
+  {id:"t11",name:"Hosel Rocketz"},
+  {id:"t12",name:"Blastin Gas"}
+];
+
+// 11-week round-robin schedule (every team plays every other team once)
+// Weeks 12-13 repeat first two weeks as bonus end-of-season rounds
+var DEFAULT_SCHEDULE = [
+  {week:1, date:"2026-06-09", matchups:[{home:"t01",away:"t12"},{home:"t02",away:"t11"},{home:"t03",away:"t10"},{home:"t04",away:"t09"},{home:"t05",away:"t08"},{home:"t06",away:"t07"}]},
+  {week:2, date:"2026-06-16", matchups:[{home:"t01",away:"t11"},{home:"t12",away:"t10"},{home:"t02",away:"t09"},{home:"t03",away:"t08"},{home:"t04",away:"t07"},{home:"t05",away:"t06"}]},
+  {week:3, date:"2026-06-23", matchups:[{home:"t01",away:"t10"},{home:"t11",away:"t09"},{home:"t12",away:"t08"},{home:"t02",away:"t07"},{home:"t03",away:"t06"},{home:"t04",away:"t05"}]},
+  {week:4, date:"2026-06-30", matchups:[{home:"t01",away:"t09"},{home:"t10",away:"t08"},{home:"t11",away:"t07"},{home:"t12",away:"t06"},{home:"t02",away:"t05"},{home:"t03",away:"t04"}]},
+  {week:5, date:"2026-07-07", matchups:[{home:"t01",away:"t08"},{home:"t09",away:"t07"},{home:"t10",away:"t06"},{home:"t11",away:"t05"},{home:"t12",away:"t04"},{home:"t02",away:"t03"}]},
+  {week:6, date:"2026-07-14", matchups:[{home:"t01",away:"t07"},{home:"t08",away:"t06"},{home:"t09",away:"t05"},{home:"t10",away:"t04"},{home:"t11",away:"t03"},{home:"t12",away:"t02"}]},
+  {week:7, date:"2026-07-21", matchups:[{home:"t01",away:"t06"},{home:"t07",away:"t05"},{home:"t08",away:"t04"},{home:"t09",away:"t03"},{home:"t10",away:"t02"},{home:"t11",away:"t12"}]},
+  {week:8, date:"2026-07-28", matchups:[{home:"t01",away:"t05"},{home:"t06",away:"t04"},{home:"t07",away:"t03"},{home:"t08",away:"t02"},{home:"t09",away:"t12"},{home:"t10",away:"t11"}]},
+  {week:9, date:"2026-08-04", matchups:[{home:"t01",away:"t04"},{home:"t05",away:"t03"},{home:"t06",away:"t02"},{home:"t07",away:"t12"},{home:"t08",away:"t11"},{home:"t09",away:"t10"}]},
+  {week:10,date:"2026-08-11", matchups:[{home:"t01",away:"t03"},{home:"t04",away:"t02"},{home:"t05",away:"t12"},{home:"t06",away:"t11"},{home:"t07",away:"t10"},{home:"t08",away:"t09"}]},
+  {week:11,date:"2026-08-18", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t12"},{home:"t04",away:"t11"},{home:"t05",away:"t10"},{home:"t06",away:"t09"},{home:"t07",away:"t08"}]}
+];
+
+var S = { players:[], teams:DEFAULT_TEAMS, rounds:[], schedule:DEFAULT_SCHEDULE, playoffResults:[], ctp:[], indivPrize:[] };
+var KEY = 'golf_league_v3';
+
+function load(){
+  try {
+    var r = localStorage.getItem(KEY);
+    if(r) S = JSON.parse(r);
+    else save();
+  } catch(e) {}
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function today(){ return new Date().toISOString().split('T')[0]; }
+function el(id){ return document.getElementById(id); }
+function playerById(id){ return S.players.filter(function(p){return p.id===id;})[0]; }
+function teamById(id){ return S.teams.filter(function(t){return t.id===id;})[0]; }
+function teamName(id){ var t=teamById(id); return t?t.name:'TBD'; }
+
+// ── Quota (one decimal) ─────────────────────────────────────────────────
+function getQuota(pid){
+  var rds=S.rounds.filter(function(r){return r.playerId===pid;})
+    .sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,3);
+  if(!rds.length) return null;
+  return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
+}
+function getQuotaAt(pid,before){
+  var rds=S.rounds.filter(function(r){return r.playerId===pid&&r.date<before;})
+    .sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,3);
+  if(!rds.length) return null;
+  return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
+}
+
+// ── Team net for a specific date ────────────────────────────────────────
+function teamNetOnDate(teamId, date){
+  var rds = S.rounds.filter(function(r){ return r.teamId===teamId && r.date===date; });
+  if(!rds.length) return null;
+  var net = 0;
+  rds.forEach(function(r){
+    var q = getQuotaAt(r.playerId, r.date);
+    net += r.points - (q !== null ? q : r.points);
+  });
+  return Math.round(net*10)/10;
+}
+
+// ── Matchup result ──────────────────────────────────────────────────────
+// Returns {homeNet, awayNet, homeWin, awayWin, tie, played}
+function matchupResult(m, date){
+  var hn = teamNetOnDate(m.home, date);
+  var an = teamNetOnDate(m.away, date);
+  if(hn === null || an === null) return {played:false};
+  var tie = hn === an;
+  return { played:true, homeNet:hn, awayNet:an, homeWin:hn>an, awayWin:an>hn, tie:tie };
+}
+
+// ── Team season stats ───────────────────────────────────────────────────
+function teamStats(teamId){
+  var wins=0, losses=0, ties=0, seasonNet=0, weeksPlayed=0;
+  S.schedule.forEach(function(week){
+    week.matchups.forEach(function(m){
+      var isHome = m.home===teamId, isAway = m.away===teamId;
+      if(!isHome && !isAway) return;
+      var res = matchupResult(m, week.date);
+      if(!res.played) return;
+      weeksPlayed++;
+      var myNet = isHome ? res.homeNet : res.awayNet;
+      seasonNet += myNet;
+      if(res.tie){ ties += 0.5; }
+      else if((isHome && res.homeWin)||(isAway && res.awayWin)){ wins++; }
+      else { losses++; }
+    });
+  });
+  return { wins:wins, losses:losses, ties:ties, seasonNet:Math.round(seasonNet*10)/10, weeksPlayed:weeksPlayed };
+}
+
+// ── Leaderboard ─────────────────────────────────────────────────────────
+function buildTeamLB(){
+  return S.teams.map(function(t){
+    var stats = teamStats(t.id);
+    var members = S.players.filter(function(p){return p.teamId===t.id;});
+    var pts = stats.wins + stats.ties; // wins + 0.5 per tie
+    return { team:t, members:members, pts:pts, wins:stats.wins, losses:stats.losses, ties:stats.ties, seasonNet:stats.seasonNet, weeksPlayed:stats.weeksPlayed };
+  }).sort(function(a,b){
+    if(b.pts !== a.pts) return b.pts - a.pts;
+    return b.seasonNet - a.seasonNet; // tiebreaker
+  });
+}
+
+function buildPlayerLB(){
+  return S.players.map(function(p){
+    var rds=S.rounds.filter(function(r){return r.playerId===p.id;})
+      .sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+    var quota=getQuota(p.id);
+    var net=0;
+    rds.forEach(function(r){ var q=getQuotaAt(p.id,r.date); net+=r.points-(q!==null?q:r.points); });
+    return { player:p, quota:quota, rounds:rds.length,
+      lastPoints:rds[0]?rds[0].points:null, lastDate:rds[0]?rds[0].date:null,
+      seasonNet:rds.length?Math.round(net*10)/10:null };
+  }).sort(function(a,b){
+    if(a.seasonNet===null&&b.seasonNet===null) return 0;
+    if(a.seasonNet===null) return 1; if(b.seasonNet===null) return -1;
+    return b.seasonNet-a.seasonNet;
+  });
+}
+
+// ── Render: Standings ───────────────────────────────────────────────────
+var standingsSub = 'teams';
+function glRenderStandings(){
+  var tlb = buildTeamLB(), plb = buildPlayerLB();
+  var weeksPlayed = tlb.length ? Math.max.apply(null,tlb.map(function(t){return t.weeksPlayed;})) : 0;
+
+  var html = '<div class="gl-metrics">'
+    +'<div class="gl-metric"><div class="gl-metric-label">Teams</div><div class="gl-metric-value">'+S.teams.length+'</div></div>'
+    +'<div class="gl-metric"><div class="gl-metric-label">Players</div><div class="gl-metric-value">'+S.players.length+'</div></div>'
+    +'<div class="gl-metric"><div class="gl-metric-label">Weeks played</div><div class="gl-metric-value">'+weeksPlayed+'<span style="font-size:14px;color:var(--gl-text-light)">/11</span></div></div>'
+    +'<div class="gl-metric"><div class="gl-metric-label">Playoff spots</div><div class="gl-metric-value" style="font-size:20px">Top 6</div><div class="gl-metric-sub">bottom 6 eliminated</div></div>'
+    +'</div>';
+
+  html += '<div class="gl-subtabs">'
+    +'<button class="gl-subtab'+(standingsSub==='teams'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'teams\')">Team standings</button>'
+    +'<button class="gl-subtab'+(standingsSub==='players'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'players\')">Individual standings</button>'
+    +'</div>';
+
+  if(standingsSub==='teams'){
+    if(!tlb.length){
+      html += '<div class="gl-empty"><p>No teams yet.</p></div>';
+    } else {
+      html += '<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+        +'<th>#</th><th>Team</th><th>W</th><th>L</th><th>T</th><th>Pts</th><th>Season net</th><th>Status</th>'
+        +'</tr></thead><tbody>';
+      tlb.forEach(function(row,i){
+        var rank = i+1;
+        var medal = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'<span class="gl-rank-num">'+rank+'</span>';
+        var ptsDisp = row.pts % 1 === 0 ? row.pts : row.pts.toFixed(1);
+        var netDisp = row.weeksPlayed ? ((row.seasonNet>=0?'+':'')+row.seasonNet) : '<span class="gl-muted">&mdash;</span>';
+        var netCls = row.seasonNet>0?'gl-net-pos':row.seasonNet<0?'gl-net-neg':'';
+        var status = rank<=6
+          ? '<span class="gl-badge gl-badge-playoff">Playoff</span>'
+          : '<span class="gl-badge gl-badge-loss" style="background:#fdf0f0">Out</span>';
+        if(rank===6) status = '<span class="gl-badge gl-badge-playoff">Last in</span>';
+        if(rank===7) status = '<span class="gl-badge" style="background:#fcecea;color:#9b2828">First out</span>';
+        html += '<tr'+(rank===6?' style="border-bottom:2px solid var(--gl-green-light)"':'')+'>'+
+          '<td>'+medal+'</td>'+
+          '<td class="gl-pname">'+row.team.name+'</td>'+
+          '<td style="font-weight:500;color:#1a6b33">'+row.wins+'</td>'+
+          '<td style="font-weight:500;color:#9b2828">'+row.losses+'</td>'+
+          '<td class="gl-muted">'+(row.ties?row.ties:'&mdash;')+'</td>'+
+          '<td style="font-weight:500">'+ptsDisp+'</td>'+
+          '<td><span class="'+netCls+'">'+netDisp+'</span></td>'+
+          '<td>'+status+'</td>'+
+          '</tr>';
+      });
+      html += '</tbody></table></div>'
+        +'<div class="gl-notice">Sorted by win points (W=1, T=0.5, L=0). Season net is the tiebreaker. A line separates playoff qualifiers (top 6) from the field.</div>'
+        +'</div>';
+    }
+  } else {
+    if(!plb.length){
+      html += '<div class="gl-empty"><p>No players yet.</p></div>';
+    } else {
+      html += '<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+        +'<th>#</th><th>Player</th><th>Team</th><th>Quota</th><th>Last score</th><th>vs Quota</th><th>Season net</th><th>Rds</th>'
+        +'</tr></thead><tbody>';
+      plb.forEach(function(row,i){
+        var rank=i+1;
+        var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'<span class="gl-rank-num">'+rank+'</span>';
+        var team=row.player.teamId?teamName(row.player.teamId):'<span class="gl-muted">sub pool</span>';
+        var quota=row.quota!==null?row.quota:'<span class="gl-muted">&mdash;</span>';
+        var last=row.lastPoints!==null?row.lastPoints:'<span class="gl-muted">&mdash;</span>';
+        var lastD=row.lastDate?'<span class="gl-muted"> '+row.lastDate+'</span>':'';
+        var vsBadge='<span class="gl-muted">&mdash;</span>';
+        if(row.lastPoints!==null&&row.quota!==null){
+          var diff=Math.round((row.lastPoints-row.quota)*10)/10,sign=diff>=0?'+':'';
+          var cls=diff>0?'gl-badge-up':diff<0?'gl-badge-down':'gl-badge-even';
+          vsBadge='<span class="gl-badge '+cls+'">'+sign+diff+'</span>';
+        }
+        var netD='<span class="gl-muted">&mdash;</span>';
+        if(row.seasonNet!==null){
+          var s=row.seasonNet>=0?'+':'',nc=row.seasonNet>0?'gl-net-pos':row.seasonNet<0?'gl-net-neg':'';
+          netD='<span class="'+nc+'">'+s+row.seasonNet+'</span>';
+        }
+        html+='<tr><td>'+medal+'</td><td class="gl-pname">'+row.player.name+'</td><td class="gl-muted" style="font-size:13px">'+team+'</td><td>'+quota+'</td><td>'+last+lastD+'</td><td>'+vsBadge+'</td><td>'+netD+'</td><td class="gl-muted">'+row.rounds+'</td></tr>';
+      });
+      html+='</tbody></table></div></div>';
+    }
+  }
+  el('gl-standings').innerHTML = html;
+}
+window.glStandingsSub = function(s){ standingsSub=s; glRenderStandings(); };
+
+// ── Render: Schedule ────────────────────────────────────────────────────
+function glRenderSchedule(){
+  var html = '';
+  S.schedule.forEach(function(week){
+    var allPlayed = week.matchups.every(function(m){ return matchupResult(m,week.date).played; });
+    var anyPlayed = week.matchups.some(function(m){ return matchupResult(m,week.date).played; });
+    var weekStatus = allPlayed ? '<span class="gl-badge gl-badge-win">Complete</span>'
+      : anyPlayed ? '<span class="gl-badge gl-badge-tie">In progress</span>'
+      : week.date <= today() ? '<span class="gl-badge gl-badge-sub">Pending scores</span>'
+      : '';
+    html += '<div class="gl-card">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+      +'<span class="gl-card-title" style="margin-bottom:0">Week '+week.week+' &mdash; <span style="font-weight:400;font-family:\'DM Sans\',sans-serif;font-size:14px;color:var(--gl-text-light)">'+week.date+'</span></span>'
+      +weekStatus
+      +'</div>';
+
+    week.matchups.forEach(function(m){
+      var res = matchupResult(m, week.date);
+      var homeT = teamById(m.home), awayT = teamById(m.away);
+      html += '<div class="gl-matchup-card">'
+        +'<div class="gl-vs-row">'
+        +'<div class="gl-team-side">'
+        +'<div class="gl-team-side-name"'+(res.played&&res.homeWin?' style="color:#1a6b33"':res.played&&!res.homeWin&&!res.tie?' style="color:#9b2828"':'')+'>'+( homeT?homeT.name:'?')+'</div>'
+        +(res.played?'<div class="gl-team-side-detail">Net: '+(res.homeNet>=0?'+':'')+res.homeNet+'</div>':'')
+        +'</div>'
+        +'<div class="gl-vs">vs</div>'
+        +'<div class="gl-team-side" style="text-align:right">'
+        +'<div class="gl-team-side-name"'+(res.played&&res.awayWin?' style="color:#1a6b33"':res.played&&!res.awayWin&&!res.tie?' style="color:#9b2828"':'')+'>'+( awayT?awayT.name:'?')+'</div>'
+        +(res.played?'<div class="gl-team-side-detail">Net: '+(res.awayNet>=0?'+':'')+res.awayNet+'</div>':'')
+        +'</div>'
+        +'</div>';
+      if(res.played){
+        var winner = res.tie ? 'Tie &mdash; 0.5 pts each' : 'Winner: <strong>'+(res.homeWin?homeT.name:awayT.name)+'</strong>';
+        html += '<div class="gl-result-row">&#10003; '+winner+'</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  el('gl-schedule').innerHTML = html || '<div class="gl-empty"><p>No schedule loaded.</p></div>';
+}
+
+// ── Render: Enter Score ─────────────────────────────────────────────────
+var enterWeek = null;
+var enterMatchup = null;
+
+function glRenderEnter(){
+  if(!S.teams.length){
+    el('gl-enter').innerHTML='<div class="gl-card"><p style="color:var(--gl-text-light);font-size:14px;">Add teams and players in the Roster tab first.</p></div>';
+    return;
+  }
+
+  // find current/most recent week
+  if(!enterWeek){
+    var now = today();
+    for(var i=0;i<S.schedule.length;i++){
+      if(S.schedule[i].date <= now) enterWeek = S.schedule[i].week;
+    }
+    if(!enterWeek) enterWeek = 1;
+  }
+
+  var weekOpts = S.schedule.map(function(w){
+    return '<option value="'+w.week+'"'+(w.week===enterWeek?' selected':'')+'>Week '+w.week+' &mdash; '+w.date+'</option>';
+  }).join('');
+
+  var html = '<div class="gl-week-selector">'
+    +'<div class="gl-field" style="flex:1;max-width:300px"><label>Week</label>'
+    +'<select id="gl-enter-week" onchange="glEnterWeekChange()">'+weekOpts+'</select></div>'
+    +'</div>'
+    +'<div id="gl-matchup-list"></div>';
+
+  el('gl-enter').innerHTML = html;
+  glBuildMatchupList();
+}
+
+window.glEnterWeekChange = function(){
+  var w = el('gl-enter-week'); if(!w) return;
+  enterWeek = parseInt(w.value);
+  enterMatchup = null;
+  glBuildMatchupList();
+};
+
+window.glBuildMatchupList = function(){
+  var weekData = S.schedule.filter(function(w){return w.week===enterWeek;})[0];
+  if(!weekData){ el('gl-matchup-list').innerHTML=''; return; }
+  var html = '';
+  weekData.matchups.forEach(function(m, mi){
+    var homeT = teamById(m.home), awayT = teamById(m.away);
+    var res = matchupResult(m, weekData.date);
+    var label = (homeT?homeT.name:'?')+' vs '+(awayT?awayT.name:'?');
+    var statusBadge = res.played ? '<span class="gl-badge gl-badge-win" style="font-size:11px">Scores entered</span>' : '';
+    html += '<div class="gl-card" style="cursor:pointer;'+(enterMatchup===mi?'border-color:var(--gl-green-light);box-shadow:0 0 0 3px rgba(74,140,92,0.12)':'')+'" onclick="glSelectMatchup('+mi+')">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between">'
+      +'<span style="font-weight:500;font-size:15px">'+label+'</span>'+statusBadge
+      +'</div>'
+      +(enterMatchup===mi ? '<div id="gl-score-entry" style="margin-top:16px"></div>' : '')
+      +'</div>';
+  });
+  el('gl-matchup-list').innerHTML = html;
+  if(enterMatchup !== null) glBuildScoreEntry(weekData, weekData.matchups[enterMatchup], enterMatchup);
+};
+
+window.glSelectMatchup = function(mi){
+  enterMatchup = (enterMatchup === mi) ? null : mi;
+  glBuildMatchupList();
+};
+
+window.glBuildScoreEntry = function(weekData, m, mi){
+  var seEl = el('gl-score-entry'); if(!seEl) return;
+  var date = weekData.date;
+  var homeT = teamById(m.home), awayT = teamById(m.away);
+  var homeMembers = S.players.filter(function(p){return p.teamId===m.home;});
+  var awayMembers = S.players.filter(function(p){return p.teamId===m.away;});
+  var allPlayers = S.players;
+
+  function buildTeamPanel(teamId, teamObj, members, side){
+    var existing = S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date;});
+    var subs = existing.filter(function(r){return !members.filter(function(mm){return mm.id===r.playerId;}).length;});
+
+    var html = '<div class="gl-score-panel">'
+      +'<div class="gl-score-panel-title">'+(teamObj?teamObj.name:'?')+'</div>';
+
+    members.forEach(function(p){
+      var ex = existing.filter(function(r){return r.playerId===p.id;})[0];
+      var q = getQuotaAt(p.id, date);
+      html += '<div style="margin-bottom:10px">'
+        +'<div style="font-size:13px;font-weight:500;margin-bottom:4px">'+p.name
+        +'<span style="font-weight:400;color:var(--gl-text-light);font-size:12px"> &mdash; quota: '+(q!==null?q:'n/a')+'</span></div>'
+        +'<input type="number" id="gl-pts-'+side+'-'+p.id+'" min="0" max="72" placeholder="Points" value="'+(ex?ex.points:'')+'" style="width:100%" oninput="glShowPtsHint(\''+side+'\',\''+p.id+'\',\''+date+'\')">'
+        +'<div id="gl-phint-'+side+'-'+p.id+'" style="font-size:12px;color:var(--gl-text-mid);margin-top:3px;min-height:16px"></div>'
+        +'</div>';
+    });
+
+    // sub slot
+    var subOpts = '<option value="">-- no sub --</option>';
+    allPlayers.forEach(function(p){
+      var isMember = members.filter(function(mm){return mm.id===p.id;}).length>0;
+      if(!isMember){
+        var exSub = subs[0];
+        subOpts += '<option value="'+p.id+'"'+(exSub&&exSub.playerId===p.id?' selected':'')+'>'+p.name+(p.teamId?' ('+teamName(p.teamId)+')':' (sub pool)')+'</option>';
+      }
+    });
+    var exSub = subs[0];
+    var subQ = exSub ? getQuotaAt(exSub.playerId, date) : null;
+    html += '<div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(26,58,42,0.1)">'
+      +'<div style="font-size:12px;color:var(--gl-text-light);margin-bottom:4px">Sub (optional)</div>'
+      +'<select id="gl-sub-'+side+'" style="margin-bottom:6px" onchange="glSubChange(\''+side+'\',\''+date+'\')">'+subOpts+'</select>'
+      +'<input type="number" id="gl-subpts-'+side+'" min="0" max="72" placeholder="Sub points" value="'+(exSub?exSub.points:'')+'" style="width:100%">'
+      +'</div>';
+
+    html += '</div>';
+    return html;
+  }
+
+  var html = '<div class="gl-score-grid">'
+    + buildTeamPanel(m.home, homeT, homeMembers, 'h')
+    + buildTeamPanel(m.away, awayT, awayMembers, 'a')
+    +'</div>'
+    +'<div style="margin-top:14px;display:flex;gap:10px;align-items:center">'
+    +'<button class="gl-btn" onclick="glSaveMatchupScores('+mi+')">Save scores</button>'
+    +'<div id="gl-save-hint" style="font-size:13px;color:var(--gl-text-light)"></div>'
+    +'</div>';
+
+  seEl.innerHTML = html;
+
+  // trigger hints for pre-filled values
+  homeMembers.forEach(function(p){ if(el('gl-pts-h-'+p.id)&&el('gl-pts-h-'+p.id).value) glShowPtsHint('h',p.id,date); });
+  awayMembers.forEach(function(p){ if(el('gl-pts-a-'+p.id)&&el('gl-pts-a-'+p.id).value) glShowPtsHint('a',p.id,date); });
+};
+
+window.glShowPtsHint = function(side, pid, date){
+  var hintEl = el('gl-phint-'+side+'-'+pid); if(!hintEl) return;
+  var ptsEl = el('gl-pts-'+side+'-'+pid); if(!ptsEl) return;
+  var pts = parseFloat(ptsEl.value);
+  var q = getQuotaAt(pid, date);
+  if(q===null){ hintEl.textContent='No quota yet'; return; }
+  if(!isNaN(pts)){
+    var diff = Math.round((pts-q)*10)/10;
+    hintEl.textContent = 'vs quota: '+(diff>=0?'+':'')+diff;
+    hintEl.style.color = diff>=0?'#1a6b33':'#9b2828';
+  } else { hintEl.textContent=''; }
+};
+
+window.glSubChange = function(side, date){
+  // just clear pts field when sub changes
+  var pts = el('gl-subpts-'+side); if(pts) pts.value='';
+};
+
+window.glSaveMatchupScores = function(mi){
+  var weekData = S.schedule.filter(function(w){return w.week===enterWeek;})[0];
+  if(!weekData) return;
+  var m = weekData.matchups[mi];
+  var date = weekData.date;
+
+  var toSave = [];
+  function collectSide(side, teamId, members){
+    members.forEach(function(p){
+      var ptsEl = el('gl-pts-'+side+'-'+p.id);
+      var pts = ptsEl ? parseFloat(ptsEl.value) : NaN;
+      if(!isNaN(pts)&&pts>=0) toSave.push({id:uid(),playerId:p.id,teamId:teamId,date:date,points:pts,notes:'',isSub:false});
+    });
+    var subSel = el('gl-sub-'+side), subPid = subSel?subSel.value:'';
+    var subPtsEl = el('gl-subpts-'+side), subPts = subPtsEl?parseFloat(subPtsEl.value):NaN;
+    if(subPid&&!isNaN(subPts)&&subPts>=0) toSave.push({id:uid(),playerId:subPid,teamId:teamId,date:date,points:subPts,notes:'',isSub:true});
+  }
+
+  var homeMembers = S.players.filter(function(p){return p.teamId===m.home;});
+  var awayMembers = S.players.filter(function(p){return p.teamId===m.away;});
+  collectSide('h', m.home, homeMembers);
+  collectSide('a', m.away, awayMembers);
+
+  if(!toSave.length){ alert('Please enter at least one score.'); return; }
+
+  // remove existing for both teams on this date for this matchup
+  S.rounds = S.rounds.filter(function(r){ return !((r.teamId===m.home||r.teamId===m.away)&&r.date===date); });
+  toSave.forEach(function(r){ S.rounds.push(r); });
+  save();
+
+  var hint = el('gl-save-hint');
+  if(hint){ hint.textContent='Saved!'; setTimeout(function(){hint.textContent='';},2000); }
+  glBuildMatchupList();
+};
+
+// ── Render: Roster ──────────────────────────────────────────────────────
+function glRenderRoster(){
+  var html = '<div class="gl-card"><p class="gl-card-title">Add player</p>'
+    +'<div class="gl-form-grid">'
+    +'<div class="gl-field"><label>Name</label><input type="text" id="gl-p-name" placeholder="Full name"></div>'
+    +'<div class="gl-field"><label>Team</label><select id="gl-p-team">'
+    +'<option value="">-- no team (sub pool) --</option>'
+    +S.teams.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')
+    +'</select></div>'
+    +'<div class="gl-field"><label>Handicap index (optional)</label><input type="number" id="gl-p-hcp" placeholder="e.g. 14.2" step="0.1"></div>'
+    +'</div>'
+    +'<button class="gl-btn" onclick="glAddPlayer()">Add player</button></div>';
+
+  S.teams.forEach(function(t){
+    var members = S.players.filter(function(p){return p.teamId===t.id;});
+    html += '<div class="gl-card">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">'
+      +'<span class="gl-card-title" style="margin-bottom:0">'+t.name+'</span>'
+      +'<span class="gl-muted" style="font-size:12px">'+members.length+'/2 members</span>'
+      +'</div>';
+    if(!members.length){
+      html += '<p class="gl-muted" style="font-size:13px">No players assigned yet.</p>';
+    } else {
+      html += '<table class="gl-table"><thead><tr><th>Player</th><th>Hdcp</th><th>Quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
+      members.forEach(function(p){
+        var q=getQuota(p.id), rds=S.rounds.filter(function(r){return r.playerId===p.id;}).length;
+        html+='<tr><td class="gl-pname">'+p.name+'</td>'
+          +'<td class="gl-muted">'+(p.handicap||'&mdash;')+'</td>'
+          +'<td>'+(q!==null?q:'<span class="gl-muted">needs rounds</span>')+'</td>'
+          +'<td class="gl-muted">'+rds+'</td>'
+          +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
+      });
+      html += '</tbody></table>';
+    }
+    html += '</div>';
+  });
+
+  var subs = S.players.filter(function(p){return !p.teamId;});
+  if(subs.length){
+    html += '<div class="gl-card"><p class="gl-card-title">Sub pool</p>'
+      +'<table class="gl-table"><thead><tr><th>Player</th><th>Hdcp</th><th>Quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
+    subs.forEach(function(p){
+      var q=getQuota(p.id), rds=S.rounds.filter(function(r){return r.playerId===p.id;}).length;
+      html+='<tr><td class="gl-pname">'+p.name+' <span class="gl-badge gl-badge-sub">sub</span></td>'
+        +'<td class="gl-muted">'+(p.handicap||'&mdash;')+'</td>'
+        +'<td>'+(q!==null?q:'<span class="gl-muted">needs rounds</span>')+'</td>'
+        +'<td class="gl-muted">'+rds+'</td>'
+        +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+
+  el('gl-roster').innerHTML = html;
+}
+
+window.glAddPlayer = function(){
+  var name=(el('gl-p-name')||{value:''}).value.trim();
+  var teamId=(el('gl-p-team')||{value:''}).value||null;
+  var hcp=(el('gl-p-hcp')||{value:''}).value.trim();
+  if(!name){alert('Please enter a name.');return;}
+  if(S.players.filter(function(p){return p.name.toLowerCase()===name.toLowerCase();}).length){alert('Player already exists.');return;}
+  if(teamId&&S.players.filter(function(p){return p.teamId===teamId;}).length>=2){
+    alert('Teams can only have 2 permanent members.');return;
+  }
+  S.players.push({id:uid(),name:name,teamId:teamId,handicap:hcp});
+  save(); glRenderRoster();
+};
+
+window.glRemovePlayer = function(id){
+  var p=S.players.filter(function(x){return x.id===id;})[0];
+  if(!confirm('Remove '+(p?p.name:'this player')+' and all their scores?'))return;
+  S.players=S.players.filter(function(x){return x.id!==id;});
+  S.rounds=S.rounds.filter(function(r){return r.playerId!==id;});
+  save(); glRenderRoster();
+};
+
+// ── Render: Playoffs ────────────────────────────────────────────────────
+function glRenderPlayoffs(){
+  var lb = buildTeamLB();
+  var top6 = lb.slice(0,6);
+  var html = '';
+
+  // Seedings table
+  html += '<div class="gl-card"><p class="gl-card-title">Playoff seeds</p>'
+    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+    +'<th>Seed</th><th>Team</th><th>Record</th><th>Season net</th>'
+    +'</tr></thead><tbody>';
+
+  top6.forEach(function(row,i){
+    var seed=i+1;
+    var rec=row.wins+'-'+row.losses+(row.ties?'-'+row.ties:'');
+    var bye = seed<=2 ? '<span class="gl-badge gl-badge-bye">Bye</span>' : '';
+    html+='<tr><td style="font-weight:500">'+(seed<=2?'&#11088; ':'')+seed+'</td>'
+      +'<td class="gl-pname">'+row.team.name+' '+bye+'</td>'
+      +'<td class="gl-muted">'+rec+'</td>'
+      +'<td>'+(row.seasonNet>=0?'+':'')+row.seasonNet+'</td></tr>';
+  });
+  html += '</tbody></table></div>'
+    +'<div class="gl-notice">Seeds 1 &amp; 2 receive a first-round bye. Seeds 3 vs 6 and 4 vs 5 play in Round 1.</div>'
+    +'</div>';
+
+  // Bracket
+  var s = top6.map(function(r){return r.team;});
+  // Round 1: 3v6, 4v5
+  var r1_a = {home:s[2]?s[2].name:'Seed 3', away:s[5]?s[5].name:'Seed 6', label:'(3) vs (6)'};
+  var r1_b = {home:s[3]?s[3].name:'Seed 4', away:s[4]?s[4].name:'Seed 5', label:'(4) vs (5)'};
+
+  function getPlayoffResult(round, matchLabel){
+    var pr = S.playoffResults.filter(function(r){return r.round===round&&r.match===matchLabel;})[0];
+    return pr || null;
+  }
+
+  function playoffMatchHTML(round, matchLabel, teamA, teamB, noteA, noteB){
+    var pr = getPlayoffResult(round, matchLabel);
+    var winnerA = pr && pr.winner===0;
+    var winnerB = pr && pr.winner===1;
+    return '<div class="gl-playoff-match">'
+      +'<div class="gl-playoff-team'+(winnerA?' winner':!teamA?' tbd':'')+'">'
+      +'<span>'+(teamA||'TBD')+'</span>'
+      +(noteA?'<span class="gl-muted" style="font-size:11px">'+noteA+'</span>':'')
+      +(winnerA?'<span class="gl-badge gl-badge-win" style="font-size:10px">W</span>':'')
+      +'</div>'
+      +'<div class="gl-playoff-team'+(winnerB?' winner':!teamB?' tbd':'')+'">'
+      +'<span>'+(teamB||'TBD')+'</span>'
+      +(noteB?'<span class="gl-muted" style="font-size:11px">'+noteB+'</span>':'')
+      +(winnerB?'<span class="gl-badge gl-badge-win" style="font-size:10px">W</span>':'')
+      +'</div>'
+      +'</div>';
+  }
+
+  var pr_3v6 = getPlayoffResult(1,'3v6');
+  var pr_4v5 = getPlayoffResult(1,'4v5');
+  var sf1TeamA = s[0]?s[0].name:'Seed 1';
+  var sf1TeamB = pr_3v6 ? (pr_3v6.winner===0?r1_a.home:r1_a.away) : 'Winner (3v6)';
+  var sf2TeamA = s[1]?s[1].name:'Seed 2';
+  var sf2TeamB = pr_4v5 ? (pr_4v5.winner===0?r1_b.home:r1_b.away) : 'Winner (4v5)';
+
+  var pr_sf1 = getPlayoffResult(2,'sf1');
+  var pr_sf2 = getPlayoffResult(2,'sf2');
+  var finTeamA = pr_sf1 ? (pr_sf1.winner===0?sf1TeamA:sf1TeamB) : 'Winner SF1';
+  var finTeamB = pr_sf2 ? (pr_sf2.winner===0?sf2TeamA:sf2TeamB) : 'Winner SF2';
+
+  html += '<div class="gl-card"><p class="gl-card-title">Bracket</p>'
+    +'<div class="gl-playoff-bracket">'
+
+    +'<div class="gl-playoff-round">'
+    +'<div class="gl-playoff-round-title">Round 1</div>'
+    +playoffMatchHTML(1,'3v6',r1_a.home,r1_a.away,'Seed 3','Seed 6')
+    +playoffMatchHTML(1,'4v5',r1_b.home,r1_b.away,'Seed 4','Seed 5')
+    +'</div>'
+
+    +'<div class="gl-playoff-round">'
+    +'<div class="gl-playoff-round-title">Semifinals</div>'
+    +playoffMatchHTML(2,'sf1',sf1TeamA,sf1TeamB,'Seed 1 (bye)','')
+    +playoffMatchHTML(2,'sf2',sf2TeamA,sf2TeamB,'Seed 2 (bye)','')
+    +'</div>'
+
+    +'<div class="gl-playoff-round">'
+    +'<div class="gl-playoff-round-title">Championship</div>'
+    +playoffMatchHTML(3,'final',finTeamA,finTeamB,'','')
+    +'</div>'
+
+    +'</div>'; // bracket
+
+  // Playoff result entry
+  html += '<hr class="gl-sep">'
+    +'<p style="font-size:13px;font-weight:500;margin-bottom:12px;color:var(--gl-text-mid)">Record playoff results</p>'
+    +'<div class="gl-form-grid">'
+    +'<div class="gl-field"><label>Round</label><select id="gl-po-round">'
+    +'<option value="1-3v6">Round 1: '+r1_a.home+' vs '+r1_a.away+'</option>'
+    +'<option value="1-4v5">Round 1: '+r1_b.home+' vs '+r1_b.away+'</option>'
+    +'<option value="2-sf1">Semifinal 1: '+sf1TeamA+' vs '+sf1TeamB+'</option>'
+    +'<option value="2-sf2">Semifinal 2: '+sf2TeamA+' vs '+sf2TeamB+'</option>'
+    +'<option value="3-final">Championship: '+finTeamA+' vs '+finTeamB+'</option>'
+    +'</select></div>'
+    +'<div class="gl-field"><label>Winner</label><select id="gl-po-winner">'
+    +'<option value="0">Home team (first named)</option>'
+    +'<option value="1">Away team (second named)</option>'
+    +'</select></div>'
+    +'</div>'
+    +'<button class="gl-btn" onclick="glSavePlayoffResult()">Save result</button>'
+    +'</div>'; // card
+
+  el('gl-playoffs').innerHTML = html;
+}
+
+window.glSavePlayoffResult = function(){
+  var rsel = el('gl-po-round'), wsel = el('gl-po-winner');
+  if(!rsel||!wsel) return;
+  var parts = rsel.value.split('-');
+  var round = parseInt(parts[0]), match = parts.slice(1).join('-');
+  var winner = parseInt(wsel.value);
+  S.playoffResults = S.playoffResults.filter(function(r){return !(r.round===round&&r.match===match);});
+  S.playoffResults.push({round:round,match:match,winner:winner});
+  save(); glRenderPlayoffs();
+};
+
+// ── Render: Prizes ──────────────────────────────────────────────────────
+// Auto-derive weekly individual prize winner from round data
+function getIndivWinnerForWeek(weekDate){
+  var rounds = S.rounds.filter(function(r){ return r.date===weekDate; });
+  if(!rounds.length) return null;
+  var best = null, bestMargin = null;
+  rounds.forEach(function(r){
+    var q = getQuotaAt(r.playerId, r.date);
+    if(q===null) return;
+    var margin = Math.round((r.points - q)*10)/10;
+    if(bestMargin===null || margin > bestMargin){
+      bestMargin = margin;
+      best = { playerId:r.playerId, points:r.points, quota:q, margin:margin };
+    }
+  });
+  return best;
+}
+
+// Season indiv prize leaderboard — wins + best margin
+function buildIndivPrizeLB(){
+  var players = {};
+  S.schedule.forEach(function(week){
+    var winner = getIndivWinnerForWeek(week.date);
+    if(!winner) return;
+    var pid = winner.playerId;
+    if(!players[pid]) players[pid] = { wins:0, bestMargin: null, bestWeek:null };
+    players[pid].wins++;
+    if(players[pid].bestMargin===null || winner.margin > players[pid].bestMargin){
+      players[pid].bestMargin = winner.margin;
+      players[pid].bestWeek = week.week;
+    }
+  });
+  return Object.keys(players).map(function(pid){
+    var p = playerById(pid);
+    return { player:p, wins:players[pid].wins, bestMargin:players[pid].bestMargin, bestWeek:players[pid].bestWeek };
+  }).sort(function(a,b){
+    if(b.wins!==a.wins) return b.wins-a.wins;
+    return b.bestMargin-a.bestMargin;
+  });
+}
+
+function glRenderPrizes(){
+  if(!S.schedule) { el('gl-prizes').innerHTML=''; return; }
+
+  var weekOpts = S.schedule.map(function(w){
+    return '<option value="'+w.week+'">Week '+w.week+' &mdash; '+w.date+'</option>';
+  }).join('');
+
+  var playerOpts = '<option value="">-- select player --</option>'
+    + S.players.map(function(p){ return '<option value="'+p.id+'">'+p.name+'</option>'; }).join('');
+
+  // CTP entry form
+  var html = '<div class="gl-card"><p class="gl-card-title">Enter closest to the pin</p>'
+    +'<div class="gl-form-grid">'
+    +'<div class="gl-field"><label>Week</label><select id="gl-ctp-week">'+weekOpts+'</select></div>'
+    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp-hole" min="1" max="18" placeholder="e.g. 7"></div>'
+    +'<div class="gl-field"><label>CTP 1 &mdash; Player</label><select id="gl-ctp1-player">'+playerOpts+'</select></div>'
+    +'<div class="gl-field"><label>CTP 1 &mdash; Distance</label><input type="text" id="gl-ctp1-dist" placeholder="e.g. 4\'2&quot;"></div>'
+    +'<div class="gl-field"><label>CTP 2 &mdash; Player</label><select id="gl-ctp2-player">'+playerOpts+'</select></div>'
+    +'<div class="gl-field"><label>CTP 2 &mdash; Distance</label><input type="text" id="gl-ctp2-dist" placeholder="e.g. 6\'8&quot;"></div>'
+    +'</div>'
+    +'<button class="gl-btn" onclick="glSaveCTP()">Save CTP results</button>'
+    +'</div>';
+
+  // CTP history table
+  var ctpRows = S.ctp.slice().sort(function(a,b){ return b.week-a.week; });
+  if(ctpRows.length){
+    html += '<div class="gl-card"><p class="gl-card-title">Closest to the pin results</p>'
+      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+      +'<th>Week</th><th>Date</th><th>Hole</th><th>Winner</th><th>Distance</th><th></th>'
+      +'</tr></thead><tbody>';
+    ctpRows.forEach(function(c){
+      var week = S.schedule.filter(function(w){return w.week===c.week;})[0];
+      var date = week?week.date:'';
+      var p = playerById(c.playerId);
+      html += '<tr>'
+        +'<td class="gl-muted">'+c.week+'</td>'
+        +'<td class="gl-muted">'+date+'</td>'
+        +'<td style="font-weight:500">Hole '+c.hole+'</td>'
+        +'<td class="gl-pname">'+(p?p.name:'(deleted)')+'</td>'
+        +'<td>'+(c.distance||'&mdash;')+'</td>'
+        +'<td><button class="gl-btn-sm" onclick="glDeleteCTP(\''+c.id+'\')">Del</button></td>'
+        +'</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+
+  // Season CTP leaderboard — count wins per player
+  var ctpTally = {};
+  S.ctp.forEach(function(c){
+    ctpTally[c.playerId] = (ctpTally[c.playerId]||0)+1;
+  });
+  var ctpLB = Object.keys(ctpTally).map(function(pid){
+    return { player:playerById(pid), wins:ctpTally[pid] };
+  }).sort(function(a,b){ return b.wins-a.wins; });
+
+  if(ctpLB.length){
+    html += '<div class="gl-card"><p class="gl-card-title">CTP season leaderboard</p>'
+      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr><th>#</th><th>Player</th><th>CTP wins</th></tr></thead><tbody>';
+    ctpLB.forEach(function(row,i){
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'<span class="gl-rank-num">'+(i+1)+'</span>';
+      html += '<tr><td>'+medal+'</td><td class="gl-pname">'+(row.player?row.player.name:'(deleted)')+'</td>'
+        +'<td style="font-weight:500">'+row.wins+'</td></tr>';
+    });
+    html += '</tbody></table></div></div>';
+  }
+
+  html += '<hr class="gl-sep">';
+
+  // Weekly individual prize — auto-derived from scores
+  html += '<div class="gl-card"><p class="gl-card-title">Weekly individual prize <span style="font-size:13px;font-weight:400;font-family:\'DM Sans\',sans-serif;color:var(--gl-text-light)">&mdash; most points over quota</span></p>'
+    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+    +'<th>Week</th><th>Date</th><th>Winner</th><th>Points</th><th>Quota</th><th>Over quota</th>'
+    +'</tr></thead><tbody>';
+
+  var hasAnyIndiv = false;
+  S.schedule.forEach(function(week){
+    var winner = getIndivWinnerForWeek(week.date);
+    if(!winner) return;
+    hasAnyIndiv = true;
+    var p = playerById(winner.playerId);
+    var sign = winner.margin>=0?'+':'';
+    html += '<tr>'
+      +'<td class="gl-muted">'+week.week+'</td>'
+      +'<td class="gl-muted">'+week.date+'</td>'
+      +'<td class="gl-pname">&#127942; '+(p?p.name:'(deleted)')+'</td>'
+      +'<td style="font-weight:500">'+winner.points+'</td>'
+      +'<td class="gl-muted">'+winner.quota+'</td>'
+      +'<td><span class="gl-badge gl-badge-up">'+sign+winner.margin+'</span></td>'
+      +'</tr>';
+  });
+
+  if(!hasAnyIndiv){
+    html += '<tr><td colspan="6" style="text-align:center;color:var(--gl-text-light);padding:20px;font-size:13px">Winners appear automatically once scores are entered.</td></tr>';
+  }
+  html += '</tbody></table></div></div>';
+
+  // Season individual prize leaderboard
+  var indivLB = buildIndivPrizeLB();
+  if(indivLB.length){
+    html += '<div class="gl-card"><p class="gl-card-title">Individual prize season leaderboard</p>'
+      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+      +'<th>#</th><th>Player</th><th>Team</th><th>Wins</th><th>Best margin</th><th>Best week</th>'
+      +'</tr></thead><tbody>';
+    indivLB.forEach(function(row,i){
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'<span class="gl-rank-num">'+(i+1)+'</span>';
+      var team = row.player&&row.player.teamId ? teamName(row.player.teamId) : '<span class="gl-muted">sub pool</span>';
+      var sign = row.bestMargin>=0?'+':'';
+      html += '<tr>'
+        +'<td>'+medal+'</td>'
+        +'<td class="gl-pname">'+(row.player?row.player.name:'(deleted)')+'</td>'
+        +'<td class="gl-muted" style="font-size:13px">'+team+'</td>'
+        +'<td style="font-weight:500">'+row.wins+'</td>'
+        +'<td><span class="gl-badge gl-badge-up">'+sign+row.bestMargin+'</span></td>'
+        +'<td class="gl-muted">Wk '+row.bestWeek+'</td>'
+        +'</tr>';
+    });
+    html += '</tbody></table></div>'
+      +'<div class="gl-notice">Winners are calculated automatically from entered scores &mdash; highest points above personal quota each week.</div>'
+      +'</div>';
+  }
+
+  el('gl-prizes').innerHTML = html;
+}
+
+window.glSaveCTP = function(){
+  var week = parseInt((el('gl-ctp-week')||{value:''}).value);
+  var hole = parseInt((el('gl-ctp-hole')||{value:''}).value);
+  if(!week||!hole){ alert('Please select a week and hole number.'); return; }
+
+  var entries = [
+    { playerEl:'gl-ctp1-player', distEl:'gl-ctp1-dist' },
+    { playerEl:'gl-ctp2-player', distEl:'gl-ctp2-dist' }
+  ];
+  var saved = 0;
+  entries.forEach(function(e){
+    var pid = (el(e.playerEl)||{value:''}).value;
+    var dist = (el(e.distEl)||{value:''}).value.trim();
+    if(!pid) return;
+    // remove existing entry for same week+hole+player slot
+    S.ctp = S.ctp.filter(function(c){ return !(c.week===week&&c.hole===hole&&c.playerId===pid); });
+    S.ctp.push({ id:uid(), week:week, hole:hole, playerId:pid, distance:dist });
+    saved++;
+  });
+  if(!saved){ alert('Please select at least one player.'); return; }
+  save();
+  alert('CTP results saved!');
+  glRenderPrizes();
+};
+
+window.glDeleteCTP = function(id){
+  if(!confirm('Delete this CTP entry?')) return;
+  S.ctp = S.ctp.filter(function(c){ return c.id!==id; });
+  save(); glRenderPrizes();
+};
+
+// ── Tab switching ────────────────────────────────────────────────────────
+var GL_TABS = ['standings','schedule','enter','roster','playoffs','prizes'];
+window.glShowTab = function(name){
+  GL_TABS.forEach(function(t){ el('gl-'+t).style.display=t===name?'':'none'; });
+  document.querySelectorAll('.gl-tab').forEach(function(btn,i){
+    btn.classList.toggle('gl-tab-active', GL_TABS[i]===name);
+  });
+  glRender(name);
+};
+
+function glRender(tab){
+  tab = tab||'standings';
+  if(tab==='standings') glRenderStandings();
+  else if(tab==='schedule') glRenderSchedule();
+  else if(tab==='enter') glRenderEnter();
+  else if(tab==='roster') glRenderRoster();
+  else if(tab==='playoffs') glRenderPlayoffs();
+  else if(tab==='prizes') glRenderPrizes();
+}
+
+load();
+glRender('standings');
+})();
+</script>
