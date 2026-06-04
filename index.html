@@ -46,7 +46,7 @@
 .gl-subtab.gl-subtab-active { background:var(--gl-green-deep); color:#fff; border-color:var(--gl-green-deep); }
 
 .gl-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
-.gl-metric { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:22px 24px; }
+.gl-metric { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:22px 24px; text-align:center; }
 .gl-metric-label { font-size:12px; text-transform:uppercase; letter-spacing:0.09em; color:var(--gl-text-light); margin-bottom:8px; font-weight:500; }
 .gl-metric-value { font-family:'Playfair Display',serif; font-size:32px; color:var(--gl-text-dark); }
 .gl-metric-sub { font-size:13px; color:var(--gl-text-light); margin-top:4px; }
@@ -444,7 +444,7 @@ function glRenderStandings(){
 
   var html='<div class="gl-metrics">'
     +'<div class="gl-metric"><div class="gl-metric-label">Teams</div><div class="gl-metric-value">'+S.teams.length+'</div></div>'
-    +'<div class="gl-metric"><div class="gl-metric-label">Players</div><div class="gl-metric-value">'+S.players.filter(function(p){return p.teamId;}).length+'</div></div>'
+    +'<div class="gl-metric"><div class="gl-metric-label">Players</div><div class="gl-metric-value">'+S.players.length+'</div></div>'
     +'<div class="gl-metric"><div class="gl-metric-label">Weeks played</div><div class="gl-metric-value">'+weeksPlayed+'<span style="font-size:16px;color:var(--gl-text-light)">/18</span></div></div>'
     +'<div class="gl-metric"><div class="gl-metric-label">Playoff spots</div><div class="gl-metric-value" style="font-size:26px">Top 6</div><div class="gl-metric-sub">bottom 6 eliminated</div></div>'
     +'</div>';
