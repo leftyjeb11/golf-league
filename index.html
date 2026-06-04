@@ -164,6 +164,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
       <span>Prizes</span>
     </button>
+    <button class="gl-tab" onclick="glShowTab('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>History</span>
+    </button>
   </div>
   <div id="gl-standings"></div>
   <div id="gl-schedule" style="display:none"></div>
@@ -171,6 +175,7 @@
   <div id="gl-roster" style="display:none"></div>
   <div id="gl-playoffs" style="display:none"></div>
   <div id="gl-prizes" style="display:none"></div>
+  <div id="gl-history" style="display:none"></div>
 </div>
 </div>
 
@@ -1009,8 +1014,49 @@ window.glDeleteCTP=function(id){
   save();glRenderPrizes();
 };
 
+// ── Render: History ──────────────────────────────────────────────────────
+function glRenderHistory(){
+  var sorted=S.rounds.filter(function(r){return !r.seed;})
+    .sort(function(a,b){return b.date>a.date?1:b.date<a.date?-1:0;});
+  if(!sorted.length){
+    el('gl-history').innerHTML='<div class="gl-empty"><p>No scores entered yet.</p></div>';
+    return;
+  }
+  var html='<div class="gl-card"><p class="gl-card-title">Score history <span style="font-size:15px;font-weight:400;font-family:\'DM Sans\',sans-serif;color:var(--gl-text-light)">— delete an entry to correct it, then re-enter</span></p>'
+    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
+    +'<th>Date</th><th>Player</th><th>Team</th><th>Points</th><th>Quota</th><th>Net</th><th>Sub?</th><th></th>'
+    +'</tr></thead><tbody>';
+  sorted.forEach(function(r){
+    var p=playerById(r.playerId);
+    var q=getQuotaAt(r.playerId,r.date);
+    var net=q!==null?Math.round((r.points-q)*10)/10:null;
+    var netD='<span class="gl-muted">—</span>';
+    if(net!==null){
+      var s=net>=0?'+':'',cls=net>0?'gl-badge-up':net<0?'gl-badge-down':'gl-badge-even';
+      netD='<span class="gl-badge '+cls+'">'+s+net+'</span>';
+    }
+    html+='<tr>'
+      +'<td class="gl-muted">'+r.date+'</td>'
+      +'<td class="gl-pname">'+(p?p.name:'(deleted)')+'</td>'
+      +'<td class="gl-muted">'+(r.teamId?teamName(r.teamId):'—')+'</td>'
+      +'<td style="font-weight:600">'+r.points+'</td>'
+      +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
+      +'<td>'+netD+'</td>'
+      +'<td>'+(r.isSub?'<span class="gl-badge gl-badge-sub">sub</span>':'')+'</td>'
+      +'<td><button class="gl-btn-sm" onclick="glDeleteHistoryRound(\''+r.id+'\')">Delete</button></td>'
+      +'</tr>';
+  });
+  html+='</tbody></table></div></div>';
+  el('gl-history').innerHTML=html;
+}
+window.glDeleteHistoryRound=function(id){
+  if(!confirm('Delete this round? You can re-enter it with the correct details afterwards.'))return;
+  S.rounds=S.rounds.filter(function(r){return r.id!==id;});
+  save();glRenderHistory();
+};
+
 // ── Tab switching ────────────────────────────────────────────────────────
-var GL_TABS=['standings','schedule','enter','roster','playoffs','prizes'];
+var GL_TABS=['standings','schedule','enter','roster','playoffs','prizes','history'];
 window.glShowTab=function(name){
   GL_TABS.forEach(function(t){el('gl-'+t).style.display=t===name?'':'none';});
   document.querySelectorAll('.gl-tab').forEach(function(btn,i){btn.classList.toggle('gl-tab-active',GL_TABS[i]===name);});
@@ -1024,6 +1070,7 @@ function glRender(tab){
   else if(tab==='roster')glRenderRoster();
   else if(tab==='playoffs')glRenderPlayoffs();
   else if(tab==='prizes')glRenderPrizes();
+  else if(tab==='history')glRenderHistory();
 }
 
 load();
