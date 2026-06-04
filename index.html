@@ -179,61 +179,60 @@
 var DEFAULT_TEAMS = [
   {id:"t01",name:"The Toms"},
   {id:"t02",name:"The Cartwrights"},
-  {id:"t03",name:"Foxfire North"},
-  {id:"t04",name:"Blastin Gas"},
-  {id:"t05",name:"Wreckid Playaz"},
-  {id:"t06",name:"Par Tee Animals"},
-  {id:"t07",name:"Wilmington Warriors"},
-  {id:"t08",name:"The Rookies"},
-  {id:"t09",name:"Nail Gunners"},
-  {id:"t10",name:"Hosel Rocketz"},
-  {id:"t11",name:"OG's"},
-  {id:"t12",name:"Spa Twins"}
+  {id:"t03",name:"Par Tee Animals"},
+  {id:"t04",name:"Spa Twins"},
+  {id:"t05",name:"Nail Gunners"},
+  {id:"t06",name:"Billy & The Kid"},
+  {id:"t07",name:"Wreckid Playaz"},
+  {id:"t08",name:"Hosel Rocketz"},
+  {id:"t09",name:"Wilmington Warriors"},
+  {id:"t10",name:"Blastin Gas"},
+  {id:"t11",name:"The Gangstas"},
+  {id:"t12",name:"The Rookies"}
 ];
 
 var DEFAULT_PLAYERS = [
   // The Toms
-  {id:"p01",name:"Tom Freeman",   teamId:"t01", handicap:"4.21"},
-  {id:"p02",name:"Rich Sideri",   teamId:"t01", handicap:"4"},
+  {id:"p01",name:"Tom Freeman",    teamId:"t01", handicap:"4.21"},
+  {id:"p02",name:"Rich 'Sid' Sideri",    teamId:"t01", handicap:"4"},
   // The Cartwrights
-  {id:"p03",name:"Little Joe",    teamId:"t02", handicap:"7.5"},
-  {id:"p04",name:"Fitzy",         teamId:"t02", handicap:"7.5"},
-  // Foxfire North
-  {id:"p05",name:"Kevin Moran",   teamId:"t03", handicap:"7"},
-  {id:"p06",name:"Vinnie G",      teamId:"t03", handicap:"5"},
-  // Blastin Gas
-  {id:"p07",name:"Stevie P",      teamId:"t04", handicap:"7.5"},
-  {id:"p08",name:"Christos",      teamId:"t04", handicap:"7.5"},
-  // Wreckid Playaz
-  {id:"p09",name:"Henry Ryan",    teamId:"t05", handicap:"9.17"},
-  {id:"p10",name:"Roger Ennis",   teamId:"t05", handicap:"3.42"},
+  {id:"p03",name:"Fitzy",          teamId:"t02", handicap:"7.5"},
+  {id:"p04",name:"Joe Calnan",         teamId:"t02", handicap:"8"},
   // Par Tee Animals
-  {id:"p11",name:"Ryan Davis",    teamId:"t06", handicap:"12"},
-  {id:"p12",name:"Phil Noto",     teamId:"t06", handicap:"11"},
-  // Wilmington Warriors
-  {id:"p13",name:"Sean Butler",   teamId:"t07", handicap:"12.36"},
-  {id:"p14",name:"Sil Ferreira",  teamId:"t07", handicap:"10.33"},
-  // The Rookies
-  {id:"p15",name:"Dan Gregorio",  teamId:"t08", handicap:"7"},
-  {id:"p16",name:"Jeb Fisher",      teamId:"t08", handicap:"7.9"},
-  // Nail Gunners
-  {id:"p17",name:"Mark Nalesnik", teamId:"t09", handicap:"9.83"},
-  {id:"p18",name:"Nick Nalesnik", teamId:"t09", handicap:"5.57"},
-  // Hosel Rocketz
-  {id:"p19",name:"Matt Amirault", teamId:"t10", handicap:"14.25"},
-  {id:"p20",name:"Tim Speziale",  teamId:"t10", handicap:"13.79"},
-  // OG's
-  {id:"p21",name:"Dickie Lunden", teamId:"t11", handicap:"6.38"},
-  {id:"p22",name:"Pittsburgh Hank",teamId:"t11",handicap:"5.5"},
+  {id:"p05",name:"Ryan Davis",     teamId:"t03", handicap:"12"},
+  {id:"p06",name:"Phil Noto",      teamId:"t03", handicap:"11"},
   // Spa Twins
-  {id:"p23",name:"Paul Freeman",  teamId:"t12", handicap:"11"},
-  {id:"p24",name:"Jerry Burke",   teamId:"t12", handicap:"8.67"},
+  {id:"p07",name:"Paul Freeman",   teamId:"t04", handicap:"11"},
+  {id:"p08",name:"Jerry Burke",    teamId:"t04", handicap:"8.67"},
+  // Nail Gunners
+  {id:"p09",name:"Mark Nalesnik",  teamId:"t05", handicap:"9.83"},
+  {id:"p10",name:"Nick Nalesnik",  teamId:"t05", handicap:"5.57"},
+  // Billy & The Kid
+  {id:"p11",name:"Billy Lunden",   teamId:"t06", handicap:"6.08"},
+  {id:"p12",name:"Ryan Wheeler",         teamId:"t06", handicap:"10.93"},
+  // Wreckid Playaz
+  {id:"p13",name:"Henry Ryan",     teamId:"t07", handicap:"9.17"},
+  {id:"p14",name:"Roger Ennis",    teamId:"t07", handicap:"3.42"},
+  // Hosel Rocketz
+  {id:"p15",name:"Matt Amirault",  teamId:"t08", handicap:"14.25"},
+  {id:"p16",name:"Tim Speziale",   teamId:"t08", handicap:"13.79"},
+  // Wilmington Warriors
+  {id:"p17",name:"Sean Butler",    teamId:"t09", handicap:"12.36"},
+  {id:"p18",name:"Sil Ferreira",   teamId:"t09", handicap:"10.33"},
+  // Blastin Gas
+  {id:"p19",name:"Stevie P",       teamId:"t10", handicap:"7.5"},
+  {id:"p20",name:"Christos",       teamId:"t10", handicap:"7.5"},
+  // The Gangstas
+  {id:"p21",name:"Dickie Lunden",  teamId:"t11", handicap:"6.38"},
+  {id:"p22",name:"Pittsburgh Hank",teamId:"t11", handicap:"5.5"},
+  // The Rookies
+  {id:"p23",name:"Jeb Fisher",     teamId:"t12", handicap:"7.9"},
+  {id:"p24",name:"Dan Gregorio",   teamId:"t12", handicap:"7"},
   // Sub pool
-  {id:"p25",name:"Tommy Stephens",teamId:null,  handicap:"9"},
-  {id:"p26",name:"Angus McNeil",  teamId:null,  handicap:"7.5"},
-  {id:"p27",name:"Billy L",       teamId:null,  handicap:"6.08"},
-  {id:"p28",name:"Calnan",        teamId:null,  handicap:"8"},
-  {id:"p29",name:"Ryan W",        teamId:null,  handicap:"10.93"}
+  {id:"p25",name:"Angus McNeil",   teamId:null,  handicap:"7.5"},
+  {id:"p26",name:"Kevin Moran",    teamId:null,  handicap:"7"},
+  {id:"p27",name:"Vinnie G",       teamId:null,  handicap:"5"},
+  {id:"p28",name:"Tommy Stephens", teamId:null,  handicap:"9"}
 ];
 
 // Starting quotas seeded from commissioner's spreadsheet (start_q column)
@@ -266,52 +265,52 @@ DEFAULT_PLAYERS.forEach(function(p){
 var SEED_RECORDS = {
   "t01":{w:1,l:2,t:0},  // The Toms
   "t02":{w:2,l:1,t:0},  // The Cartwrights
-  "t03":{w:0,l:2,t:1},  // Foxfire North  (was Wilmington W)
-  "t04":{w:0,l:2,t:1},  // Blastin Gas
-  "t05":{w:2,l:0,t:1},  // Wreckid Playaz
-  "t06":{w:0,l:2,t:1},  // Par Tee Animals
-  "t07":{w:2,l:1,t:0},  // Wilmington Warriors (was Cartwrights in sheet)
-  "t08":{w:3,l:0,t:0},  // The Rookies
-  "t09":{w:1,l:1,t:1},  // Nail Gunners
-  "t10":{w:2,l:1,t:0},  // Hosel Rocketz
-  "t11":{w:1,l:2,t:0},  // OG's
-  "t12":{w:2,l:0,t:1}   // Spa Twins
+  "t03":{w:0,l:2,t:1},  // Par Tee Animals
+  "t04":{w:2,l:0,t:1},  // Spa Twins
+  "t05":{w:1,l:1,t:1},  // Nail Gunners
+  "t06":{w:1,l:2,t:0},  // Billy & The Kid
+  "t07":{w:2,l:0,t:1},  // Wreckid Playaz
+  "t08":{w:2,l:1,t:0},  // Hosel Rocketz
+  "t09":{w:0,l:2,t:1},  // Wilmington Warriors
+  "t10":{w:0,l:2,t:1},  // Blastin Gas
+  "t11":{w:1,l:2,t:0},  // The Gangstas
+  "t12":{w:3,l:0,t:0}   // The Rookies
 };
 
 // CTP winners weeks 1-3 (2 per week, $20 prize)
 var DEFAULT_CTP = [
   // Week 1
-  {id:"ctp-w1-1",week:1,hole:0,playerId:"p19",distance:"",notes:""},  // Matt Amirault
-  {id:"ctp-w1-2",week:1,hole:0,playerId:"p11",distance:"",notes:""},  // Ryan Davis
+  {id:"ctp-w1-1",week:1,hole:0,playerId:"p15",distance:"",notes:""},  // Matt Amirault
+  {id:"ctp-w1-2",week:1,hole:0,playerId:"p05",distance:"",notes:""},  // Ryan Davis
   // Week 2
-  {id:"ctp-w2-1",week:2,hole:0,playerId:"p19",distance:"",notes:""},  // Matt Amirault
-  {id:"ctp-w2-2",week:2,hole:0,playerId:"p24",distance:"",notes:""},  // Jerry Burke
-  // Week 3 — Roger & Dan tied (both listed), plus Billy L
-  {id:"ctp-w3-1",week:3,hole:0,playerId:"p10",distance:"tied",notes:"Tied"},  // Roger Ennis
-  {id:"ctp-w3-2",week:3,hole:0,playerId:"p15",distance:"tied",notes:"Tied"},  // Dan Gregorio
-  {id:"ctp-w3-3",week:3,hole:0,playerId:"p27",distance:"",notes:""}   // Billy L
+  {id:"ctp-w2-1",week:2,hole:0,playerId:"p15",distance:"",notes:""},  // Matt Amirault
+  {id:"ctp-w2-2",week:2,hole:0,playerId:"p08",distance:"",notes:""},  // Jerry Burke
+  // Week 3 — Roger & Dan tied, plus Billy
+  {id:"ctp-w3-1",week:3,hole:0,playerId:"p14",distance:"tied",notes:"Tied"},  // Roger Ennis
+  {id:"ctp-w3-2",week:3,hole:0,playerId:"p24",distance:"tied",notes:"Tied"},  // Dan Gregorio
+  {id:"ctp-w3-3",week:3,hole:0,playerId:"p11",distance:"",notes:""}   // Billy Lunden
 ];
 
 // 11-week rotating schedule starting June 9
 var DEFAULT_SCHEDULE = [
-  {week:1, date:"2026-05-01", matchups:[{home:"t01",away:"t12"},{home:"t02",away:"t11"},{home:"t03",away:"t10"},{home:"t04",away:"t09"},{home:"t05",away:"t08"},{home:"t06",away:"t07"}]},
-  {week:2, date:"2026-05-08", matchups:[{home:"t01",away:"t11"},{home:"t12",away:"t10"},{home:"t02",away:"t09"},{home:"t03",away:"t08"},{home:"t04",away:"t07"},{home:"t05",away:"t06"}]},
-  {week:3, date:"2026-05-15", matchups:[{home:"t01",away:"t10"},{home:"t11",away:"t09"},{home:"t12",away:"t08"},{home:"t02",away:"t07"},{home:"t03",away:"t06"},{home:"t04",away:"t05"}]},
-  {week:4, date:"2026-06-05", matchups:[{home:"t01",away:"t09"},{home:"t10",away:"t08"},{home:"t11",away:"t07"},{home:"t12",away:"t06"},{home:"t02",away:"t05"},{home:"t03",away:"t04"}]},
-  {week:5, date:"2026-06-12", matchups:[{home:"t01",away:"t08"},{home:"t09",away:"t07"},{home:"t10",away:"t06"},{home:"t11",away:"t05"},{home:"t12",away:"t04"},{home:"t02",away:"t03"}]},
-  {week:6, date:"2026-06-19", matchups:[{home:"t01",away:"t07"},{home:"t08",away:"t06"},{home:"t09",away:"t05"},{home:"t10",away:"t04"},{home:"t11",away:"t03"},{home:"t12",away:"t02"}]},
-  {week:7, date:"2026-06-26", matchups:[{home:"t01",away:"t06"},{home:"t07",away:"t05"},{home:"t08",away:"t04"},{home:"t09",away:"t03"},{home:"t10",away:"t02"},{home:"t11",away:"t12"}]},
-  {week:8, date:"2026-07-03", matchups:[{home:"t01",away:"t05"},{home:"t06",away:"t04"},{home:"t07",away:"t03"},{home:"t08",away:"t02"},{home:"t09",away:"t12"},{home:"t10",away:"t11"}]},
-  {week:9, date:"2026-07-10", matchups:[{home:"t01",away:"t04"},{home:"t05",away:"t03"},{home:"t06",away:"t02"},{home:"t07",away:"t12"},{home:"t08",away:"t11"},{home:"t09",away:"t10"}]},
-  {week:10,date:"2026-07-17", matchups:[{home:"t01",away:"t03"},{home:"t04",away:"t02"},{home:"t05",away:"t12"},{home:"t06",away:"t11"},{home:"t07",away:"t10"},{home:"t08",away:"t09"}]},
-  {week:11,date:"2026-07-24", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t12"},{home:"t04",away:"t11"},{home:"t05",away:"t10"},{home:"t06",away:"t09"},{home:"t07",away:"t08"}]},
-  {week:12,date:"2026-07-31", matchups:[{home:"t01",away:"t12"},{home:"t02",away:"t11"},{home:"t03",away:"t10"},{home:"t04",away:"t09"},{home:"t05",away:"t08"},{home:"t06",away:"t07"}]},
-  {week:13,date:"2026-08-07", matchups:[{home:"t01",away:"t11"},{home:"t12",away:"t10"},{home:"t02",away:"t09"},{home:"t03",away:"t08"},{home:"t04",away:"t07"},{home:"t05",away:"t06"}]},
-  {week:14,date:"2026-08-14", matchups:[{home:"t01",away:"t10"},{home:"t11",away:"t09"},{home:"t12",away:"t08"},{home:"t02",away:"t07"},{home:"t03",away:"t06"},{home:"t04",away:"t05"}]},
-  {week:15,date:"2026-08-21", matchups:[{home:"t01",away:"t09"},{home:"t10",away:"t08"},{home:"t11",away:"t07"},{home:"t12",away:"t06"},{home:"t02",away:"t05"},{home:"t03",away:"t04"}]},
-  {week:16,date:"2026-08-28", matchups:[{home:"t01",away:"t08"},{home:"t09",away:"t07"},{home:"t10",away:"t06"},{home:"t11",away:"t05"},{home:"t12",away:"t04"},{home:"t02",away:"t03"}]},
-  {week:17,date:"2026-09-04", matchups:[{home:"t01",away:"t07"},{home:"t08",away:"t06"},{home:"t09",away:"t05"},{home:"t10",away:"t04"},{home:"t11",away:"t03"},{home:"t12",away:"t02"}]},
-  {week:18,date:"2026-09-11", matchups:[{home:"t01",away:"t06"},{home:"t07",away:"t05"},{home:"t08",away:"t04"},{home:"t09",away:"t03"},{home:"t10",away:"t02"},{home:"t11",away:"t12"}]}
+  {week:1, date:"2026-05-01", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
+  {week:2, date:"2026-05-08", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
+  {week:3, date:"2026-05-15", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
+  {week:4, date:"2026-06-05", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t04"},{home:"t05",away:"t06"},{home:"t07",away:"t08"},{home:"t09",away:"t10"},{home:"t11",away:"t12"}]},
+  {week:5, date:"2026-06-12", matchups:[{home:"t01",away:"t03"},{home:"t02",away:"t04"},{home:"t05",away:"t07"},{home:"t06",away:"t08"},{home:"t09",away:"t11"},{home:"t10",away:"t12"}]},
+  {week:6, date:"2026-06-19", matchups:[{home:"t01",away:"t04"},{home:"t02",away:"t05"},{home:"t03",away:"t06"},{home:"t07",away:"t11"},{home:"t08",away:"t10"},{home:"t09",away:"t12"}]},
+  {week:7, date:"2026-06-26", matchups:[{home:"t01",away:"t05"},{home:"t02",away:"t07"},{home:"t03",away:"t10"},{home:"t04",away:"t09"},{home:"t06",away:"t12"},{home:"t08",away:"t11"}]},
+  {week:8, date:"2026-07-03", matchups:[{home:"t01",away:"t07"},{home:"t02",away:"t08"},{home:"t03",away:"t11"},{home:"t04",away:"t12"},{home:"t05",away:"t09"},{home:"t06",away:"t10"}]},
+  {week:9, date:"2026-07-10", matchups:[{home:"t01",away:"t09"},{home:"t02",away:"t10"},{home:"t03",away:"t05"},{home:"t04",away:"t08"},{home:"t06",away:"t11"},{home:"t07",away:"t12"}]},
+  {week:10,date:"2026-07-17", matchups:[{home:"t01",away:"t10"},{home:"t02",away:"t11"},{home:"t03",away:"t12"},{home:"t04",away:"t06"},{home:"t05",away:"t08"},{home:"t07",away:"t09"}]},
+  {week:11,date:"2026-07-24", matchups:[{home:"t01",away:"t11"},{home:"t02",away:"t12"},{home:"t03",away:"t08"},{home:"t04",away:"t07"},{home:"t05",away:"t10"},{home:"t06",away:"t09"}]},
+  {week:12,date:"2026-07-31", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
+  {week:13,date:"2026-08-07", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
+  {week:14,date:"2026-08-14", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
+  {week:15,date:"2026-08-21", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t04"},{home:"t05",away:"t06"},{home:"t07",away:"t08"},{home:"t09",away:"t10"},{home:"t11",away:"t12"}]},
+  {week:16,date:"2026-08-28", matchups:[{home:"t01",away:"t03"},{home:"t02",away:"t04"},{home:"t05",away:"t07"},{home:"t06",away:"t08"},{home:"t09",away:"t11"},{home:"t10",away:"t12"}]},
+  {week:17,date:"2026-09-04", matchups:[{home:"t01",away:"t04"},{home:"t02",away:"t05"},{home:"t03",away:"t06"},{home:"t07",away:"t11"},{home:"t08",away:"t10"},{home:"t09",away:"t12"}]},
+  {week:18,date:"2026-09-11", matchups:[{home:"t01",away:"t05"},{home:"t02",away:"t07"},{home:"t03",away:"t10"},{home:"t04",away:"t09"},{home:"t06",away:"t12"},{home:"t08",away:"t11"}]}
 ];
 
 var S = {
@@ -323,13 +322,13 @@ var S = {
   ctp:DEFAULT_CTP,
   seedRecords:SEED_RECORDS,
   seedIndivPrize:[
-    {week:1,playerId:"p17",points:14,  quota:9.83, margin:4.17, notes:"Week 1 — $50 prize"},
-    {week:2,playerId:"p20",points:17,  quota:13.79,margin:3.21, notes:"Week 2 — $50 prize"},
-    {week:3,playerId:"p16",points:13,  quota:7.9,  margin:5.1,  notes:"Week 3 — $50 prize"}
+    {week:1,playerId:"p09",points:14,  quota:9.83, margin:4.17, notes:"Week 1 — $50 prize"},  // Mark Nalesnik
+    {week:2,playerId:"p16",points:17,  quota:13.79,margin:3.21, notes:"Week 2 — $50 prize"},  // Tim Speziale
+    {week:3,playerId:"p23",points:13,  quota:7.9,  margin:5.1,  notes:"Week 3 — $50 prize"}   // Jeb Fisher
   ]
 };
 
-var KEY = 'golf_league_v5';
+var KEY = 'golf_league_v6';
 
 function load(){
   try {
