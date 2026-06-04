@@ -289,7 +289,7 @@ var DEFAULT_CTP = [
   // Week 3 — Roger & Dan tied (both listed), plus Billy L
   {id:"ctp-w3-1",week:3,hole:0,playerId:"p10",distance:"tied",notes:"Tied"},  // Roger Ennis
   {id:"ctp-w3-2",week:3,hole:0,playerId:"p15",distance:"tied",notes:"Tied"},  // Dan Gregorio
-  {id:"ctp-w3-3",week:3,hole:0,playerId:"p16",distance:"",notes:""}   // Jeb
+  {id:"ctp-w3-3",week:3,hole:0,playerId:"p27",distance:"",notes:""}   // Billy L
 ];
 
 // 11-week rotating schedule starting June 9
@@ -323,13 +323,13 @@ var S = {
   ctp:DEFAULT_CTP,
   seedRecords:SEED_RECORDS,
   seedIndivPrize:[
-    {week:1,playerId:"p17",points:null,quota:null,margin:null,notes:"Week 1 — $50 prize"},  // Mark Nalesnik
-    {week:2,playerId:"p20",points:null,quota:null,margin:null,notes:"Week 2 — $50 prize"},  // Tim Speziale
-    {week:3,playerId:"p16",points:null,quota:null,margin:null,notes:"Week 3 — $50 prize"}   // Jeb
+    {week:1,playerId:"p17",points:14,  quota:9.83, margin:4.17, notes:"Week 1 — $50 prize"},
+    {week:2,playerId:"p20",points:17,  quota:13.79,margin:3.21, notes:"Week 2 — $50 prize"},
+    {week:3,playerId:"p16",points:13,  quota:7.9,  margin:5.1,  notes:"Week 3 — $50 prize"}
   ]
 };
 
-var KEY = 'golf_league_v4';
+var KEY = 'golf_league_v5';
 
 function load(){
   try {
@@ -877,10 +877,12 @@ function glRenderPrizes(){
       if(seed){
         hasAny=true;
         var p=playerById(seed.playerId);
+        var sign=seed.margin>=0?'+':'';
         html+='<tr><td class="gl-muted">'+week.week+'</td><td class="gl-muted">'+week.date+'</td>'
           +'<td class="gl-pname">🏆 '+(p?p.name:'(deleted)')+'</td>'
-          +'<td class="gl-muted">—</td><td class="gl-muted">—</td>'
-          +'<td><span class="gl-badge gl-badge-even">Pre-season record</span></td></tr>';
+          +'<td style="font-weight:600">'+(seed.points!==null?seed.points:'—')+'</td>'
+          +'<td class="gl-muted">'+(seed.quota!==null?seed.quota:'—')+'</td>'
+          +'<td>'+(seed.margin!==null?'<span class="gl-badge gl-badge-up">'+sign+seed.margin+'</span>':'—')+'</td></tr>';
       }
     }
   });
