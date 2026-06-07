@@ -708,10 +708,12 @@ window.glBuildScoreEntry=function(weekData,m,mi){
     html+='</div>';
     return html;
   }
-  var html='<div class="gl-score-grid">'+buildPanel(m.home,teamById(m.home),homeMembers,'h')+buildPanel(m.away,teamById(m.away),awayMembers,'a')+'</div>'
-    +'<div style="margin-top:18px;display:flex;gap:12px;align-items:center">'
-    +'<button class="gl-btn" onclick="glSaveMatchupScores('+mi+')">Save scores</button>'
-    +'<div id="gl-save-hint" style="font-size:15px;color:var(--gl-text-light)"></div></div>';
+  var html='<div class="gl-score-grid" onclick="event.stopPropagation()">'+buildPanel(m.home,teamById(m.home),homeMembers,'h')+buildPanel(m.away,teamById(m.away),awayMembers,'a')+'</div>'
+    +'<div style="margin-top:24px;padding:20px;background:var(--gl-green-pale);border-radius:var(--gl-radius);border:2px solid var(--gl-green-light)" onclick="event.stopPropagation()">'
+    +'<div style="font-size:15px;color:var(--gl-text-mid);margin-bottom:14px">When all scores are entered above, click to save this round:</div>'
+    +'<button class="gl-btn" style="width:100%;padding:18px;font-size:18px;letter-spacing:0.02em" onclick="event.stopPropagation();glSaveMatchupScores('+mi+')">&#10003; &nbsp;Save Round Scores</button>'
+    +'<div id="gl-save-hint" style="font-size:15px;color:#1a6b33;font-weight:500;margin-top:12px;text-align:center"></div>'
+    +'</div>';
   seEl.innerHTML=html;
   homeMembers.forEach(function(p){if(el('gl-pts-h-'+p.id)&&el('gl-pts-h-'+p.id).value)glShowPtsHint('h',p.id,date);});
   awayMembers.forEach(function(p){if(el('gl-pts-a-'+p.id)&&el('gl-pts-a-'+p.id).value)glShowPtsHint('a',p.id,date);});
@@ -745,7 +747,12 @@ window.glSaveMatchupScores=function(mi){
   S.rounds=S.rounds.filter(function(r){return r.seed||!((r.teamId===m.home||r.teamId===m.away)&&r.date===date);});
   toSave.forEach(function(r){S.rounds.push(r);});
   save();
-  var hint=el('gl-save-hint');if(hint){hint.textContent='Saved!';setTimeout(function(){hint.textContent='';},2500);}
+  var hint=el('gl-save-hint');
+  if(hint){
+    hint.innerHTML='&#10003; &nbsp;Round saved successfully!';
+    hint.style.color='#1a6b33';
+  }
+  // Refresh matchup list but keep this matchup open
   glBuildMatchupList();
 };
 
