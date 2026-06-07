@@ -458,7 +458,12 @@ function teamNetOnDate(teamId,date){
   var rds=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
   if(!rds.length) return null;
   var net=0;
-  rds.forEach(function(r){ var q=getQuotaAt(r.playerId,r.date); net+=r.points-(q!==null?q:r.points); });
+  var hasPenalty=rds.filter(function(r){return r.penalty;}).length>0;
+  rds.filter(function(r){return !r.penalty;}).forEach(function(r){
+    var q=getQuotaAt(r.playerId,r.date);
+    net+=r.points-(q!==null?q:r.points);
+  });
+  if(hasPenalty) net-=3;
   return Math.round(net*10)/10;
 }
 
@@ -650,10 +655,14 @@ window.glBuildMatchupList=function(){
     var res=matchupResult(m,weekData.date);
     var label=(homeT?homeT.name:'?')+' vs '+(awayT?awayT.name:'?');
     var statusBadge=res.played?'<span class="gl-badge gl-badge-win" style="font-size:12px">Scores entered</span>':'';
-    html+='<div class="gl-card" style="cursor:pointer;'+(enterMatchup===mi?'border-color:var(--gl-green-light);box-shadow:0 0 0 3px rgba(74,140,92,0.12)':'')+'" onclick="glSelectMatchup('+mi+')">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between">'
-      +'<span style="font-weight:500;font-size:18px">'+label+'</span>'+statusBadge+'</div>'
-      +(enterMatchup===mi?'<div id="gl-score-entry" style="margin-top:20px"></div>':'')
+    var isOpen=enterMatchup===mi;
+    html+='<div class="gl-card" style="'+(isOpen?'border-color:var(--gl-green-light);box-shadow:0 0 0 3px rgba(74,140,92,0.12)':'')+'">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="glSelectMatchup('+mi+')">'
+      +'<span style="font-weight:500;font-size:18px">'+label+'</span>'
+      +'<div style="display:flex;align-items:center;gap:10px">'+statusBadge
+      +'<span style="font-size:20px;color:var(--gl-text-light)">'+(isOpen?'▲':'▼')+'</span>'
+      +'</div></div>'
+      +(isOpen?'<div id="gl-score-entry" style="margin-top:20px" onclick="event.stopPropagation()"></div>':'')
       +'</div>';
   });
   el('gl-matchup-list').innerHTML=html;
@@ -668,6 +677,8 @@ window.glBuildScoreEntry=function(weekData,m,mi){
   function buildPanel(teamId,teamObj,members,side){
     var existing=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
     var subs=existing.filter(function(r){return !members.filter(function(mm){return mm.id===r.playerId;}).length;});
+    var penaltyKey='gl-penalty-'+side;
+    var existingPenalty=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&r.penalty;}).length>0;
     var html='<div class="gl-score-panel"><div class="gl-score-panel-title">'+(teamObj?teamObj.name:'?')+'</div>';
     members.forEach(function(p){
       var ex=existing.filter(function(r){return r.playerId===p.id;})[0];
@@ -688,7 +699,12 @@ window.glBuildScoreEntry=function(weekData,m,mi){
     html+='<div style="padding-top:10px;border-top:1px solid rgba(26,58,42,0.1)">'
       +'<div style="font-size:13px;color:var(--gl-text-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em">Sub (optional)</div>'
       +'<select id="gl-sub-'+side+'" style="margin-bottom:8px">'+subOpts+'</select>'
-      +'<input type="number" id="gl-subpts-'+side+'" min="0" max="72" placeholder="Sub points" value="'+(exSub?exSub.points:'')+'"></div>';
+      +'<input type="number" id="gl-subpts-'+side+'" min="0" max="72" placeholder="Sub points" value="'+(exSub?exSub.points:'')+'"></div>'
+      +'<div style="padding-top:10px;margin-top:8px;border-top:1px solid rgba(26,58,42,0.1)">'
+      +'<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--gl-text-mid)">'
+      +'<input type="checkbox" id="'+penaltyKey+'"'+(existingPenalty?' checked':'')+' style="width:18px;height:18px">'
+      +'Partner absent, no sub found <span style="color:#9b2828;font-size:13px">(+3 penalty to team quota)</span>'
+      +'</label></div>';
     html+='</div>';
     return html;
   }
@@ -719,10 +735,13 @@ window.glSaveMatchupScores=function(mi){
     var subPid=(el('gl-sub-'+side)||{value:''}).value;
     var subPts=parseFloat((el('gl-subpts-'+side)||{value:''}).value);
     if(subPid&&!isNaN(subPts)&&subPts>=0)toSave.push({id:uid(),playerId:subPid,teamId:teamId,date:date,points:subPts,notes:'',isSub:true});
+    // penalty flag
+    var penaltyEl=el('gl-penalty-'+side);
+    if(penaltyEl&&penaltyEl.checked)toSave.push({id:uid(),playerId:null,teamId:teamId,date:date,points:0,notes:'Absent partner penalty',isSub:false,penalty:true});
   }
   collectSide('h',m.home,S.players.filter(function(p){return p.teamId===m.home;}));
   collectSide('a',m.away,S.players.filter(function(p){return p.teamId===m.away;}));
-  if(!toSave.length){alert('Please enter at least one score.');return;}
+  if(!toSave.filter(function(r){return !r.penalty;}).length){alert('Please enter at least one score.');return;}
   S.rounds=S.rounds.filter(function(r){return r.seed||!((r.teamId===m.home||r.teamId===m.away)&&r.date===date);});
   toSave.forEach(function(r){S.rounds.push(r);});
   save();
