@@ -1,5 +1,23 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+// Force hard reload if page was cached more than 30 minutes ago
+(function(){
+  var CACHE_KEY = 'gl_page_loaded';
+  var now = Date.now();
+  var last = parseInt(localStorage.getItem(CACHE_KEY)||'0');
+  var THIRTY_MIN = 30 * 60 * 1000;
+  if(last && (now - last) > THIRTY_MIN){
+    localStorage.setItem(CACHE_KEY, now);
+    window.location.reload(true);
+  } else {
+    localStorage.setItem(CACHE_KEY, now);
+  }
+})();
+</script>
 
 <div id="golf-league-app">
 <style>
@@ -136,6 +154,9 @@
   <div class="gl-title">NSML at the Meadow at Peabody Golf Course</div>
   <div class="gl-subtitle">A tradition like so many others</div>
   <div style="height:45px"></div>
+  <div style="position:absolute;top:16px;right:16px;z-index:10">
+    <button onclick="window.location.reload(true)" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:rgba(255,255,255,0.7);padding:7px 14px;border-radius:20px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">&#8635; Refresh</button>
+  </div>
 </div>
 
 <div class="gl-body">
