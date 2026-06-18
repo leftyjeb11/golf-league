@@ -1,21 +1,22 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <script>
-// Force hard reload if page was cached more than 30 minutes ago
+// Mobile cache buster - works inside iOS Safari iframes
+// Stores a build timestamp in localStorage; if the page JS timestamp
+// is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var CACHE_KEY = 'gl_page_loaded';
-  var now = Date.now();
-  var last = parseInt(localStorage.getItem(CACHE_KEY)||'0');
-  var THIRTY_MIN = 30 * 60 * 1000;
-  if(last && (now - last) > THIRTY_MIN){
-    localStorage.setItem(CACHE_KEY, now);
-    window.location.reload(true);
-  } else {
-    localStorage.setItem(CACHE_KEY, now);
-  }
+  var BUILD = '20260618-003'; // update this string with each code deploy
+  var CACHE_KEY = 'gl_build';
+  try {
+    var stored = localStorage.getItem(CACHE_KEY);
+    if(stored !== BUILD){
+      localStorage.setItem(CACHE_KEY, BUILD);
+      // Force hard reload bypassing cache
+      if(stored !== null){
+        window.location.replace(window.location.href.split('?')[0] + '?v=' + BUILD);
+      }
+    }
+  } catch(e){}
 })();
 </script>
 
@@ -237,7 +238,7 @@ var DEFAULT_PLAYERS = [
   {id:"p10",name:"Nick Nalesnik",  teamId:"t05", handicap:"5.57"},
   // Billy & The Kid
   {id:"p11",name:"Billy Lunden",   teamId:"t06", handicap:"6.08"},
-  {id:"p12",name:"Ryan Wheeler",         teamId:"t06", handicap:"10.93"},
+  {id:"p12",name:"Ryan Wheeler",teamId:"t06",handicap:"10.93",inactive:true},
   // Wreckid Playaz
   {id:"p13",name:"Henry Ryan",     teamId:"t07", handicap:"9.17"},
   {id:"p14",name:"Roger Ennis",    teamId:"t07", handicap:"3.42"},
@@ -287,80 +288,116 @@ DEFAULT_PLAYERS.forEach(function(p){
   }
 });
 
-// Real scores from weeks 1-3 (absent weeks omitted)
-// p01=Tom Freeman, p02=Rich 'Sid' Sideri, p03=Fitzy, p04=Joe Calnan
-// p05=Ryan Davis, p06=Phil Noto, p07=Paul Freeman, p08=Jerry Burke
-// p09=Mark Nalesnik, p10=Nick Nalesnik, p11=Billy Lunden, p12=Ryan Wheeler
-// p13=Henry Ryan, p14=Roger Ennis, p15=Matt Amirault, p16=Tim Speziale
-// p17=Sean Butler, p18=Sil Ferreira, p19=Stevie P, p20=Christos
-// p21=Dickie Lunden, p22=Pittsburgh Hank, p23=Jeb Fisher, p24=Dan Gregorio
+// Real scores from weeks 1-5 (absent weeks omitted)
 var REAL_SCORES = [
-  // Week 1 — 2026-05-01
-  {id:"r-p01-1",playerId:"p01",teamId:"t01",date:"2026-05-01",points:6,  notes:"",isSub:false},
-  {id:"r-p02-1",playerId:"p02",teamId:"t01",date:"2026-05-01",points:4,  notes:"",isSub:false},
-  {id:"r-p03-1",playerId:"p03",teamId:"t02",date:"2026-05-01",points:7,  notes:"",isSub:false},
-  {id:"r-p04-1",playerId:"p04",teamId:"t02",date:"2026-05-01",points:11, notes:"",isSub:false},
-  {id:"r-p05-1",playerId:"p05",teamId:"t03",date:"2026-05-01",points:12, notes:"",isSub:false},
-  {id:"r-p06-1",playerId:"p06",teamId:"t03",date:"2026-05-01",points:10, notes:"",isSub:false},
-  {id:"r-p08-1",playerId:"p08",teamId:"t04",date:"2026-05-01",points:6,  notes:"",isSub:false},
-  {id:"r-p09-1",playerId:"p09",teamId:"t05",date:"2026-05-01",points:14, notes:"",isSub:false},
-  {id:"r-p10-1",playerId:"p10",teamId:"t05",date:"2026-05-01",points:8,  notes:"",isSub:false},
-  {id:"r-p13-1",playerId:"p13",teamId:"t07",date:"2026-05-01",points:13, notes:"",isSub:false},
-  {id:"r-p14-1",playerId:"p14",teamId:"t07",date:"2026-05-01",points:1,  notes:"",isSub:false},
-  {id:"r-p15-1",playerId:"p15",teamId:"t08",date:"2026-05-01",points:14, notes:"",isSub:false},
-  {id:"r-p16-1",playerId:"p16",teamId:"t08",date:"2026-05-01",points:12, notes:"",isSub:false},
-  {id:"r-p17-1",playerId:"p17",teamId:"t09",date:"2026-05-01",points:11, notes:"",isSub:false},
-  {id:"r-p18-1",playerId:"p18",teamId:"t09",date:"2026-05-01",points:13, notes:"",isSub:false},
-  {id:"r-p19-1",playerId:"p19",teamId:"t10",date:"2026-05-01",points:3,  notes:"",isSub:false},
-  {id:"r-p20-1",playerId:"p20",teamId:"t10",date:"2026-05-01",points:2,  notes:"",isSub:false},
-  {id:"r-p21-1",playerId:"p21",teamId:"t11",date:"2026-05-01",points:10, notes:"",isSub:false},
-  {id:"r-p22-1",playerId:"p22",teamId:"t11",date:"2026-05-01",points:5,  notes:"",isSub:false},
-  {id:"r-p23-1",playerId:"p23",teamId:"t12",date:"2026-05-01",points:7,  notes:"",isSub:false},
-  {id:"r-p24-1",playerId:"p24",teamId:"t12",date:"2026-05-01",points:9,  notes:"",isSub:false},
-
-  // Week 2 — 2026-05-08
-  {id:"r-p01-2",playerId:"p01",teamId:"t01",date:"2026-05-08",points:7,  notes:"",isSub:false},
-  {id:"r-p02-2",playerId:"p02",teamId:"t01",date:"2026-05-08",points:3,  notes:"",isSub:false},
-  {id:"r-p03-2",playerId:"p03",teamId:"t02",date:"2026-05-08",points:3,  notes:"",isSub:false},
-  {id:"r-p04-2",playerId:"p04",teamId:"t02",date:"2026-05-08",points:3,  notes:"",isSub:false},
-  {id:"r-p05-2",playerId:"p05",teamId:"t03",date:"2026-05-08",points:10, notes:"",isSub:false},
-  {id:"r-p06-2",playerId:"p06",teamId:"t03",date:"2026-05-08",points:12, notes:"",isSub:false},
-  {id:"r-p08-2",playerId:"p08",teamId:"t04",date:"2026-05-08",points:8,  notes:"",isSub:false},
-  {id:"r-p09-2",playerId:"p09",teamId:"t05",date:"2026-05-08",points:8,  notes:"",isSub:false},
-  {id:"r-p10-2",playerId:"p10",teamId:"t05",date:"2026-05-08",points:5,  notes:"",isSub:false},
-  {id:"r-p13-2",playerId:"p13",teamId:"t07",date:"2026-05-08",points:8,  notes:"",isSub:false},
-  {id:"r-p14-2",playerId:"p14",teamId:"t07",date:"2026-05-08",points:0,  notes:"",isSub:false},
-  {id:"r-p15-2",playerId:"p15",teamId:"t08",date:"2026-05-08",points:14, notes:"",isSub:false},
-  {id:"r-p16-2",playerId:"p16",teamId:"t08",date:"2026-05-08",points:17, notes:"",isSub:false},
-  {id:"r-p17-2",playerId:"p17",teamId:"t09",date:"2026-05-08",points:14, notes:"",isSub:false},
-  {id:"r-p19-2",playerId:"p19",teamId:"t10",date:"2026-05-08",points:6,  notes:"",isSub:false},
-  {id:"r-p20-2",playerId:"p20",teamId:"t10",date:"2026-05-08",points:3,  notes:"",isSub:false},
-  {id:"r-p21-2",playerId:"p21",teamId:"t11",date:"2026-05-08",points:1,  notes:"",isSub:false},
-  {id:"r-p22-2",playerId:"p22",teamId:"t11",date:"2026-05-08",points:3,  notes:"",isSub:false},
-  {id:"r-p23-2",playerId:"p23",teamId:"t12",date:"2026-05-08",points:8,  notes:"",isSub:false},
-
-  // Week 3 — 2026-05-15
-  {id:"r-p01-3",playerId:"p01",teamId:"t01",date:"2026-05-15",points:4,  notes:"",isSub:false},
-  {id:"r-p02-3",playerId:"p02",teamId:"t01",date:"2026-05-15",points:5,  notes:"",isSub:false},
-  {id:"r-p03-3",playerId:"p03",teamId:"t02",date:"2026-05-15",points:10, notes:"",isSub:false},
-  {id:"r-p04-3",playerId:"p04",teamId:"t02",date:"2026-05-15",points:6,  notes:"",isSub:false},
-  {id:"r-p05-3",playerId:"p05",teamId:"t03",date:"2026-05-15",points:3,  notes:"",isSub:false},  // A in sheet but shows 3? using visible value
-  {id:"r-p06-3",playerId:"p06",teamId:"t03",date:"2026-05-15",points:3,  notes:"",isSub:false},
-  {id:"r-p08-3",playerId:"p08",teamId:"t04",date:"2026-05-15",points:5,  notes:"",isSub:false},
-  {id:"r-p09-3",playerId:"p09",teamId:"t05",date:"2026-05-15",points:5,  notes:"",isSub:false},
-  {id:"r-p10-3",playerId:"p10",teamId:"t05",date:"2026-05-15",points:3,  notes:"",isSub:false},
-  {id:"r-p11-3",playerId:"p11",teamId:"t06",date:"2026-05-15",points:4,  notes:"",isSub:false},
-  {id:"r-p13-3",playerId:"p13",teamId:"t07",date:"2026-05-15",points:8,  notes:"",isSub:false},
-  {id:"r-p14-3",playerId:"p14",teamId:"t07",date:"2026-05-15",points:3,  notes:"",isSub:false},
-  {id:"r-p15-3",playerId:"p15",teamId:"t08",date:"2026-05-15",points:15, notes:"",isSub:false},
-  {id:"r-p16-3",playerId:"p16",teamId:"t08",date:"2026-05-15",points:17, notes:"",isSub:false},
-  {id:"r-p17-3",playerId:"p17",teamId:"t09",date:"2026-05-15",points:13, notes:"",isSub:false},
-  {id:"r-p18-3",playerId:"p18",teamId:"t09",date:"2026-05-15",points:7,  notes:"",isSub:false},
-  {id:"r-p19-3",playerId:"p19",teamId:"t10",date:"2026-05-15",points:6,  notes:"",isSub:false},
-  {id:"r-p20-3",playerId:"p20",teamId:"t10",date:"2026-05-15",points:2,  notes:"",isSub:false},
-  {id:"r-p21-3",playerId:"p21",teamId:"t11",date:"2026-05-15",points:6,  notes:"",isSub:false},
-  {id:"r-p23-3",playerId:"p23",teamId:"t12",date:"2026-05-15",points:13, notes:"",isSub:false},
-  {id:"r-p24-3",playerId:"p24",teamId:"t12",date:"2026-05-15",points:7,  notes:"",isSub:false},
+  // Week 1
+  {id:"r-p01-1",playerId:"p01",teamId:"t01",date:"2026-05-01",points:6,notes:"",isSub:false},
+  {id:"r-p02-1",playerId:"p02",teamId:"t01",date:"2026-05-01",points:4,notes:"",isSub:false},
+  {id:"r-p03-1",playerId:"p03",teamId:"t02",date:"2026-05-01",points:7,notes:"",isSub:false},
+  {id:"r-p04-1",playerId:"p04",teamId:"t02",date:"2026-05-01",points:11,notes:"",isSub:false},
+  {id:"r-p05-1",playerId:"p05",teamId:"t03",date:"2026-05-01",points:12,notes:"",isSub:false},
+  {id:"r-p06-1",playerId:"p06",teamId:"t03",date:"2026-05-01",points:10,notes:"",isSub:false},
+  {id:"r-p08-1",playerId:"p08",teamId:"t04",date:"2026-05-01",points:6,notes:"",isSub:false},
+  {id:"r-p09-1",playerId:"p09",teamId:"t05",date:"2026-05-01",points:14,notes:"",isSub:false},
+  {id:"r-p10-1",playerId:"p10",teamId:"t05",date:"2026-05-01",points:8,notes:"",isSub:false},
+  {id:"r-p13-1",playerId:"p13",teamId:"t07",date:"2026-05-01",points:13,notes:"",isSub:false},
+  {id:"r-p14-1",playerId:"p14",teamId:"t07",date:"2026-05-01",points:1,notes:"",isSub:false},
+  {id:"r-p15-1",playerId:"p15",teamId:"t08",date:"2026-05-01",points:14,notes:"",isSub:false},
+  {id:"r-p16-1",playerId:"p16",teamId:"t08",date:"2026-05-01",points:12,notes:"",isSub:false},
+  {id:"r-p17-1",playerId:"p17",teamId:"t09",date:"2026-05-01",points:11,notes:"",isSub:false},
+  {id:"r-p18-1",playerId:"p18",teamId:"t09",date:"2026-05-01",points:13,notes:"",isSub:false},
+  {id:"r-p19-1",playerId:"p19",teamId:"t10",date:"2026-05-01",points:3,notes:"",isSub:false},
+  {id:"r-p20-1",playerId:"p20",teamId:"t10",date:"2026-05-01",points:2,notes:"",isSub:false},
+  {id:"r-p21-1",playerId:"p21",teamId:"t11",date:"2026-05-01",points:10,notes:"",isSub:false},
+  {id:"r-p22-1",playerId:"p22",teamId:"t11",date:"2026-05-01",points:5,notes:"",isSub:false},
+  {id:"r-p23-1",playerId:"p23",teamId:"t12",date:"2026-05-01",points:7,notes:"",isSub:false},
+  {id:"r-p24-1",playerId:"p24",teamId:"t12",date:"2026-05-01",points:9,notes:"",isSub:false},
+  // Week 2
+  {id:"r-p01-2",playerId:"p01",teamId:"t01",date:"2026-05-08",points:7,notes:"",isSub:false},
+  {id:"r-p02-2",playerId:"p02",teamId:"t01",date:"2026-05-08",points:3,notes:"",isSub:false},
+  {id:"r-p03-2",playerId:"p03",teamId:"t02",date:"2026-05-08",points:3,notes:"",isSub:false},
+  {id:"r-p04-2",playerId:"p04",teamId:"t02",date:"2026-05-08",points:3,notes:"",isSub:false},
+  {id:"r-p05-2",playerId:"p05",teamId:"t03",date:"2026-05-08",points:10,notes:"",isSub:false},
+  {id:"r-p06-2",playerId:"p06",teamId:"t03",date:"2026-05-08",points:12,notes:"",isSub:false},
+  {id:"r-p08-2",playerId:"p08",teamId:"t04",date:"2026-05-08",points:8,notes:"",isSub:false},
+  {id:"r-p09-2",playerId:"p09",teamId:"t05",date:"2026-05-08",points:8,notes:"",isSub:false},
+  {id:"r-p10-2",playerId:"p10",teamId:"t05",date:"2026-05-08",points:5,notes:"",isSub:false},
+  {id:"r-p13-2",playerId:"p13",teamId:"t07",date:"2026-05-08",points:8,notes:"",isSub:false},
+  {id:"r-p14-2",playerId:"p14",teamId:"t07",date:"2026-05-08",points:0,notes:"",isSub:false},
+  {id:"r-p15-2",playerId:"p15",teamId:"t08",date:"2026-05-08",points:14,notes:"",isSub:false},
+  {id:"r-p16-2",playerId:"p16",teamId:"t08",date:"2026-05-08",points:17,notes:"",isSub:false},
+  {id:"r-p17-2",playerId:"p17",teamId:"t09",date:"2026-05-08",points:14,notes:"",isSub:false},
+  {id:"r-p19-2",playerId:"p19",teamId:"t10",date:"2026-05-08",points:6,notes:"",isSub:false},
+  {id:"r-p20-2",playerId:"p20",teamId:"t10",date:"2026-05-08",points:3,notes:"",isSub:false},
+  {id:"r-p21-2",playerId:"p21",teamId:"t11",date:"2026-05-08",points:1,notes:"",isSub:false},
+  {id:"r-p22-2",playerId:"p22",teamId:"t11",date:"2026-05-08",points:3,notes:"",isSub:false},
+  {id:"r-p23-2",playerId:"p23",teamId:"t12",date:"2026-05-08",points:8,notes:"",isSub:false},
+  // Week 3
+  {id:"r-p01-3",playerId:"p01",teamId:"t01",date:"2026-05-15",points:4,notes:"",isSub:false},
+  {id:"r-p02-3",playerId:"p02",teamId:"t01",date:"2026-05-15",points:5,notes:"",isSub:false},
+  {id:"r-p03-3",playerId:"p03",teamId:"t02",date:"2026-05-15",points:10,notes:"",isSub:false},
+  {id:"r-p04-3",playerId:"p04",teamId:"t02",date:"2026-05-15",points:6,notes:"",isSub:false},
+  {id:"r-p06-3",playerId:"p06",teamId:"t03",date:"2026-05-15",points:3,notes:"",isSub:false},
+  {id:"r-p08-3",playerId:"p08",teamId:"t04",date:"2026-05-15",points:5,notes:"",isSub:false},
+  {id:"r-p09-3",playerId:"p09",teamId:"t05",date:"2026-05-15",points:5,notes:"",isSub:false},
+  {id:"r-p10-3",playerId:"p10",teamId:"t05",date:"2026-05-15",points:3,notes:"",isSub:false},
+  {id:"r-p11-3",playerId:"p11",teamId:"t06",date:"2026-05-15",points:4,notes:"",isSub:false},
+  {id:"r-p13-3",playerId:"p13",teamId:"t07",date:"2026-05-15",points:8,notes:"",isSub:false},
+  {id:"r-p14-3",playerId:"p14",teamId:"t07",date:"2026-05-15",points:3,notes:"",isSub:false},
+  {id:"r-p15-3",playerId:"p15",teamId:"t08",date:"2026-05-15",points:15,notes:"",isSub:false},
+  {id:"r-p16-3",playerId:"p16",teamId:"t08",date:"2026-05-15",points:17,notes:"",isSub:false},
+  {id:"r-p17-3",playerId:"p17",teamId:"t09",date:"2026-05-15",points:13,notes:"",isSub:false},
+  {id:"r-p18-3",playerId:"p18",teamId:"t09",date:"2026-05-15",points:7,notes:"",isSub:false},
+  {id:"r-p19-3",playerId:"p19",teamId:"t10",date:"2026-05-15",points:6,notes:"",isSub:false},
+  {id:"r-p20-3",playerId:"p20",teamId:"t10",date:"2026-05-15",points:2,notes:"",isSub:false},
+  {id:"r-p21-3",playerId:"p21",teamId:"t11",date:"2026-05-15",points:6,notes:"",isSub:false},
+  {id:"r-p23-3",playerId:"p23",teamId:"t12",date:"2026-05-15",points:13,notes:"",isSub:false},
+  {id:"r-p24-3",playerId:"p24",teamId:"t12",date:"2026-05-15",points:7,notes:"",isSub:false},
+  // Week 4
+  {id:"r-p01-4",playerId:"p01",teamId:"t01",date:"2026-06-05",points:5,notes:"",isSub:false},
+  {id:"r-p02-4",playerId:"p02",teamId:"t01",date:"2026-06-05",points:4,notes:"",isSub:false},
+  {id:"r-p03-4",playerId:"p03",teamId:"t02",date:"2026-06-05",points:4,notes:"",isSub:false},
+  {id:"r-p04-4",playerId:"p04",teamId:"t02",date:"2026-06-05",points:8,notes:"",isSub:false},
+  {id:"r-p05-4",playerId:"p05",teamId:"t03",date:"2026-06-05",points:11,notes:"",isSub:false},
+  {id:"r-p06-4",playerId:"p06",teamId:"t03",date:"2026-06-05",points:10,notes:"",isSub:false},
+  {id:"r-p07-4",playerId:"p07",teamId:"t04",date:"2026-06-05",points:13,notes:"",isSub:false},
+  {id:"r-p09-4",playerId:"p09",teamId:"t05",date:"2026-06-05",points:5,notes:"",isSub:false},
+  {id:"r-p10-4",playerId:"p10",teamId:"t05",date:"2026-06-05",points:5,notes:"",isSub:false},
+  {id:"r-p11-4",playerId:"p11",teamId:"t06",date:"2026-06-05",points:5,notes:"",isSub:false},
+  {id:"r-p13-4",playerId:"p13",teamId:"t07",date:"2026-06-05",points:11,notes:"",isSub:false},
+  {id:"r-p14-4",playerId:"p14",teamId:"t07",date:"2026-06-05",points:6,notes:"",isSub:false},
+  {id:"r-p15-4",playerId:"p15",teamId:"t08",date:"2026-06-05",points:12,notes:"",isSub:false},
+  {id:"r-p16-4",playerId:"p16",teamId:"t08",date:"2026-06-05",points:10,notes:"",isSub:false},
+  {id:"r-p17-4",playerId:"p17",teamId:"t09",date:"2026-06-05",points:8,notes:"",isSub:false},
+  {id:"r-p18-4",playerId:"p18",teamId:"t09",date:"2026-06-05",points:10,notes:"",isSub:false},
+  {id:"r-p19-4",playerId:"p19",teamId:"t10",date:"2026-06-05",points:3,notes:"",isSub:false},
+  {id:"r-p20-4",playerId:"p20",teamId:"t10",date:"2026-06-05",points:3,notes:"",isSub:false},
+  {id:"r-p21-4",playerId:"p21",teamId:"t11",date:"2026-06-05",points:11,notes:"",isSub:false},
+  {id:"r-p24-4",playerId:"p24",teamId:"t12",date:"2026-06-05",points:4,notes:"",isSub:false},
+  // Week 5
+  {id:"r-p01-5",playerId:"p01",teamId:"t01",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p02-5",playerId:"p02",teamId:"t01",date:"2026-06-12",points:2,notes:"",isSub:false},
+  {id:"r-p03-5",playerId:"p03",teamId:"t02",date:"2026-06-12",points:5,notes:"",isSub:false},
+  {id:"r-p04-5",playerId:"p04",teamId:"t02",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p05-5",playerId:"p05",teamId:"t03",date:"2026-06-12",points:18,notes:"",isSub:false},
+  {id:"r-p06-5",playerId:"p06",teamId:"t03",date:"2026-06-12",points:9,notes:"",isSub:false},
+  {id:"r-p07-5",playerId:"p07",teamId:"t04",date:"2026-06-12",points:10,notes:"",isSub:false},
+  {id:"r-p08-5",playerId:"p08",teamId:"t04",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p09-5",playerId:"p09",teamId:"t05",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p10-5",playerId:"p10",teamId:"t05",date:"2026-06-12",points:6,notes:"",isSub:false},
+  {id:"r-p11-5",playerId:"p11",teamId:"t06",date:"2026-06-12",points:3,notes:"",isSub:false},
+  {id:"r-p13-5",playerId:"p13",teamId:"t07",date:"2026-06-12",points:9,notes:"",isSub:false},
+  {id:"r-p14-5",playerId:"p14",teamId:"t07",date:"2026-06-12",points:6,notes:"",isSub:false},
+  {id:"r-p15-5",playerId:"p15",teamId:"t08",date:"2026-06-12",points:11,notes:"",isSub:false},
+  {id:"r-p16-5",playerId:"p16",teamId:"t08",date:"2026-06-12",points:12,notes:"",isSub:false},
+  {id:"r-p17-5",playerId:"p17",teamId:"t09",date:"2026-06-12",points:9,notes:"",isSub:false},
+  {id:"r-p18-5",playerId:"p18",teamId:"t09",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p19-5",playerId:"p19",teamId:"t10",date:"2026-06-12",points:6,notes:"",isSub:false},
+  {id:"r-p20-5",playerId:"p20",teamId:"t10",date:"2026-06-12",points:4,notes:"",isSub:false},
+  {id:"r-p21-5",playerId:"p21",teamId:"t11",date:"2026-06-12",points:8,notes:"",isSub:false},
+  {id:"r-p22-5",playerId:"p22",teamId:"t11",date:"2026-06-12",points:6,notes:"",isSub:false},
+  {id:"r-p23-5",playerId:"p23",teamId:"t12",date:"2026-06-12",points:7,notes:"",isSub:false},
+  {id:"r-p24-5",playerId:"p24",teamId:"t12",date:"2026-06-12",points:4,notes:"",isSub:false},
 ];
 REAL_SCORES.forEach(function(r){ DEFAULT_ROUNDS.push(r); });
 
@@ -382,18 +419,24 @@ var SEED_RECORDS = {
   "t12":{w:0,l:0,t:0}
 };
 
-// CTP winners weeks 1-3 (2 per week, $20 prize)
+// CTP winners weeks 1-5 (2 per week, $20 prize)
 var DEFAULT_CTP = [
-  // Week 1
-  {id:"ctp-w1-1",week:1,hole:0,playerId:"p15",distance:"",notes:""},  // Matt Amirault
-  {id:"ctp-w1-2",week:1,hole:0,playerId:"p05",distance:"",notes:""},  // Ryan Davis
-  // Week 2
-  {id:"ctp-w2-1",week:2,hole:0,playerId:"p15",distance:"",notes:""},  // Matt Amirault
-  {id:"ctp-w2-2",week:2,hole:0,playerId:"p08",distance:"",notes:""},  // Jerry Burke
-  // Week 3 — Roger & Dan tied, plus Billy
-  {id:"ctp-w3-1",week:3,hole:0,playerId:"p14",distance:"tied",notes:"Tied"},  // Roger Ennis
-  {id:"ctp-w3-2",week:3,hole:0,playerId:"p24",distance:"tied",notes:"Tied"},  // Dan Gregorio
-  {id:"ctp-w3-3",week:3,hole:0,playerId:"p11",distance:"",notes:""}   // Billy Lunden
+  // Week 1: Matt A, Ryan D
+  {id:"ctp-w1-1",week:1,hole:0,playerId:"p15",distance:"",notes:""},
+  {id:"ctp-w1-2",week:1,hole:0,playerId:"p05",distance:"",notes:""},
+  // Week 2: Matt A, JB (Jerry Burke)
+  {id:"ctp-w2-1",week:2,hole:0,playerId:"p15",distance:"",notes:""},
+  {id:"ctp-w2-2",week:2,hole:0,playerId:"p08",distance:"",notes:""},
+  // Week 3: Roger & Dan (tied), Billy L
+  {id:"ctp-w3-1",week:3,hole:0,playerId:"p14",distance:"tied",notes:"Tied"},
+  {id:"ctp-w3-2",week:3,hole:0,playerId:"p24",distance:"tied",notes:"Tied"},
+  {id:"ctp-w3-3",week:3,hole:0,playerId:"p11",distance:"",notes:""},
+  // Week 4: Sean, Phil
+  {id:"ctp-w4-1",week:4,hole:0,playerId:"p17",distance:"",notes:""},
+  {id:"ctp-w4-2",week:4,hole:0,playerId:"p06",distance:"",notes:""},
+  // Week 5: Ryan D (both CTPs)
+  {id:"ctp-w5-1",week:5,hole:0,playerId:"p05",distance:"",notes:""},
+  {id:"ctp-w5-2",week:5,hole:0,playerId:"p05",distance:"",notes:"2nd CTP"}
 ];
 
 // 11-week rotating schedule starting June 9
@@ -403,19 +446,19 @@ var DEFAULT_SCHEDULE = [
   {week:3, date:"2026-05-15", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
   {week:4, date:"2026-06-05", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
   {week:5, date:"2026-06-12", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
-  {week:6, date:"2026-06-19", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t04"},{home:"t05",away:"t06"},{home:"t07",away:"t08"},{home:"t09",away:"t10"},{home:"t11",away:"t12"}]},
-  {week:7, date:"2026-06-26", matchups:[{home:"t01",away:"t03"},{home:"t02",away:"t04"},{home:"t05",away:"t07"},{home:"t06",away:"t08"},{home:"t09",away:"t11"},{home:"t10",away:"t12"}]},
-  {week:8, date:"2026-07-03", matchups:[{home:"t01",away:"t05"},{home:"t02",away:"t07"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t06",away:"t11"},{home:"t09",away:"t12"}]},
-  {week:9, date:"2026-07-10", matchups:[{home:"t01",away:"t07"},{home:"t02",away:"t11"},{home:"t03",away:"t08"},{home:"t04",away:"t09"},{home:"t05",away:"t10"},{home:"t06",away:"t12"}]},
-  {week:10,date:"2026-07-17", matchups:[{home:"t01",away:"t09"},{home:"t02",away:"t10"},{home:"t03",away:"t06"},{home:"t04",away:"t12"},{home:"t05",away:"t08"},{home:"t07",away:"t11"}]},
-  {week:11,date:"2026-07-24", matchups:[{home:"t01",away:"t10"},{home:"t02",away:"t05"},{home:"t03",away:"t12"},{home:"t04",away:"t07"},{home:"t06",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:12,date:"2026-07-31", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
-  {week:13,date:"2026-08-07", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
-  {week:14,date:"2026-08-14", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
-  {week:15,date:"2026-08-21", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
-  {week:16,date:"2026-08-28", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
-  {week:17,date:"2026-09-04", matchups:[{home:"t01",away:"t02"},{home:"t03",away:"t04"},{home:"t05",away:"t06"},{home:"t07",away:"t08"},{home:"t09",away:"t10"},{home:"t11",away:"t12"}]},
-  {week:18,date:"2026-09-11", matchups:[{home:"t01",away:"t03"},{home:"t02",away:"t04"},{home:"t05",away:"t07"},{home:"t06",away:"t08"},{home:"t09",away:"t11"},{home:"t10",away:"t12"}]}
+  {week:6, date:"2026-06-18", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
+  {week:7, date:"2026-07-02", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
+  {week:8, date:"2026-06-25", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
+  {week:9, date:"2026-07-09", matchups:[{home:"t02",away:"t10"},{home:"t04",away:"t07"},{home:"t05",away:"t01"},{home:"t06",away:"t03"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
+  {week:10,date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]},
+  {week:11,date:"2026-07-23", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
+  {week:12,date:"2026-07-30", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
+  {week:13,date:"2026-08-06", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
+  {week:14,date:"2026-08-13", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
+  {week:15,date:"2026-08-20", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
+  {week:16,date:"2026-08-27", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
+  {week:17,date:"2026-09-03", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
+  {week:18,date:"2026-09-10", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]}
 ];
 
 var S = {
@@ -427,14 +470,16 @@ var S = {
   ctp:DEFAULT_CTP,
   seedRecords:SEED_RECORDS,
   seedIndivPrize:[
-    {week:1,playerId:"p09",points:14,  quota:9.83, margin:4.17, notes:"Week 1 — $50 prize"},  // Mark Nalesnik
-    {week:2,playerId:"p16",points:17,  quota:13.79,margin:3.21, notes:"Week 2 — $50 prize"},  // Tim Speziale
-    {week:3,playerId:"p23",points:13,  quota:7.9,  margin:5.1,  notes:"Week 3 — $50 prize"}   // Jeb Fisher
+    {week:1,playerId:"p09",points:14, quota:9.83, margin:4.17,notes:"Wk1 $50"},  // Mark Nalesnik
+    {week:2,playerId:"p16",points:17, quota:13.79,margin:3.21,notes:"Wk2 $50"},  // Tim Speziale
+    {week:3,playerId:"p23",points:13, quota:7.9,  margin:5.1, notes:"Wk3 $50"},  // Jeb Fisher
+    {week:4,playerId:"p21",points:11, quota:6.38, margin:4.62,notes:"Wk4 $50"},  // Dickie Lunden
+    {week:5,playerId:"p05",points:18, quota:11.33,margin:6.67,notes:"Wk5 $50"}   // Ryan Davis
   ]
 };
 
-var KEY = 'golf_league_v11';
-var PREV_KEYS = ['golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
+var KEY = 'golf_league_v13';
+var PREV_KEYS = ['golf_league_v12','golf_league_v11','golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
 
 function load(){
   try {
