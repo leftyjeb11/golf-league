@@ -5,7 +5,7 @@
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-008'; // update this string with each code deploy
+  var BUILD = '20260618-009'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -525,26 +525,24 @@ function teamName(id){ var t=teamById(id); return t?t.name:'TBD'; }
 
 // ── Quota (one decimal, ignoring seed rounds for "at time" calc) ─────────
 function getQuota(pid){
-  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed;})
-    .sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,3);
+  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&!r.penalty;});
   if(rds.length){
     return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
   }
-  // fall back to seed rounds
-  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;}).slice(0,3);
+  // fall back to starting quota seed
+  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;});
   if(!seeds.length) return null;
-  return Math.round(seeds.reduce(function(s,r){return s+r.points;},0)/seeds.length*10)/10;
+  return seeds[0].points;
 }
 
 function getQuotaAt(pid,before){
-  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&r.date<before;})
-    .sort(function(a,b){return new Date(b.date)-new Date(a.date);}).slice(0,3);
+  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&!r.penalty&&r.date<before;});
   if(rds.length){
     return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
   }
-  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;}).slice(0,3);
+  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;});
   if(!seeds.length) return null;
-  return Math.round(seeds.reduce(function(s,r){return s+r.points;},0)/seeds.length*10)/10;
+  return seeds[0].points;
 }
 
 // ── Team net for date ────────────────────────────────────────────────────
