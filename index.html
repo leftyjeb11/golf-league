@@ -5,7 +5,7 @@
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-003'; // update this string with each code deploy
+  var BUILD = '20260618-005'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -435,8 +435,8 @@ var DEFAULT_CTP = [
   {id:"ctp-w4-1",week:4,hole:0,playerId:"p17",distance:"",notes:""},
   {id:"ctp-w4-2",week:4,hole:0,playerId:"p06",distance:"",notes:""},
   // Week 5: Ryan D (both CTPs)
-  {id:"ctp-w5-1",week:5,hole:0,playerId:"p05",distance:"",notes:""},
-  {id:"ctp-w5-2",week:5,hole:0,playerId:"p05",distance:"",notes:"2nd CTP"}
+  {id:"ctp-w5-1",week:5,hole:12,playerId:"p05",distance:"5'",notes:"",slotKey:"w5-ctp1"},
+  {id:"ctp-w5-2",week:5,hole:16,playerId:"p05",distance:"10'9\"",notes:"",slotKey:"w5-ctp2"}
 ];
 
 // 11-week rotating schedule starting June 9
@@ -1018,12 +1018,24 @@ function glRenderPrizes(){
   var html='<div class="gl-card"><p class="gl-card-title">Enter closest to the pin</p>'
     +'<div class="gl-form-grid">'
     +'<div class="gl-field"><label>Week</label><select id="gl-ctp-week">'+weekOpts+'</select></div>'
-    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp-hole" min="1" max="18" placeholder="e.g. 7"></div>'
-    +'<div class="gl-field"><label>CTP 1 — Player</label><select id="gl-ctp1-player">'+playerOpts+'</select></div>'
-    +'<div class="gl-field"><label>CTP 1 — Distance</label><input type="text" id="gl-ctp1-dist" placeholder="e.g. 4\'2&quot;"></div>'
-    +'<div class="gl-field"><label>CTP 2 — Player</label><select id="gl-ctp2-player">'+playerOpts+'</select></div>'
-    +'<div class="gl-field"><label>CTP 2 — Distance</label><input type="text" id="gl-ctp2-dist" placeholder="e.g. 6\'8&quot;"></div>'
-    +'</div><button class="gl-btn" onclick="glSaveCTP()">Save CTP results</button></div>';
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">'
+    +'<div style="background:var(--gl-green-pale);border-radius:var(--gl-radius);padding:16px">'
+    +'<div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gl-text-mid);margin-bottom:12px">CTP #1</div>'
+    +'<div class="gl-form-grid" style="grid-template-columns:1fr">'
+    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp1-hole" min="1" max="18" placeholder="e.g. 4"></div>'
+    +'<div class="gl-field"><label>Player</label><select id="gl-ctp1-player">'+playerOpts+'</select></div>'
+    +'<div class="gl-field"><label>Distance</label><input type="text" id="gl-ctp1-dist" placeholder="e.g. 4\'2&quot;"></div>'
+    +'</div></div>'
+    +'<div style="background:var(--gl-green-pale);border-radius:var(--gl-radius);padding:16px">'
+    +'<div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gl-text-mid);margin-bottom:12px">CTP #2</div>'
+    +'<div class="gl-form-grid" style="grid-template-columns:1fr">'
+    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp2-hole" min="1" max="18" placeholder="e.g. 7"></div>'
+    +'<div class="gl-field"><label>Player</label><select id="gl-ctp2-player">'+playerOpts+'</select></div>'
+    +'<div class="gl-field"><label>Distance</label><input type="text" id="gl-ctp2-dist" placeholder="e.g. 6\'8&quot;"></div>'
+    +'</div></div>'
+    +'</div>'
+    +'<button class="gl-btn" onclick="glSaveCTP()">Save CTP results</button></div>';
 
   var ctpRows=S.ctp.slice().sort(function(a,b){return b.week-a.week;});
   if(ctpRows.length){
@@ -1116,15 +1128,21 @@ function glRenderPrizes(){
 }
 window.glSaveCTP=function(){
   var week=parseInt((el('gl-ctp-week')||{value:''}).value);
-  var hole=parseInt((el('gl-ctp-hole')||{value:''}).value)||0;
   if(!week){alert('Please select a week.');return;}
-  var entries=[{pEl:'gl-ctp1-player',dEl:'gl-ctp1-dist'},{pEl:'gl-ctp2-player',dEl:'gl-ctp2-dist'}];
+  var entries=[
+    {pEl:'gl-ctp1-player',dEl:'gl-ctp1-dist',hEl:'gl-ctp1-hole'},
+    {pEl:'gl-ctp2-player',dEl:'gl-ctp2-dist',hEl:'gl-ctp2-hole'}
+  ];
   var saved=0;
-  entries.forEach(function(e){
-    var pid=(el(e.pEl)||{value:''}).value,dist=(el(e.dEl)||{value:''}).value.trim();
-    if(!pid)return;
-    S.ctp=S.ctp.filter(function(c){return!(c.week===week&&c.hole===hole&&c.playerId===pid);});
-    S.ctp.push({id:uid(),week:week,hole:hole,playerId:pid,distance:dist});
+  entries.forEach(function(e,idx){
+    var pid=(el(e.pEl)||{value:''}).value;
+    var dist=(el(e.dEl)||{value:''}).value.trim();
+    var hole=parseInt((el(e.hEl)||{value:''}).value)||0;
+    if(!pid) return;
+    // Remove existing entry for this week+slot (by slot index, not player)
+    var slotKey='w'+week+'-ctp'+(idx+1);
+    S.ctp=S.ctp.filter(function(c){return c.slotKey!==slotKey;});
+    S.ctp.push({id:uid(),week:week,hole:hole,playerId:pid,distance:dist,slotKey:slotKey});
     saved++;
   });
   if(!saved){alert('Please select at least one player.');return;}
