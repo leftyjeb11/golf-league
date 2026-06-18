@@ -5,7 +5,7 @@
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-006'; // update this string with each code deploy
+  var BUILD = '20260618-008'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -483,38 +483,36 @@ var PREV_KEYS = ['golf_league_v13','golf_league_v12','golf_league_v11','golf_lea
 
 function load(){
   try {
-    var r = localStorage.getItem(KEY);
-    if(r){
-      S = JSON.parse(r);
-    } else {
-      // Try to salvage manually entered rounds from a previous version
-      var savedRounds = [];
-      var savedCtp = [];
-      var savedPlayoffResults = [];
-      for(var i=0;i<PREV_KEYS.length;i++){
-        var old = localStorage.getItem(PREV_KEYS[i]);
-        if(old){
-          try {
-            var oldS = JSON.parse(old);
-            // Grab any rounds that are NOT seed rounds and NOT in DEFAULT_ROUNDS
-            var defaultIds = DEFAULT_ROUNDS.map(function(r){return r.id;});
-            var manual = (oldS.rounds||[]).filter(function(r){
-              return !r.seed && defaultIds.indexOf(r.id)===-1;
-            });
-            if(manual.length > savedRounds.length) savedRounds = manual;
-            if((oldS.ctp||[]).length > savedCtp.length) savedCtp = oldS.ctp||[];
-            if((oldS.playoffResults||[]).length > savedPlayoffResults.length) savedPlayoffResults = oldS.playoffResults||[];
-          } catch(e){}
-        }
-      }
-      // Merge salvaged data into fresh default state
-      if(savedRounds.length){
-        savedRounds.forEach(function(r){ S.rounds.push(r); });
-      }
-      if(savedCtp.length) S.ctp = savedCtp;
-      if(savedPlayoffResults.length) S.playoffResults = savedPlayoffResults;
-      save();
+    // ALWAYS start from the code defaults — teams, players, schedule,
+    // seed rounds, CTPs and prize data are always current from the file.
+    // We only preserve manually-entered rounds and playoff results from localStorage.
+    var manualRounds = [];
+    var playoffResults = [];
+
+    // Check current and all previous keys for manually entered data
+    var allKeys = [KEY].concat(PREV_KEYS);
+    var defaultRoundIds = DEFAULT_ROUNDS.map(function(r){ return r.id; });
+
+    for(var i=0;i<allKeys.length;i++){
+      try {
+        var raw = localStorage.getItem(allKeys[i]);
+        if(!raw) continue;
+        var old = JSON.parse(raw);
+        // Grab rounds that were manually entered (not seeds, not in DEFAULT_ROUNDS)
+        var manual = (old.rounds||[]).filter(function(r){
+          return !r.seed && defaultRoundIds.indexOf(r.id)===-1;
+        });
+        if(manual.length > manualRounds.length) manualRounds = manual;
+        if((old.playoffResults||[]).length > playoffResults.length) playoffResults = old.playoffResults||[];
+      } catch(e){}
     }
+
+    // S is already initialised with all defaults — just layer in manual data
+    manualRounds.forEach(function(r){ S.rounds.push(r); });
+    if(playoffResults.length) S.playoffResults = playoffResults;
+
+    // Persist the merged state
+    save();
   } catch(e){ save(); }
 }
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
@@ -1149,7 +1147,6 @@ window.glSaveCTP=function(){
   save();alert('CTP results saved!');glRenderPrizes();
 };
 window.glDeleteCTP=function(id){
-  if(!confirm('Delete this CTP entry?'))return;
   S.ctp=S.ctp.filter(function(c){return c.id!==id;});
   save();glRenderPrizes();
 };
