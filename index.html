@@ -5,7 +5,7 @@
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-012'; // update this string with each code deploy
+  var BUILD = '20260702-002'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -446,19 +446,19 @@ var DEFAULT_SCHEDULE = [
   {week:3, date:"2026-05-15", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
   {week:4, date:"2026-06-05", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
   {week:5, date:"2026-06-12", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
-  {week:6, date:"2026-06-18", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
+  {week:6, date:"2026-06-25", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
   {week:7, date:"2026-07-02", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
-  {week:8, date:"2026-06-25", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
-  {week:9, date:"2026-07-09", matchups:[{home:"t02",away:"t10"},{home:"t04",away:"t07"},{home:"t05",away:"t01"},{home:"t06",away:"t03"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:10,date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]},
-  {week:11,date:"2026-07-23", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
-  {week:12,date:"2026-07-30", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
-  {week:13,date:"2026-08-06", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
-  {week:14,date:"2026-08-13", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
-  {week:15,date:"2026-08-20", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
-  {week:16,date:"2026-08-27", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
-  {week:17,date:"2026-09-03", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
-  {week:18,date:"2026-09-10", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]}
+  {week:8, date:"2026-07-09", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
+  {week:9, date:"2026-07-16", matchups:[{home:"t02",away:"t10"},{home:"t04",away:"t07"},{home:"t05",away:"t01"},{home:"t06",away:"t03"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
+  {week:10,date:"2026-07-23", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]},
+  {week:11,date:"2026-07-30", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
+  {week:12,date:"2026-08-06", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
+  {week:13,date:"2026-08-13", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
+  {week:14,date:"2026-08-20", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
+  {week:15,date:"2026-08-27", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
+  {week:16,date:"2026-09-03", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
+  {week:17,date:"2026-09-10", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
+  {week:18,date:"2026-09-17", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]}
 ];
 
 var S = {
