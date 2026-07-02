@@ -1,11 +1,10 @@
-
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script>
 // Mobile cache buster - works inside iOS Safari iframes
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-009'; // update this string with each code deploy
+  var BUILD = '20260618-010'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -524,12 +523,23 @@ function teamById(id){ return S.teams.filter(function(t){return t.id===id;})[0];
 function teamName(id){ var t=teamById(id); return t?t.name:'TBD'; }
 
 // ── Quota (one decimal, ignoring seed rounds for "at time" calc) ─────────
+window.glSetQuotaOverride=function(pid,val){
+  var p=S.players.filter(function(x){return x.id===pid;})[0];
+  if(!p) return;
+  var num=parseFloat(val);
+  if(isNaN(num)||val===''){ delete p.quotaOverride; }
+  else { p.quotaOverride=Math.round(num*10)/10; }
+  save();glRenderRoster();
+};
+
+// Quota = override if set, otherwise avg of ALL real rounds, otherwise starting quota
 function getQuota(pid){
+  var p=S.players.filter(function(x){return x.id===pid;})[0];
+  if(p&&p.quotaOverride!=null) return p.quotaOverride;
   var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&!r.penalty;});
   if(rds.length){
     return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
   }
-  // fall back to starting quota seed
   var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;});
   if(!seeds.length) return null;
   return seeds[0].points;
@@ -865,11 +875,17 @@ function glRenderRoster(){
       +'<span class="gl-muted">'+members.length+'/2</span></div>';
     if(!members.length){html+='<p class="gl-muted">No players yet.</p>';}
     else{
-      html+='<table class="gl-table"><thead><tr><th>Player</th><th>Starting quota</th><th>Current quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
+      html+='<table class="gl-table"><thead><tr><th>Player</th><th>Calc quota</th><th>Override quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
       members.forEach(function(p){
         var q=getQuota(p.id),rds=S.rounds.filter(function(r){return r.playerId===p.id&&!r.seed;}).length;
-        html+='<tr><td class="gl-pname">'+p.name+'</td><td class="gl-muted">'+(p.handicap||'—')+'</td>'
-          +'<td>'+(q!==null?q:'<span class="gl-muted">—</span>')+'</td>'
+        html+='<tr><td class="gl-pname">'+p.name+'</td>'
+          +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
+          +'<td><div style="display:flex;align-items:center;gap:8px">'
+          +'<input type="number" step="0.1" placeholder="e.g. 8.75" value="'+(p.quotaOverride||'')+'" '
+          +'style="width:90px;padding:5px 8px;font-size:14px" '
+          +'onchange="glSetQuotaOverride(\''+p.id+'\',this.value)">'
+          +(p.quotaOverride?'<span class="gl-badge gl-badge-sub">override</span>':'')
+          +'</div></td>'
           +'<td class="gl-muted">'+rds+'</td>'
           +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
       });
@@ -881,12 +897,17 @@ function glRenderRoster(){
   var subs=S.players.filter(function(p){return !p.teamId;});
   if(subs.length){
     html+='<div class="gl-card"><p class="gl-card-title">Sub pool</p>'
-      +'<table class="gl-table"><thead><tr><th>Player</th><th>Starting quota</th><th>Current quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
+      +'<table class="gl-table"><thead><tr><th>Player</th><th>Calc quota</th><th>Override quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
     subs.forEach(function(p){
       var q=getQuota(p.id),rds=S.rounds.filter(function(r){return r.playerId===p.id&&!r.seed;}).length;
       html+='<tr><td class="gl-pname">'+p.name+' <span class="gl-badge gl-badge-sub">sub</span></td>'
-        +'<td class="gl-muted">'+(p.handicap||'—')+'</td>'
-        +'<td>'+(q!==null?q:'<span class="gl-muted">—</span>')+'</td>'
+        +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
+        +'<td><div style="display:flex;align-items:center;gap:8px">'
+        +'<input type="number" step="0.1" placeholder="e.g. 8.75" value="'+(p.quotaOverride||'')+'" '
+        +'style="width:90px;padding:5px 8px;font-size:14px" '
+        +'onchange="glSetQuotaOverride(\''+p.id+'\',this.value)">'
+        +(p.quotaOverride?'<span class="gl-badge gl-badge-sub">override</span>':'')
+        +'</div></td>'
         +'<td class="gl-muted">'+rds+'</td>'
         +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
     });
