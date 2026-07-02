@@ -1,10 +1,11 @@
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script>
 // Mobile cache buster - works inside iOS Safari iframes
 // Stores a build timestamp in localStorage; if the page JS timestamp
 // is newer than what's stored, clears the page cache and reloads.
 (function(){
-  var BUILD = '20260618-010'; // update this string with each code deploy
+  var BUILD = '20260618-012'; // update this string with each code deploy
   var CACHE_KEY = 'gl_build';
   try {
     var stored = localStorage.getItem(CACHE_KEY);
@@ -259,7 +260,7 @@ var DEFAULT_PLAYERS = [
   // Sub pool
   {id:"p25",name:"Angus McNeil",   teamId:null,  handicap:"7.5"},
   {id:"p26",name:"Kevin Moran",    teamId:null,  handicap:"7"},
-  {id:"p27",name:"Vinnie G",       teamId:null,  handicap:"5"},
+  {id:"p27",name:"Vinnie G",       teamId:null,  handicap:"2"},
   {id:"p28",name:"Tommy Stephens", teamId:null,  handicap:"9"}
 ];
 
@@ -929,8 +930,6 @@ window.glAddPlayer=function(){
   save();glRenderRoster();
 };
 window.glRemovePlayer=function(id){
-  var p=S.players.filter(function(x){return x.id===id;})[0];
-  if(!confirm('Remove '+(p?p.name:'this player')+' and all their scores?'))return;
   S.players=S.players.filter(function(x){return x.id!==id;});
   S.rounds=S.rounds.filter(function(r){return r.playerId!==id;});
   save();glRenderRoster();
@@ -1206,7 +1205,6 @@ function glRenderHistory(){
   el('gl-history').innerHTML=html;
 }
 window.glDeleteHistoryRound=function(id){
-  if(!confirm('Delete this round? You can re-enter it with the correct details afterwards.'))return;
   S.rounds=S.rounds.filter(function(r){return r.id!==id;});
   save();glRenderHistory();
 };
