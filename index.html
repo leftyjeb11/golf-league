@@ -1,3 +1,4 @@
+
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script>
 // Aggressive cache buster for iOS Safari / mobile browsers
@@ -435,6 +436,7 @@ var REAL_SCORES = [
   {id:"r-p24-6",playerId:"p24",teamId:"t12",date:"2026-06-25",points:5,notes:"",isSub:false},
   {id:"r-p26-6",playerId:"p26",teamId:"t01",date:"2026-06-25",points:2,notes:"",isSub:true},
   {id:"r-p02-6",playerId:"p02",teamId:"t01",date:"2026-06-25",points:5,notes:"",isSub:false},
+  {id:"r-forfeit-t03-6",playerId:null,teamId:"t03",date:"2026-06-25",points:0,notes:"No show forfeit",isSub:false,penalty:true},
   {id:"r-p13-6",playerId:"p13",teamId:"t07",date:"2026-06-25",points:10,notes:"",isSub:false},
   {id:"r-p14-6",playerId:"p14",teamId:"t07",date:"2026-06-25",points:3,notes:"",isSub:false},
   {id:"r-p09-6",playerId:"p09",teamId:"t05",date:"2026-06-25",points:13,notes:"",isSub:false},
@@ -500,18 +502,18 @@ REAL_SCORES.forEach(function(r){ DEFAULT_ROUNDS.push(r); });
 // Encoded as synthetic matchup results — we store these as pre-loaded playoffResults
 // but actually we track them in a separate seedRecords field
 var SEED_RECORDS = {
-  "t01":{w:0,l:0,t:0},
-  "t02":{w:0,l:0,t:0},
-  "t03":{w:0,l:0,t:0},
-  "t04":{w:0,l:0,t:0},
-  "t05":{w:0,l:0,t:0},
-  "t06":{w:0,l:0,t:0},
-  "t07":{w:0,l:0,t:0},
-  "t08":{w:0,l:0,t:0},
-  "t09":{w:0,l:0,t:0},
-  "t10":{w:0,l:0,t:0},
-  "t11":{w:0,l:0,t:0},
-  "t12":{w:0,l:0,t:0}
+  "t01":{w:3,l:5,t:0},   // The Toms        (3&5)
+  "t02":{w:6,l:2,t:0},   // Cartwrights     (6&2)
+  "t03":{w:3,l:4,t:1},   // Par Tee Animals (3&4&1)
+  "t04":{w:6,l:1,t:1},   // Spa Twins       (6&1&1)
+  "t05":{w:2,l:5,t:1},   // Nail Gunners    (2&5&1)
+  "t06":{w:1,l:6,t:1},   // Billy & The Kid (1&6&1)
+  "t07":{w:5,l:2,t:1},   // Wreckid Playaz  (5&2&1)
+  "t08":{w:4,l:4,t:0},   // Hosel Rocketz   (4&4)
+  "t09":{w:1,l:5,t:2},   // Wilmington      (1&5&2)
+  "t10":{w:3,l:4,t:1},   // Blastin Gas     (3&4&1)
+  "t11":{w:5,l:3,t:0},   // The Gangstas    (5&3)
+  "t12":{w:5,l:3,t:0},   // The Rookies     (5&3)
 };
 
 // CTP winners weeks 1-5 (2 per week, $20 prize)
@@ -582,7 +584,7 @@ var S = {
   ]
 };
 
-var KEY = 'golf_league_v19';
+var KEY = 'golf_league_v22';
 var PREV_KEYS = ['golf_league_v13','golf_league_v12','golf_league_v11','golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
 
 function load(){
@@ -684,10 +686,13 @@ function matchupResult(m,date){
 }
 
 // ── Team stats — combine seed records + live results ─────────────────────
+var SEED_RECORDS_THROUGH_WEEK = 8; // seed records cover weeks 1-8
+
 function teamStats(teamId){
   var sr=S.seedRecords&&S.seedRecords[teamId]?S.seedRecords[teamId]:{w:0,l:0,t:0};
-  var wins=sr.w, losses=sr.l, ties=sr.t*0.5, seasonNet=0, weeksPlayed=sr.w+sr.l+(sr.t>0?sr.t:0);
+  var wins=sr.w, losses=sr.l, ties=sr.t*0.5, seasonNet=0, weeksPlayed=sr.w+sr.l+sr.t;
   S.schedule.forEach(function(week){
+    if(week.week <= SEED_RECORDS_THROUGH_WEEK) return; // already in seed records
     week.matchups.forEach(function(m){
       var isHome=m.home===teamId, isAway=m.away===teamId;
       if(!isHome&&!isAway) return;
@@ -1339,3 +1344,4 @@ load();
 glRender('standings');
 })();
 </script>
+
