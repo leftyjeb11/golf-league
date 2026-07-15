@@ -249,44 +249,44 @@ var DEFAULT_TEAMS = [
 
 var DEFAULT_PLAYERS = [
   // The Toms
-  {id:"p01",name:"Tom Freeman",    teamId:"t01", handicap:"4.21",quotaOverride:5.83},
-  {id:"p02",name:"Rich 'Sid' Sideri",    teamId:"t01", handicap:"4",quotaOverride:3.83},
+  {id:"p01",name:"Tom Freeman",    teamId:"t01", handicap:"4.21",quotaOverride:5.71},
+  {id:"p02",name:"Rich 'Sid' Sideri",    teamId:"t01", handicap:"4",quotaOverride:3.86},
   // The Cartwrights
-  {id:"p03",name:"Fitzy",          teamId:"t02", handicap:"7.5",quotaOverride:5.57},
-  {id:"p04",name:"Joe Calnan",         teamId:"t02", handicap:"8",quotaOverride:7.43},
+  {id:"p03",name:"Fitzy",          teamId:"t02", handicap:"7.5",quotaOverride:6.13},
+  {id:"p04",name:"Joe Calnan",         teamId:"t02", handicap:"8",quotaOverride:7.75},
   // Par Tee Animals
-  {id:"p05",name:"Ryan Davis",     teamId:"t03", handicap:"12",quotaOverride:12.6},
-  {id:"p06",name:"Phil Noto",      teamId:"t03", handicap:"11",quotaOverride:8.8},
+  {id:"p05",name:"Ryan Davis",     teamId:"t03", handicap:"12",quotaOverride:11.83},
+  {id:"p06",name:"Phil Noto",      teamId:"t03", handicap:"11",quotaOverride:9.17},
   // Spa Twins
   {id:"p07",name:"Paul Freeman",   teamId:"t04", handicap:"11",quotaOverride:12.25},
-  {id:"p08",name:"Jerry Burke",    teamId:"t04", handicap:"8.67",quotaOverride:5.8},
+  {id:"p08",name:"Jerry Burke",    teamId:"t04", handicap:"8.67",quotaOverride:6.33},
   // Nail Gunners
-  {id:"p09",name:"Mark Nalesnik",  teamId:"t05", handicap:"9.83",quotaOverride:8.57},
-  {id:"p10",name:"Nick Nalesnik",  teamId:"t05", handicap:"5.57",quotaOverride:5.67},
+  {id:"p09",name:"Mark Nalesnik",  teamId:"t05", handicap:"9.83",quotaOverride:8.0},
+  {id:"p10",name:"Nick Nalesnik",  teamId:"t05", handicap:"5.57",quotaOverride:6.0},
   // Billy & The Kid
-  {id:"p11",name:"Billy Lunden",   teamId:"t06", handicap:"6.08",quotaOverride:4.6},
-  {id:"p12",name:"Ryan Wheeler",teamId:"t06",handicap:"10.93",quotaOverride:10.93},
+  {id:"p11",name:"Billy Lunden",   teamId:"t06", handicap:"6.08",quotaOverride:4.33},
+  {id:"p12",name:"Ryan Wheeler",teamId:"t06",handicap:"10.93",quotaOverride:9.67},
   // Wreckid Playaz
-  {id:"p13",name:"Henry Ryan",     teamId:"t07", handicap:"9.17",quotaOverride:10.17},
-  {id:"p14",name:"Roger Ennis",    teamId:"t07", handicap:"3.42",quotaOverride:3.17},
+  {id:"p13",name:"Henry Ryan",     teamId:"t07", handicap:"9.17",quotaOverride:10.0},
+  {id:"p14",name:"Roger Ennis",    teamId:"t07", handicap:"3.42",quotaOverride:3.29},
   // Hosel Rocketz
-  {id:"p15",name:"Matt Amirault",  teamId:"t08", handicap:"14.25",quotaOverride:13.29},
-  {id:"p16",name:"Tim Speziale",   teamId:"t08", handicap:"13.79",quotaOverride:13.29},
+  {id:"p15",name:"Matt Amirault",  teamId:"t08", handicap:"14.25",quotaOverride:13.13},
+  {id:"p16",name:"Tim Speziale",   teamId:"t08", handicap:"13.79",quotaOverride:13.25},
   // Wilmington Warriors
   {id:"p17",name:"Sean Butler",    teamId:"t09", handicap:"12.36",quotaOverride:11.0},
   {id:"p18",name:"Sil Ferreira",   teamId:"t09", handicap:"10.33",quotaOverride:9.5},
   // Blastin Gas
-  {id:"p19",name:"Stevie P",       teamId:"t10", handicap:"7.5",quotaOverride:5.86},
-  {id:"p20",name:"Christos",       teamId:"t10", handicap:"7.5",quotaOverride:3.71},
+  {id:"p19",name:"Stevie P",       teamId:"t10", handicap:"7.5",quotaOverride:5.63},
+  {id:"p20",name:"Christos",       teamId:"t10", handicap:"7.5",quotaOverride:3.5},
   // The Gangstas
-  {id:"p21",name:"Dickie Lunden",  teamId:"t11", handicap:"6.38",quotaOverride:7.0},
+  {id:"p21",name:"Dickie Lunden",  teamId:"t11", handicap:"6.38",quotaOverride:7.38},
   {id:"p22",name:"Pittsburgh Hank",teamId:"t11", handicap:"5.5",quotaOverride:5.6},
   // The Rookies
-  {id:"p23",name:"Jeb Fisher",     teamId:"t12", handicap:"7.9",quotaOverride:8.83},
-  {id:"p24",name:"Dan Gregorio",   teamId:"t12", handicap:"7",quotaOverride:5.33},
+  {id:"p23",name:"Jeb Fisher",     teamId:"t12", handicap:"7.9",quotaOverride:8.86},
+  {id:"p24",name:"Dan Gregorio",   teamId:"t12", handicap:"7",quotaOverride:5.71},
   // Sub pool
   {id:"p25",name:"Angus McNeil",   teamId:null,  handicap:"7.5",quotaOverride:5.8},
-  {id:"p26",name:"Kevin Moran",    teamId:null,  handicap:"7",quotaOverride:2.67},
+  {id:"p26",name:"Kevin Moran",    teamId:null,  handicap:"7",quotaOverride:3.0},
   {id:"p27",name:"Vinnie G",       teamId:null,  handicap:"2",quotaOverride:2.2},
   {id:"p28",name:"Tommy Stephens", teamId:null,  handicap:"9"}
 ];
@@ -469,6 +469,30 @@ var REAL_SCORES = [
   {id:"r-p27-7",playerId:"p27",teamId:"t07",date:"2026-07-02",points:0,notes:"",isSub:true},
   {id:"r-p21-7",playerId:"p21",teamId:"t11",date:"2026-07-02",points:9,notes:"",isSub:false},
   {id:"r-p22-7",playerId:"p22",teamId:"t11",date:"2026-07-02",points:3,notes:"",isSub:false},
+  // Week 8 — 2026-07-09
+  {id:"r-p03-8",playerId:"p03",teamId:"t02",date:"2026-07-09",points:10,notes:"",isSub:false},
+  {id:"r-p04-8",playerId:"p04",teamId:"t02",date:"2026-07-09",points:10,notes:"",isSub:false},
+  {id:"r-p19-8",playerId:"p19",teamId:"t10",date:"2026-07-09",points:4,notes:"",isSub:false},
+  {id:"r-p20-8",playerId:"p20",teamId:"t10",date:"2026-07-09",points:2,notes:"",isSub:false},
+  {id:"r-p23-8",playerId:"p23",teamId:"t12",date:"2026-07-09",points:9,notes:"",isSub:false},
+  {id:"r-p24-8",playerId:"p24",teamId:"t12",date:"2026-07-09",points:8,notes:"",isSub:false},
+  {id:"r-forfeit-t09-8",playerId:null,teamId:"t09",date:"2026-07-09",points:0,notes:"No show forfeit",isSub:false,penalty:true},
+  {id:"r-p05-8",playerId:"p05",teamId:"t03",date:"2026-07-09",points:8,notes:"",isSub:false},
+  {id:"r-p06-8",playerId:"p06",teamId:"t03",date:"2026-07-09",points:11,notes:"",isSub:false},
+  {id:"r-p11-8",playerId:"p11",teamId:"t06",date:"2026-07-09",points:3,notes:"",isSub:false},
+  {id:"r-p12-8",playerId:"p12",teamId:"t06",date:"2026-07-09",points:10,notes:"",isSub:false},
+  {id:"r-p09-8",playerId:"p09",teamId:"t05",date:"2026-07-09",points:4,notes:"",isSub:false},
+  {id:"r-p10-8",playerId:"p10",teamId:"t05",date:"2026-07-09",points:8,notes:"",isSub:false},
+  {id:"r-p01-8",playerId:"p01",teamId:"t01",date:"2026-07-09",points:5,notes:"",isSub:false},
+  {id:"r-p02-8",playerId:"p02",teamId:"t01",date:"2026-07-09",points:4,notes:"",isSub:false},
+  {id:"r-p14-8",playerId:"p14",teamId:"t07",date:"2026-07-09",points:4,notes:"",isSub:false},
+  {id:"r-p13-8",playerId:"p13",teamId:"t07",date:"2026-07-09",points:9,notes:"",isSub:false},
+  {id:"r-p08-8",playerId:"p08",teamId:"t04",date:"2026-07-09",points:9,notes:"",isSub:false},
+  {id:"r-p26-8",playerId:"p26",teamId:"t04",date:"2026-07-09",points:4,notes:"",isSub:true},
+  {id:"r-p15-8",playerId:"p15",teamId:"t08",date:"2026-07-09",points:12,notes:"",isSub:false},
+  {id:"r-p16-8",playerId:"p16",teamId:"t08",date:"2026-07-09",points:13,notes:"",isSub:false},
+  {id:"r-p21-8",playerId:"p21",teamId:"t11",date:"2026-07-09",points:10,notes:"",isSub:false},
+  {id:"r-penalty-t11-8",playerId:null,teamId:"t11",date:"2026-07-09",points:0,notes:"Absent partner penalty",isSub:false,penalty:true},
 ];
 REAL_SCORES.forEach(function(r){ DEFAULT_ROUNDS.push(r); });
 
@@ -505,9 +529,9 @@ var DEFAULT_CTP = [
   // Week 4: Sean, Phil
   {id:"ctp-w4-1",week:4,hole:0,playerId:"p17",distance:"",notes:""},
   {id:"ctp-w4-2",week:4,hole:0,playerId:"p06",distance:"",notes:""},
-  // Week 5: Ryan D (both CTPs)
-  {id:"ctp-w5-1",week:5,hole:12,playerId:"p05",distance:"5'",notes:"",slotKey:"w5-ctp1"},
-  {id:"ctp-w5-2",week:5,hole:16,playerId:"p05",distance:"10'9\"",notes:"",slotKey:"w5-ctp2"}
+  // Week 8
+  {id:"ctp-w8-1",week:8,hole:0,playerId:"p23",distance:"",slotKey:"w8-ctp1"},  // Jeb Fisher
+  {id:"ctp-w8-2",week:8,hole:0,playerId:"p12",distance:"",slotKey:"w8-ctp2"},  // Ryan Wheeler
 ];
 
 // 11-week rotating schedule starting June 9
@@ -520,7 +544,7 @@ var DEFAULT_SCHEDULE = [
   {week:6, date:"2026-06-25", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
   {week:7, date:"2026-07-02", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
   {week:8, date:"2026-07-09", matchups:[{home:"t02",away:"t10"},{home:"t01",away:"t05"},{home:"t03",away:"t06"},{home:"t04",away:"t07"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:9, date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]},
+  {week:9, date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t11",away:"t06"},{home:"t03",away:"t12"},{home:"t04",away:"t09"},{home:"t01",away:"t10"},{home:"t08",away:"t05"}]},
   {week:10,date:"2026-07-23", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
   {week:11,date:"2026-07-30", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
   {week:12,date:"2026-08-06", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
@@ -545,11 +569,13 @@ var S = {
     {week:2,playerId:"p16",points:17, quota:13.79,margin:3.21,notes:"Wk2 $50"},  // Tim Speziale
     {week:3,playerId:"p23",points:13, quota:7.9,  margin:5.1, notes:"Wk3 $50"},  // Jeb Fisher
     {week:4,playerId:"p21",points:11, quota:6.38, margin:4.62,notes:"Wk4 $50"},  // Dickie Lunden
-    {week:5,playerId:"p05",points:18, quota:11.33,margin:6.67,notes:"Wk5 $50"}   // Ryan Davis
+    {week:5,playerId:"p05",points:18, quota:11.33,margin:6.67,notes:"Wk5 $50"},  // Ryan Davis
+    {week:7,playerId:"p04",points:11, quota:6.83, margin:4.17,notes:"Wk7 $50"},  // Joe Calnan
+    {week:8,playerId:"p03",points:10, quota:5.57, margin:4.43,notes:"Wk8 $50"}   // Fitzy
   ]
 };
 
-var KEY = 'golf_league_v15';
+var KEY = 'golf_league_v18';
 var PREV_KEYS = ['golf_league_v13','golf_league_v12','golf_league_v11','golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
 
 function load(){
@@ -631,13 +657,16 @@ function getQuotaAt(pid,before){
 function teamNetOnDate(teamId,date){
   var rds=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
   if(!rds.length) return null;
+  // If all entries are penalty/forfeit with no player scores, return large negative
+  var hasRealScores=rds.filter(function(r){return !r.penalty&&r.playerId;}).length>0;
+  if(!hasRealScores) return -99;
   var net=0;
-  var hasPenalty=rds.filter(function(r){return r.penalty;}).length>0;
-  rds.filter(function(r){return !r.penalty;}).forEach(function(r){
+  var penaltyCount=rds.filter(function(r){return r.penalty;}).length;
+  rds.filter(function(r){return !r.penalty&&r.playerId;}).forEach(function(r){
     var q=getQuotaAt(r.playerId,r.date);
     net+=r.points-(q!==null?q:r.points);
   });
-  if(hasPenalty) net-=3;
+  net-=(penaltyCount*3);
   return Math.round(net*10)/10;
 }
 
