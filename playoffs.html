@@ -1,1421 +1,237 @@
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script>
-// Aggressive cache buster for iOS Safari / mobile browsers
-// Checks the server's Last-Modified header on every load.
-// If the file is newer than what was last seen, forces a hard reload.
-(function(){
-  try {
-    var CACHE_KEY = 'gl_last_modified';
-    var url = window.location.href.split('?')[0];
-    var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', url + '?_=' + Date.now(), true);
-    xhr.onload = function(){
-      var lastMod = xhr.getResponseHeader('Last-Modified') || xhr.getResponseHeader('ETag') || '';
-      var stored = localStorage.getItem(CACHE_KEY) || '';
-      if(lastMod && lastMod !== stored){
-        localStorage.setItem(CACHE_KEY, lastMod);
-        if(stored !== ''){
-          // File has changed — force hard reload with cache bypass
-          window.location.replace(url + '?v=' + Date.now());
-        }
-      }
-    };
-    xhr.send();
-  } catch(e){}
-})();
-</script>
-
-<div id="golf-league-app">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NSML 2026 Playoffs & Prize Money</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-#golf-league-app {
-  --gl-green-deep: #1a3a2a;
-  --gl-green-mid: #2d5a3d;
-  --gl-green-light: #4a8c5c;
-  --gl-green-pale: #e8f2eb;
-  --gl-gold: #c9a84c;
-  --gl-gold-pale: #fdf7e6;
-  --gl-cream: #faf8f3;
-  --gl-white: #ffffff;
-  --gl-text-dark: #1a2420;
-  --gl-text-mid: #3d5045;
-  --gl-text-light: #7a9080;
-  --gl-border: rgba(26,58,42,0.12);
-  --gl-border-strong: rgba(26,58,42,0.22);
-  --gl-radius: 12px;
-  --gl-radius-lg: 18px;
-  font-family: 'DM Sans', sans-serif;
-  color: var(--gl-text-dark);
-  font-size: 18px;
-  line-height: 1.75;
-}
-#golf-league-app * { box-sizing: border-box; margin: 0; padding: 0; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --green:#1a3a2a;--gold:#c9a84c;--cream:#f8f6f0;--white:#ffffff;
+    --border:#d4c9a8;--text:#2c2c2a;--muted:#6b6b68;--light:#e8e4d8;
+    --radius:10px;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);padding:32px 24px;max-width:900px;margin:0 auto}
+  h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;color:var(--green);text-align:center;margin-bottom:6px}
+  .subtitle{text-align:center;color:var(--muted);font-size:15px;margin-bottom:40px;font-weight:300;letter-spacing:0.03em}
+  h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--green);margin-bottom:20px}
+  .section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px 30px;margin-bottom:28px}
 
-.gl-header { background: var(--gl-green-deep); padding: 0 48px; border-radius: var(--gl-radius-lg) var(--gl-radius-lg) 0 0; position: relative; overflow: hidden; text-align: center; }
-.gl-header::before { content:''; position:absolute; top:-40px; right:-40px; width:240px; height:240px; border-radius:50%; background:rgba(201,168,76,0.08); }
-.gl-eyebrow { font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gl-gold); font-weight:500; margin-bottom:30px; position:relative; }
-.gl-title { font-family:'Playfair Display',serif; font-size:32px; font-weight:600; color:#fff; line-height:1.4; margin-bottom:30px; position:relative; }
-.gl-subtitle { font-size:16px; color:rgba(255,255,255,0.45); font-weight:300; position:relative; letter-spacing:0.02em; }
+  /* Bracket */
+  .bracket{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:0;position:relative;min-height:380px}
+  .round{display:flex;flex-direction:column;justify-content:space-around;padding:0 8px}
+  .round-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);text-align:center;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .match{position:relative;margin:8px 0}
+  .team{background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:14px;font-weight:400;display:flex;align-items:center;gap:8px;min-height:38px}
+  .team + .team{margin-top:2px}
+  .team.bye{background:var(--green);color:var(--white);border-color:var(--green);font-weight:500}
+  .team .seed{font-size:11px;font-weight:600;color:var(--gold);min-width:18px}
+  .team.bye .seed{color:rgba(255,255,255,0.6)}
+  .team .name{font-size:13px;color:var(--muted)}
+  .team.bye .name{color:rgba(255,255,255,0.75)}
+  .vs{text-align:center;font-size:10px;color:var(--muted);padding:2px 0}
+  .tbd{background:var(--light);border:1px dashed var(--border);color:var(--muted);font-size:13px;font-style:italic}
+  .winner-box{background:var(--green);border-radius:10px;padding:20px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+  .winner-box .trophy{font-size:28px}
+  .winner-box .label{color:rgba(255,255,255,0.6);font-size:11px;text-transform:uppercase;letter-spacing:0.1em}
+  .winner-box .name{color:var(--gold);font-family:'Playfair Display',serif;font-size:18px;font-weight:500}
+  .bye-note{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:#7a5f1a;margin-top:16px}
 
-.gl-body { background:var(--gl-cream); padding:20px 40px 70px; border-radius:0 0 var(--gl-radius-lg) var(--gl-radius-lg); border:1px solid var(--gl-border); border-top:none; }
+  /* Prizes */
+  .prize-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  .prize-card{background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:20px}
+  .prize-card h3{font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:14px}
+  .prize-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+  .prize-row:last-child{border-bottom:none;font-weight:600;color:var(--green)}
+  .prize-row .place{font-size:14px;color:var(--text)}
+  .prize-row .amount{font-size:14px;font-weight:500;color:var(--green)}
+  .prize-row.total .amount{font-family:'Playfair Display',serif;font-size:16px}
+  .medal{display:inline-block;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:600;text-align:center;line-height:22px;margin-right:6px}
+  .medal.gold{background:#f5d056;color:#7a5a00}
+  .medal.silver{background:#d4d4d4;color:#555}
+  .medal.bronze{background:#d4925a;color:#5a2a00}
 
-.gl-tabs { display:flex; gap:5px; background:var(--gl-green-deep); border-radius:var(--gl-radius); padding:10px; margin-top:60px; margin-bottom:40px; box-shadow:0 6px 24px rgba(26,58,42,0.30); }
-.gl-tab { flex:1; padding:18px 10px; font-size:16px; font-weight:600; cursor:pointer; border:none; background:none; color:rgba(255,255,255,0.55); border-radius:9px; transition:all 0.15s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; justify-content:center; gap:9px; white-space:nowrap; letter-spacing:0.01em; }
-.gl-tab svg { width:20px; height:20px; flex-shrink:0; }
-.gl-tab:hover:not(.gl-tab-active) { color:#fff; background:rgba(255,255,255,0.12); }
-.gl-tab.gl-tab-active { background:var(--gl-gold); color:var(--gl-green-deep); box-shadow:0 3px 10px rgba(0,0,0,0.25); font-weight:700; }
-
-.gl-subtabs { display:flex; gap:12px; margin-bottom:32px; flex-wrap:wrap; }
-.gl-subtab { padding:13px 32px; font-size:15px; font-weight:500; cursor:pointer; border:1px solid var(--gl-border-strong); background:none; color:var(--gl-text-light); border-radius:24px; font-family:'DM Sans',sans-serif; transition:all 0.15s; letter-spacing:0.01em; }
-.gl-subtab:hover:not(.gl-subtab-active) { color:var(--gl-text-dark); }
-.gl-subtab.gl-subtab-active { background:var(--gl-green-deep); color:#fff; border-color:var(--gl-green-deep); }
-
-.gl-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:36px; }
-.gl-metric { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:24px 26px; text-align:center; }
-.gl-metric-label { font-size:12px; text-transform:uppercase; letter-spacing:0.09em; color:var(--gl-text-light); margin-bottom:8px; font-weight:500; }
-.gl-metric-value { font-family:'Playfair Display',serif; font-size:32px; color:var(--gl-text-dark); }
-.gl-metric-sub { font-size:13px; color:var(--gl-text-light); margin-top:4px; }
-
-.gl-card { background:var(--gl-white); border:1px solid var(--gl-border); border-radius:var(--gl-radius-lg); padding:32px 34px; margin-bottom:24px; }
-.gl-card-title { font-family:'Playfair Display',serif; font-size:20px; font-weight:500; margin-bottom:24px; color:var(--gl-text-dark); }
-
-.gl-table-wrap { overflow-x:auto; }
-.gl-table { width:100%; border-collapse:collapse; font-size:17px; }
-.gl-table th { text-align:left; padding:12px 16px; font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color:var(--gl-text-light); border-bottom:2px solid var(--gl-border); white-space:nowrap; }
-.gl-table td { padding:17px 16px; border-bottom:1px solid var(--gl-border); vertical-align:middle; }
-.gl-table tr:last-child td { border-bottom:none; }
-.gl-table tbody tr:hover td { background:var(--gl-green-pale); }
-.gl-pname { font-weight:500; font-size:17px; }
-.gl-muted { color:var(--gl-text-light); font-size:15px; }
-
-.gl-badge { display:inline-block; font-size:14px; font-weight:500; padding:4px 13px; border-radius:24px; line-height:1.6; }
-.gl-badge-up { background:#e6f4eb; color:#1a6b33; }
-.gl-badge-down { background:#fcecea; color:#9b2828; }
-.gl-badge-even { background:var(--gl-green-pale); color:var(--gl-text-mid); }
-.gl-badge-sub { background:#fdf7e6; color:#7a5c10; font-size:13px; padding:2px 10px; }
-.gl-badge-win { background:#e6f4eb; color:#1a6b33; font-size:13px; padding:3px 10px; }
-.gl-badge-loss { background:#fcecea; color:#9b2828; font-size:13px; padding:3px 10px; }
-.gl-badge-tie { background:#f0f0ea; color:#5a5a4a; font-size:13px; padding:3px 10px; }
-.gl-badge-playoff { background:#e6f1fb; color:#185fa5; font-size:13px; padding:3px 10px; }
-.gl-badge-bye { background:#fdf7e6; color:#7a5c10; font-size:13px; padding:3px 10px; }
-.gl-net-pos { color:#1a6b33; font-weight:500; }
-.gl-net-neg { color:#9b2828; font-weight:500; }
-.gl-rank-num { font-size:16px; font-weight:500; color:var(--gl-text-light); }
-
-.gl-matchup-card { border:1px solid var(--gl-border); border-radius:var(--gl-radius); padding:20px 22px; margin-bottom:16px; background:var(--gl-white); }
-.gl-vs-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:16px; margin-bottom:14px; }
-.gl-team-side-name { font-weight:500; font-size:18px; }
-.gl-team-side-detail { font-size:15px; color:var(--gl-text-light); margin-top:4px; }
-.gl-vs { font-size:15px; font-weight:500; color:var(--gl-text-light); text-align:center; }
-.gl-result-row { display:flex; align-items:center; gap:10px; font-size:15px; color:var(--gl-text-mid); border-top:1px solid var(--gl-border); padding-top:12px; }
-
-.gl-score-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-.gl-score-panel { background:var(--gl-green-pale); border-radius:var(--gl-radius); padding:18px 20px; }
-.gl-score-panel-title { font-size:13px; font-weight:500; text-transform:uppercase; letter-spacing:0.08em; color:var(--gl-text-mid); margin-bottom:14px; }
-
-.gl-form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:16px; margin-bottom:18px; }
-.gl-field label { display:block; font-size:13px; font-weight:500; text-transform:uppercase; letter-spacing:0.07em; color:var(--gl-text-light); margin-bottom:7px; }
-#golf-league-app input[type="text"],
-#golf-league-app input[type="number"],
-#golf-league-app input[type="date"],
-#golf-league-app select { width:100%; padding:11px 14px; font-size:17px; font-family:'DM Sans',sans-serif; border:1px solid var(--gl-border-strong); border-radius:var(--gl-radius); background:var(--gl-white); color:var(--gl-text-dark); outline:none; }
-#golf-league-app input:focus, #golf-league-app select:focus { border-color:var(--gl-green-light); box-shadow:0 0 0 3px rgba(74,140,92,0.12); }
-
-.gl-hint { font-size:15px; color:var(--gl-text-mid); background:var(--gl-gold-pale); border:1px solid rgba(201,168,76,0.3); border-radius:var(--gl-radius); padding:10px 14px; margin-top:10px; }
-.gl-notice { font-size:15px; color:var(--gl-text-mid); background:var(--gl-green-pale); border-radius:var(--gl-radius); padding:13px 17px; margin-top:14px; border-left:4px solid var(--gl-green-light); line-height:1.6; }
-
-.gl-btn { background:var(--gl-green-deep); color:#fff; border:none; padding:13px 28px; border-radius:var(--gl-radius); font-size:16px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background 0.15s; }
-.gl-btn:hover { background:var(--gl-green-mid); }
-.gl-btn-sm { background:none; border:1px solid var(--gl-border-strong); color:var(--gl-text-light); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:14px; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
-.gl-btn-sm:hover { color:#9b2828; border-color:#9b2828; }
-
-.gl-sep { border:none; border-top:1px solid var(--gl-border); margin:20px 0; }
-.gl-empty { text-align:center; padding:48px 24px; color:var(--gl-text-light); }
-.gl-empty p { font-size:16px; }
-
-.gl-week-selector { display:flex; align-items:flex-end; gap:14px; margin-bottom:24px; flex-wrap:wrap; }
-.gl-week-selector .gl-field { flex:1; min-width:220px; max-width:340px; }
-
-.gl-playoff-bracket { display:flex; gap:24px; overflow-x:auto; padding-bottom:10px; }
-.gl-playoff-round { min-width:200px; }
-.gl-playoff-round-title { font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:0.09em; color:var(--gl-text-light); margin-bottom:14px; }
-.gl-playoff-match { border:1px solid var(--gl-border); border-radius:var(--gl-radius); margin-bottom:16px; overflow:hidden; }
-.gl-playoff-team { padding:12px 16px; font-size:15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--gl-border); }
-.gl-playoff-team:last-child { border-bottom:none; }
-.gl-playoff-team.winner { background:var(--gl-green-pale); font-weight:500; }
-.gl-playoff-team.tbd { color:var(--gl-text-light); font-style:italic; }
-
-@media (max-width:640px) {
-  .gl-metrics { grid-template-columns:repeat(2,1fr); }
-  .gl-tab span { display:none; }
-  .gl-table th, .gl-table td { padding:10px 8px; font-size:15px; }
-  .gl-score-grid { grid-template-columns:1fr; }
-  .gl-vs-row { grid-template-columns:1fr auto 1fr; }
-  .gl-body { padding:24px 16px 40px; }
-}
+  @media(max-width:600px){
+    .bracket{grid-template-columns:1fr 1fr;gap:12px}
+    .prize-grid{grid-template-columns:1fr}
+    body{padding:20px 16px}
+  }
 </style>
+</head>
+<body>
 
-<div class="gl-header">
-  <div style="height:52px"></div>
-  <div class="gl-eyebrow">&#9968; Season Tracker</div>
-  <div class="gl-title">NSML at the Meadow at Peabody Golf Course</div>
-  <div class="gl-subtitle">A tradition like so many others</div>
-  <div style="height:45px"></div>
-  <div style="position:absolute;top:16px;right:16px;z-index:10">
-    <button onclick="glHardRefresh()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px 16px;border-radius:20px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;">&#8635; Refresh</button>
+<h1>NSML Golf 2026</h1>
+<p class="subtitle">Playoff bracket &amp; prize money</p>
+
+<!-- Bracket -->
+<div class="section">
+  <h2>Playoff bracket</h2>
+
+  <div class="bracket">
+    <!-- Round 1: Play-in -->
+    <div class="round">
+      <div class="round-label">Play-in round</div>
+      <div class="match">
+        <div class="team"><span class="seed">8</span><span class="name">TBD</span></div>
+        <div class="vs">vs</div>
+        <div class="team"><span class="seed">9</span><span class="name">TBD</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team"><span class="seed">5</span><span class="name">TBD</span></div>
+        <div class="vs">vs</div>
+        <div class="team"><span class="seed">12</span><span class="name">TBD</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team"><span class="seed">7</span><span class="name">TBD</span></div>
+        <div class="vs">vs</div>
+        <div class="team"><span class="seed">10</span><span class="name">TBD</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team"><span class="seed">6</span><span class="name">TBD</span></div>
+        <div class="vs">vs</div>
+        <div class="team"><span class="seed">11</span><span class="name">TBD</span></div>
+      </div>
+    </div>
+
+    <!-- Quarterfinals -->
+    <div class="round">
+      <div class="round-label">Quarterfinals</div>
+      <div class="match">
+        <div class="team bye"><span class="seed">1</span><span class="name">TBD — bye</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="seed">—</span><span class="name">Winner 8/9</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team bye"><span class="seed">4</span><span class="name">TBD — bye</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="seed">—</span><span class="name">Winner 5/12</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team bye"><span class="seed">2</span><span class="name">TBD — bye</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="seed">—</span><span class="name">Winner 7/10</span></div>
+      </div>
+      <div class="match" style="margin-top:24px">
+        <div class="team bye"><span class="seed">3</span><span class="name">TBD — bye</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="seed">—</span><span class="name">Winner 6/11</span></div>
+      </div>
+    </div>
+
+    <!-- Semifinals -->
+    <div class="round">
+      <div class="round-label">Semifinals</div>
+      <div class="match" style="margin-top:40px">
+        <div class="team tbd"><span class="name">Winner QF1</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="name">Winner QF2</span></div>
+      </div>
+      <div class="match" style="margin-top:80px">
+        <div class="team tbd"><span class="name">Winner QF3</span></div>
+        <div class="vs">vs</div>
+        <div class="team tbd"><span class="name">Winner QF4</span></div>
+      </div>
+    </div>
+
+    <!-- Final -->
+    <div class="round">
+      <div class="round-label">Final</div>
+      <div class="match" style="margin-top:80px">
+        <div class="winner-box">
+          <div class="trophy">🏆</div>
+          <div class="label">Champion</div>
+          <div class="name">TBD</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bye-note">⭐ Top 4 seeds receive first-round byes and advance directly to the quarterfinals.</div>
+</div>
+
+<!-- Prize Money -->
+<div class="section">
+  <h2>Prize money</h2>
+  <div class="prize-grid">
+
+    <!-- Regular Season -->
+    <div class="prize-card">
+      <h3>Regular season — team</h3>
+      <div class="prize-row">
+        <span class="place"><span class="medal gold">1</span>1st place</span>
+        <span class="amount">$200</span>
+      </div>
+      <div class="prize-row">
+        <span class="place"><span class="medal silver">2</span>2nd place</span>
+        <span class="amount">$180</span>
+      </div>
+      <div class="prize-row">
+        <span class="place"><span class="medal bronze">3</span>3rd place</span>
+        <span class="amount">$160</span>
+      </div>
+      <div class="prize-row">
+        <span class="place">4th place</span>
+        <span class="amount">$120</span>
+      </div>
+      <div class="prize-row">
+        <span class="place">5th place</span>
+        <span class="amount">$100</span>
+      </div>
+      <div class="prize-row total">
+        <span class="place">Total</span>
+        <span class="amount">$760</span>
+      </div>
+    </div>
+
+    <!-- Playoffs -->
+    <div class="prize-card">
+      <h3>Playoffs — team</h3>
+      <div class="prize-row">
+        <span class="place"><span class="medal gold">1</span>Champions</span>
+        <span class="amount">$200</span>
+      </div>
+      <div class="prize-row">
+        <span class="place"><span class="medal silver">2</span>Runners up</span>
+        <span class="amount">$100</span>
+      </div>
+      <div class="prize-row total">
+        <span class="place">Total</span>
+        <span class="amount">$300</span>
+      </div>
+    </div>
+
+    <!-- Individual -->
+    <div class="prize-card">
+      <h3>Individual standings</h3>
+      <div class="prize-row">
+        <span class="place"><span class="medal gold">1</span>1st place</span>
+        <span class="amount">$100</span>
+      </div>
+      <div class="prize-row">
+        <span class="place"><span class="medal silver">2</span>2nd place</span>
+        <span class="amount">$80</span>
+      </div>
+      <div class="prize-row">
+        <span class="place"><span class="medal bronze">3</span>3rd place</span>
+        <span class="amount">$60</span>
+      </div>
+      <div class="prize-row">
+        <span class="place">4th place</span>
+        <span class="amount">$40</span>
+      </div>
+      <div class="prize-row">
+        <span class="place">5th place</span>
+        <span class="amount">$20</span>
+      </div>
+      <div class="prize-row total">
+        <span class="place">Total</span>
+        <span class="amount">$300</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<div id="gl-refresh-banner" style="background:#1a6b33;color:#fff;text-align:center;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;display:none" onclick="glHardRefresh()">
-  &#8635; &nbsp;Tap here to refresh scores
-</div>
-<script>
-function glHardRefresh(){
-  try {
-    var toDelete = [];
-    for(var i=0;i<localStorage.length;i++){
-      var k = localStorage.key(i);
-      if(k && (k.indexOf('golf_league')!==-1 || k.indexOf('gl_')!==-1)) toDelete.push(k);
-    }
-    toDelete.forEach(function(k){ localStorage.removeItem(k); });
-  } catch(e){}
-  window.location.replace(window.location.href.split('?')[0] + '?nocache=' + Date.now());
-}
-// Show refresh banner on mobile devices
-if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
-  var banner = document.getElementById('gl-refresh-banner');
-  if(banner) banner.style.display = 'block';
-}
-</script>
-
-<div class="gl-body">
-  <div class="gl-tabs">
-    <button class="gl-tab gl-tab-active" onclick="glShowTab('standings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-      <span>Standings</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('schedule')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span>Schedule</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('enter')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      <span>Enter Scores</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('roster')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      <span>Roster</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('playoffs')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
-      <span>Playoffs</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('prizes')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-      <span>Prizes</span>
-    </button>
-    <button class="gl-tab" onclick="glShowTab('history')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span>History</span>
-    </button>
-  </div>
-  <div id="gl-standings"></div>
-  <div id="gl-schedule" style="display:none"></div>
-  <div id="gl-enter" style="display:none"></div>
-  <div id="gl-roster" style="display:none"></div>
-  <div id="gl-playoffs" style="display:none"></div>
-  <div id="gl-prizes" style="display:none"></div>
-  <div id="gl-history" style="display:none"></div>
-</div>
-</div>
-
-<script>
-(function(){
-
-// ── Seed data ────────────────────────────────────────────────────────────
-var DEFAULT_TEAMS = [
-  {id:"t01",name:"The Toms"},
-  {id:"t02",name:"The Cartwrights"},
-  {id:"t03",name:"Par Tee Animals"},
-  {id:"t04",name:"Spa Twins"},
-  {id:"t05",name:"Nail Gunners"},
-  {id:"t06",name:"Billy & The Kid"},
-  {id:"t07",name:"Wreckid Playaz"},
-  {id:"t08",name:"Hosel Rocketz"},
-  {id:"t09",name:"Wilmington Warriors"},
-  {id:"t10",name:"Blastin Gas"},
-  {id:"t11",name:"The Gangstas"},
-  {id:"t12",name:"The Rookies"}
-];
-
-var DEFAULT_PLAYERS = [
-  // The Toms
-  {id:"p01",name:"Tom Freeman",    teamId:"t01", handicap:"4.21",quotaOverride:5.71},
-  {id:"p02",name:"Rich 'Sid' Sideri",    teamId:"t01", handicap:"4",quotaOverride:3.86},
-  // The Cartwrights
-  {id:"p03",name:"Fitzy",          teamId:"t02", handicap:"7.5",quotaOverride:6.13},
-  {id:"p04",name:"Joe Calnan",         teamId:"t02", handicap:"8",quotaOverride:7.75},
-  // Par Tee Animals
-  {id:"p05",name:"Ryan Davis",     teamId:"t03", handicap:"12",quotaOverride:11.83},
-  {id:"p06",name:"Phil Noto",      teamId:"t03", handicap:"11",quotaOverride:9.17},
-  // Spa Twins
-  {id:"p07",name:"Paul Freeman",   teamId:"t04", handicap:"11",quotaOverride:12.25},
-  {id:"p08",name:"Jerry Burke",    teamId:"t04", handicap:"8.67",quotaOverride:6.33},
-  // Nail Gunners
-  {id:"p09",name:"Mark Nalesnik",  teamId:"t05", handicap:"9.83",quotaOverride:8.0},
-  {id:"p10",name:"Nick Nalesnik",  teamId:"t05", handicap:"5.57",quotaOverride:6.0},
-  // Billy & The Kid
-  {id:"p11",name:"Billy Lunden",   teamId:"t06", handicap:"6.08",quotaOverride:4.33},
-  {id:"p12",name:"Ryan Wheeler",teamId:"t06",handicap:"10.93",quotaOverride:9.67},
-  // Wreckid Playaz
-  {id:"p13",name:"Henry Ryan",     teamId:"t07", handicap:"9.17",quotaOverride:10.0},
-  {id:"p14",name:"Roger Ennis",    teamId:"t07", handicap:"3.42",quotaOverride:3.29},
-  // Hosel Rocketz
-  {id:"p15",name:"Matt Amirault",  teamId:"t08", handicap:"14.25",quotaOverride:13.13},
-  {id:"p16",name:"Tim Speziale",   teamId:"t08", handicap:"13.79",quotaOverride:13.25},
-  // Wilmington Warriors
-  {id:"p17",name:"Sean Butler",    teamId:"t09", handicap:"12.36",quotaOverride:11.0},
-  {id:"p18",name:"Sil Ferreira",   teamId:"t09", handicap:"10.33",quotaOverride:9.5},
-  // Blastin Gas
-  {id:"p19",name:"Stevie P",       teamId:"t10", handicap:"7.5",quotaOverride:5.63},
-  {id:"p20",name:"Christos",       teamId:"t10", handicap:"7.5",quotaOverride:3.5},
-  // The Gangstas
-  {id:"p21",name:"Dickie Lunden",  teamId:"t11", handicap:"6.38",quotaOverride:7.38},
-  {id:"p22",name:"Pittsburgh Hank",teamId:"t11", handicap:"5.5",quotaOverride:5.6},
-  // The Rookies
-  {id:"p23",name:"Jeb Fisher",     teamId:"t12", handicap:"7.9",quotaOverride:8.86},
-  {id:"p24",name:"Dan Gregorio",   teamId:"t12", handicap:"7",quotaOverride:5.71},
-  // Sub pool
-  {id:"p25",name:"Angus McNeil",   teamId:null,  handicap:"7.5",quotaOverride:5.8},
-  {id:"p26",name:"Kevin Moran",    teamId:null,  handicap:"7",quotaOverride:3.0},
-  {id:"p27",name:"Vinnie G",       teamId:null,  handicap:"2",quotaOverride:2.2},
-  {id:"p28",name:"Tommy Stephens", teamId:null,  handicap:"9"}
-];
-
-// Starting quotas seeded from commissioner's spreadsheet (start_q column)
-// Stored as 3 identical "seed" rounds on 2026-05-01 (before season start)
-// so the rolling average begins correctly
-var SEED_DATE = "2026-05-01";
-var DEFAULT_ROUNDS = [];
-DEFAULT_PLAYERS.forEach(function(p){
-  if(!p.handicap) return;
-  var q = parseFloat(p.handicap);
-  if(isNaN(q)) return;
-  // seed 3 rounds so quota calculation starts correctly
-  for(var i=0;i<3;i++){
-    DEFAULT_ROUNDS.push({
-      id:"seed-"+p.id+"-"+i,
-      playerId:p.id,
-      teamId:p.teamId||null,
-      date:SEED_DATE,
-      points:q,
-      notes:"Opening quota seed",
-      isSub:false,
-      seed:true
-    });
-  }
-});
-
-// Real scores from weeks 1-5 (absent weeks omitted)
-var REAL_SCORES = [
-  // Week 1
-  {id:"r-p01-1",playerId:"p01",teamId:"t01",date:"2026-05-01",points:6,notes:"",isSub:false},
-  {id:"r-p02-1",playerId:"p02",teamId:"t01",date:"2026-05-01",points:4,notes:"",isSub:false},
-  {id:"r-p03-1",playerId:"p03",teamId:"t02",date:"2026-05-01",points:7,notes:"",isSub:false},
-  {id:"r-p04-1",playerId:"p04",teamId:"t02",date:"2026-05-01",points:11,notes:"",isSub:false},
-  {id:"r-p05-1",playerId:"p05",teamId:"t03",date:"2026-05-01",points:12,notes:"",isSub:false},
-  {id:"r-p06-1",playerId:"p06",teamId:"t03",date:"2026-05-01",points:10,notes:"",isSub:false},
-  {id:"r-p08-1",playerId:"p08",teamId:"t04",date:"2026-05-01",points:6,notes:"",isSub:false},
-  {id:"r-p09-1",playerId:"p09",teamId:"t05",date:"2026-05-01",points:14,notes:"",isSub:false},
-  {id:"r-p10-1",playerId:"p10",teamId:"t05",date:"2026-05-01",points:8,notes:"",isSub:false},
-  {id:"r-p13-1",playerId:"p13",teamId:"t07",date:"2026-05-01",points:13,notes:"",isSub:false},
-  {id:"r-p14-1",playerId:"p14",teamId:"t07",date:"2026-05-01",points:1,notes:"",isSub:false},
-  {id:"r-p15-1",playerId:"p15",teamId:"t08",date:"2026-05-01",points:14,notes:"",isSub:false},
-  {id:"r-p16-1",playerId:"p16",teamId:"t08",date:"2026-05-01",points:12,notes:"",isSub:false},
-  {id:"r-p17-1",playerId:"p17",teamId:"t09",date:"2026-05-01",points:11,notes:"",isSub:false},
-  {id:"r-p18-1",playerId:"p18",teamId:"t09",date:"2026-05-01",points:13,notes:"",isSub:false},
-  {id:"r-p19-1",playerId:"p19",teamId:"t10",date:"2026-05-01",points:3,notes:"",isSub:false},
-  {id:"r-p20-1",playerId:"p20",teamId:"t10",date:"2026-05-01",points:2,notes:"",isSub:false},
-  {id:"r-p21-1",playerId:"p21",teamId:"t11",date:"2026-05-01",points:10,notes:"",isSub:false},
-  {id:"r-p22-1",playerId:"p22",teamId:"t11",date:"2026-05-01",points:5,notes:"",isSub:false},
-  {id:"r-p23-1",playerId:"p23",teamId:"t12",date:"2026-05-01",points:7,notes:"",isSub:false},
-  {id:"r-p24-1",playerId:"p24",teamId:"t12",date:"2026-05-01",points:9,notes:"",isSub:false},
-  // Week 2
-  {id:"r-p01-2",playerId:"p01",teamId:"t01",date:"2026-05-08",points:7,notes:"",isSub:false},
-  {id:"r-p02-2",playerId:"p02",teamId:"t01",date:"2026-05-08",points:3,notes:"",isSub:false},
-  {id:"r-p03-2",playerId:"p03",teamId:"t02",date:"2026-05-08",points:3,notes:"",isSub:false},
-  {id:"r-p04-2",playerId:"p04",teamId:"t02",date:"2026-05-08",points:3,notes:"",isSub:false},
-  {id:"r-p05-2",playerId:"p05",teamId:"t03",date:"2026-05-08",points:10,notes:"",isSub:false},
-  {id:"r-p06-2",playerId:"p06",teamId:"t03",date:"2026-05-08",points:12,notes:"",isSub:false},
-  {id:"r-p08-2",playerId:"p08",teamId:"t04",date:"2026-05-08",points:8,notes:"",isSub:false},
-  {id:"r-p09-2",playerId:"p09",teamId:"t05",date:"2026-05-08",points:8,notes:"",isSub:false},
-  {id:"r-p10-2",playerId:"p10",teamId:"t05",date:"2026-05-08",points:5,notes:"",isSub:false},
-  {id:"r-p13-2",playerId:"p13",teamId:"t07",date:"2026-05-08",points:8,notes:"",isSub:false},
-  {id:"r-p14-2",playerId:"p14",teamId:"t07",date:"2026-05-08",points:0,notes:"",isSub:false},
-  {id:"r-p15-2",playerId:"p15",teamId:"t08",date:"2026-05-08",points:14,notes:"",isSub:false},
-  {id:"r-p16-2",playerId:"p16",teamId:"t08",date:"2026-05-08",points:17,notes:"",isSub:false},
-  {id:"r-p17-2",playerId:"p17",teamId:"t09",date:"2026-05-08",points:14,notes:"",isSub:false},
-  {id:"r-p19-2",playerId:"p19",teamId:"t10",date:"2026-05-08",points:6,notes:"",isSub:false},
-  {id:"r-p20-2",playerId:"p20",teamId:"t10",date:"2026-05-08",points:3,notes:"",isSub:false},
-  {id:"r-p21-2",playerId:"p21",teamId:"t11",date:"2026-05-08",points:1,notes:"",isSub:false},
-  {id:"r-p22-2",playerId:"p22",teamId:"t11",date:"2026-05-08",points:3,notes:"",isSub:false},
-  {id:"r-p23-2",playerId:"p23",teamId:"t12",date:"2026-05-08",points:8,notes:"",isSub:false},
-  // Week 3
-  {id:"r-p01-3",playerId:"p01",teamId:"t01",date:"2026-05-15",points:4,notes:"",isSub:false},
-  {id:"r-p02-3",playerId:"p02",teamId:"t01",date:"2026-05-15",points:5,notes:"",isSub:false},
-  {id:"r-p03-3",playerId:"p03",teamId:"t02",date:"2026-05-15",points:10,notes:"",isSub:false},
-  {id:"r-p04-3",playerId:"p04",teamId:"t02",date:"2026-05-15",points:6,notes:"",isSub:false},
-  {id:"r-p06-3",playerId:"p06",teamId:"t03",date:"2026-05-15",points:3,notes:"",isSub:false},
-  {id:"r-p08-3",playerId:"p08",teamId:"t04",date:"2026-05-15",points:5,notes:"",isSub:false},
-  {id:"r-p09-3",playerId:"p09",teamId:"t05",date:"2026-05-15",points:5,notes:"",isSub:false},
-  {id:"r-p10-3",playerId:"p10",teamId:"t05",date:"2026-05-15",points:3,notes:"",isSub:false},
-  {id:"r-p11-3",playerId:"p11",teamId:"t06",date:"2026-05-15",points:4,notes:"",isSub:false},
-  {id:"r-p13-3",playerId:"p13",teamId:"t07",date:"2026-05-15",points:8,notes:"",isSub:false},
-  {id:"r-p14-3",playerId:"p14",teamId:"t07",date:"2026-05-15",points:3,notes:"",isSub:false},
-  {id:"r-p15-3",playerId:"p15",teamId:"t08",date:"2026-05-15",points:15,notes:"",isSub:false},
-  {id:"r-p16-3",playerId:"p16",teamId:"t08",date:"2026-05-15",points:17,notes:"",isSub:false},
-  {id:"r-p17-3",playerId:"p17",teamId:"t09",date:"2026-05-15",points:13,notes:"",isSub:false},
-  {id:"r-p18-3",playerId:"p18",teamId:"t09",date:"2026-05-15",points:7,notes:"",isSub:false},
-  {id:"r-p19-3",playerId:"p19",teamId:"t10",date:"2026-05-15",points:6,notes:"",isSub:false},
-  {id:"r-p20-3",playerId:"p20",teamId:"t10",date:"2026-05-15",points:2,notes:"",isSub:false},
-  {id:"r-p21-3",playerId:"p21",teamId:"t11",date:"2026-05-15",points:6,notes:"",isSub:false},
-  {id:"r-p23-3",playerId:"p23",teamId:"t12",date:"2026-05-15",points:13,notes:"",isSub:false},
-  {id:"r-p24-3",playerId:"p24",teamId:"t12",date:"2026-05-15",points:7,notes:"",isSub:false},
-  // Week 4
-  {id:"r-p01-4",playerId:"p01",teamId:"t01",date:"2026-06-05",points:5,notes:"",isSub:false},
-  {id:"r-p02-4",playerId:"p02",teamId:"t01",date:"2026-06-05",points:4,notes:"",isSub:false},
-  {id:"r-p03-4",playerId:"p03",teamId:"t02",date:"2026-06-05",points:4,notes:"",isSub:false},
-  {id:"r-p04-4",playerId:"p04",teamId:"t02",date:"2026-06-05",points:8,notes:"",isSub:false},
-  {id:"r-p05-4",playerId:"p05",teamId:"t03",date:"2026-06-05",points:11,notes:"",isSub:false},
-  {id:"r-p06-4",playerId:"p06",teamId:"t03",date:"2026-06-05",points:10,notes:"",isSub:false},
-  {id:"r-p07-4",playerId:"p07",teamId:"t04",date:"2026-06-05",points:13,notes:"",isSub:false},
-  {id:"r-p09-4",playerId:"p09",teamId:"t05",date:"2026-06-05",points:5,notes:"",isSub:false},
-  {id:"r-p10-4",playerId:"p10",teamId:"t05",date:"2026-06-05",points:5,notes:"",isSub:false},
-  {id:"r-p11-4",playerId:"p11",teamId:"t06",date:"2026-06-05",points:5,notes:"",isSub:false},
-  {id:"r-p13-4",playerId:"p13",teamId:"t07",date:"2026-06-05",points:11,notes:"",isSub:false},
-  {id:"r-p14-4",playerId:"p14",teamId:"t07",date:"2026-06-05",points:6,notes:"",isSub:false},
-  {id:"r-p15-4",playerId:"p15",teamId:"t08",date:"2026-06-05",points:12,notes:"",isSub:false},
-  {id:"r-p16-4",playerId:"p16",teamId:"t08",date:"2026-06-05",points:10,notes:"",isSub:false},
-  {id:"r-p17-4",playerId:"p17",teamId:"t09",date:"2026-06-05",points:8,notes:"",isSub:false},
-  {id:"r-p18-4",playerId:"p18",teamId:"t09",date:"2026-06-05",points:10,notes:"",isSub:false},
-  {id:"r-p19-4",playerId:"p19",teamId:"t10",date:"2026-06-05",points:3,notes:"",isSub:false},
-  {id:"r-p20-4",playerId:"p20",teamId:"t10",date:"2026-06-05",points:3,notes:"",isSub:false},
-  {id:"r-p21-4",playerId:"p21",teamId:"t11",date:"2026-06-05",points:11,notes:"",isSub:false},
-  {id:"r-p24-4",playerId:"p24",teamId:"t12",date:"2026-06-05",points:4,notes:"",isSub:false},
-  // Week 5
-  {id:"r-p01-5",playerId:"p01",teamId:"t01",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p02-5",playerId:"p02",teamId:"t01",date:"2026-06-12",points:2,notes:"",isSub:false},
-  {id:"r-p03-5",playerId:"p03",teamId:"t02",date:"2026-06-12",points:5,notes:"",isSub:false},
-  {id:"r-p04-5",playerId:"p04",teamId:"t02",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p05-5",playerId:"p05",teamId:"t03",date:"2026-06-12",points:18,notes:"",isSub:false},
-  {id:"r-p06-5",playerId:"p06",teamId:"t03",date:"2026-06-12",points:9,notes:"",isSub:false},
-  {id:"r-p07-5",playerId:"p07",teamId:"t04",date:"2026-06-12",points:10,notes:"",isSub:false},
-  {id:"r-p08-5",playerId:"p08",teamId:"t04",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p09-5",playerId:"p09",teamId:"t05",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p10-5",playerId:"p10",teamId:"t05",date:"2026-06-12",points:6,notes:"",isSub:false},
-  {id:"r-p11-5",playerId:"p11",teamId:"t06",date:"2026-06-12",points:3,notes:"",isSub:false},
-  {id:"r-p13-5",playerId:"p13",teamId:"t07",date:"2026-06-12",points:9,notes:"",isSub:false},
-  {id:"r-p14-5",playerId:"p14",teamId:"t07",date:"2026-06-12",points:6,notes:"",isSub:false},
-  {id:"r-p15-5",playerId:"p15",teamId:"t08",date:"2026-06-12",points:11,notes:"",isSub:false},
-  {id:"r-p16-5",playerId:"p16",teamId:"t08",date:"2026-06-12",points:12,notes:"",isSub:false},
-  {id:"r-p17-5",playerId:"p17",teamId:"t09",date:"2026-06-12",points:9,notes:"",isSub:false},
-  {id:"r-p18-5",playerId:"p18",teamId:"t09",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p19-5",playerId:"p19",teamId:"t10",date:"2026-06-12",points:6,notes:"",isSub:false},
-  {id:"r-p20-5",playerId:"p20",teamId:"t10",date:"2026-06-12",points:4,notes:"",isSub:false},
-  {id:"r-p21-5",playerId:"p21",teamId:"t11",date:"2026-06-12",points:8,notes:"",isSub:false},
-  {id:"r-p22-5",playerId:"p22",teamId:"t11",date:"2026-06-12",points:6,notes:"",isSub:false},
-  {id:"r-p23-5",playerId:"p23",teamId:"t12",date:"2026-06-12",points:7,notes:"",isSub:false},
-  {id:"r-p24-5",playerId:"p24",teamId:"t12",date:"2026-06-12",points:4,notes:"",isSub:false},
-  // Week 6 — 2026-06-25
-  {id:"r-p03-6",playerId:"p03",teamId:"t02",date:"2026-06-25",points:3,notes:"",isSub:false},
-  {id:"r-p04-6",playerId:"p04",teamId:"t02",date:"2026-06-25",points:6,notes:"",isSub:false},
-  {id:"r-p21-6",playerId:"p21",teamId:"t11",date:"2026-06-25",points:4,notes:"",isSub:false},
-  {id:"r-p07-6",playerId:"p07",teamId:"t04",date:"2026-06-25",points:13,notes:"",isSub:false},
-  {id:"r-p27-6",playerId:"p27",teamId:"t04",date:"2026-06-25",points:2,notes:"",isSub:true},
-  {id:"r-p23-6",playerId:"p23",teamId:"t12",date:"2026-06-25",points:9,notes:"",isSub:false},
-  {id:"r-p24-6",playerId:"p24",teamId:"t12",date:"2026-06-25",points:5,notes:"",isSub:false},
-  {id:"r-p26-6",playerId:"p26",teamId:"t01",date:"2026-06-25",points:2,notes:"",isSub:true},
-  {id:"r-p02-6",playerId:"p02",teamId:"t01",date:"2026-06-25",points:5,notes:"",isSub:false},
-  {id:"r-forfeit-t03-6",playerId:null,teamId:"t03",date:"2026-06-25",points:0,notes:"No show forfeit",isSub:false,penalty:true},
-  {id:"r-p13-6",playerId:"p13",teamId:"t07",date:"2026-06-25",points:10,notes:"",isSub:false},
-  {id:"r-p14-6",playerId:"p14",teamId:"t07",date:"2026-06-25",points:3,notes:"",isSub:false},
-  {id:"r-p09-6",playerId:"p09",teamId:"t05",date:"2026-06-25",points:13,notes:"",isSub:false},
-  {id:"r-p25-6",playerId:"p25",teamId:"t05",date:"2026-06-25",points:6,notes:"",isSub:true},
-  {id:"r-p19-6",playerId:"p19",teamId:"t10",date:"2026-06-25",points:8,notes:"",isSub:false},
-  {id:"r-p20-6",playerId:"p20",teamId:"t10",date:"2026-06-25",points:7,notes:"",isSub:false},
-  {id:"r-p11-6",playerId:"p11",teamId:"t06",date:"2026-06-25",points:6,notes:"",isSub:false},
-  {id:"r-p12-6",playerId:"p12",teamId:"t06",date:"2026-06-25",points:14,notes:"",isSub:false},
-  {id:"r-p17-6",playerId:"p17",teamId:"t09",date:"2026-06-25",points:12,notes:"",isSub:false},
-  {id:"r-p15-6",playerId:"p15",teamId:"t08",date:"2026-06-25",points:17,notes:"",isSub:false},
-  {id:"r-p16-6",playerId:"p16",teamId:"t08",date:"2026-06-25",points:12,notes:"",isSub:false},
-  // Week 7 — 2026-07-02
-  {id:"r-p11-7",playerId:"p11",teamId:"t06",date:"2026-07-02",points:5,notes:"",isSub:false},
-  {id:"r-p12-7",playerId:"p12",teamId:"t06",date:"2026-07-02",points:5,notes:"",isSub:false},
-  {id:"r-p23-7",playerId:"p23",teamId:"t12",date:"2026-07-02",points:9,notes:"",isSub:false},
-  {id:"r-p24-7",playerId:"p24",teamId:"t12",date:"2026-07-02",points:3,notes:"",isSub:false},
-  {id:"r-p03-7",playerId:"p03",teamId:"t02",date:"2026-07-02",points:7,notes:"",isSub:false},
-  {id:"r-p04-7",playerId:"p04",teamId:"t02",date:"2026-07-02",points:11,notes:"",isSub:false},
-  {id:"r-p09-7",playerId:"p09",teamId:"t05",date:"2026-07-02",points:8,notes:"",isSub:false},
-  {id:"r-p10-7",playerId:"p10",teamId:"t05",date:"2026-07-02",points:7,notes:"",isSub:false},
-  {id:"r-p05-7",playerId:"p05",teamId:"t03",date:"2026-07-02",points:12,notes:"",isSub:false},
-  {id:"r-p19-7",playerId:"p19",teamId:"t10",date:"2026-07-02",points:9,notes:"",isSub:false},
-  {id:"r-p20-7",playerId:"p20",teamId:"t10",date:"2026-07-02",points:5,notes:"",isSub:false},
-  {id:"r-p07-7",playerId:"p07",teamId:"t04",date:"2026-07-02",points:13,notes:"",isSub:false},
-  {id:"r-p08-7",playerId:"p08",teamId:"t04",date:"2026-07-02",points:3,notes:"",isSub:false},
-  {id:"r-p15-7",playerId:"p15",teamId:"t08",date:"2026-07-02",points:10,notes:"",isSub:false},
-  {id:"r-p16-7",playerId:"p16",teamId:"t08",date:"2026-07-02",points:13,notes:"",isSub:false},
-  {id:"r-p01-7",playerId:"p01",teamId:"t01",date:"2026-07-02",points:6,notes:"",isSub:false},
-  {id:"r-p17-7",playerId:"p17",teamId:"t09",date:"2026-07-02",points:10,notes:"",isSub:false},
-  {id:"r-p18-7",playerId:"p18",teamId:"t09",date:"2026-07-02",points:9,notes:"",isSub:false},
-  {id:"r-p13-7",playerId:"p13",teamId:"t07",date:"2026-07-02",points:11,notes:"",isSub:false},
-  {id:"r-p27-7",playerId:"p27",teamId:"t07",date:"2026-07-02",points:0,notes:"",isSub:true},
-  {id:"r-p21-7",playerId:"p21",teamId:"t11",date:"2026-07-02",points:9,notes:"",isSub:false},
-  {id:"r-p22-7",playerId:"p22",teamId:"t11",date:"2026-07-02",points:3,notes:"",isSub:false},
-  // Week 8 — 2026-07-09
-  {id:"r-p03-8",playerId:"p03",teamId:"t02",date:"2026-07-09",points:10,notes:"",isSub:false},
-  {id:"r-p04-8",playerId:"p04",teamId:"t02",date:"2026-07-09",points:10,notes:"",isSub:false},
-  {id:"r-p19-8",playerId:"p19",teamId:"t10",date:"2026-07-09",points:4,notes:"",isSub:false},
-  {id:"r-p20-8",playerId:"p20",teamId:"t10",date:"2026-07-09",points:2,notes:"",isSub:false},
-  {id:"r-p23-8",playerId:"p23",teamId:"t12",date:"2026-07-09",points:9,notes:"",isSub:false},
-  {id:"r-p24-8",playerId:"p24",teamId:"t12",date:"2026-07-09",points:8,notes:"",isSub:false},
-  {id:"r-forfeit-t09-8",playerId:null,teamId:"t09",date:"2026-07-09",points:0,notes:"No show forfeit",isSub:false,penalty:true},
-  {id:"r-p05-8",playerId:"p05",teamId:"t03",date:"2026-07-09",points:8,notes:"",isSub:false},
-  {id:"r-p06-8",playerId:"p06",teamId:"t03",date:"2026-07-09",points:11,notes:"",isSub:false},
-  {id:"r-p11-8",playerId:"p11",teamId:"t06",date:"2026-07-09",points:3,notes:"",isSub:false},
-  {id:"r-p12-8",playerId:"p12",teamId:"t06",date:"2026-07-09",points:10,notes:"",isSub:false},
-  {id:"r-p09-8",playerId:"p09",teamId:"t05",date:"2026-07-09",points:4,notes:"",isSub:false},
-  {id:"r-p10-8",playerId:"p10",teamId:"t05",date:"2026-07-09",points:8,notes:"",isSub:false},
-  {id:"r-p01-8",playerId:"p01",teamId:"t01",date:"2026-07-09",points:5,notes:"",isSub:false},
-  {id:"r-p02-8",playerId:"p02",teamId:"t01",date:"2026-07-09",points:4,notes:"",isSub:false},
-  {id:"r-p14-8",playerId:"p14",teamId:"t07",date:"2026-07-09",points:4,notes:"",isSub:false},
-  {id:"r-p13-8",playerId:"p13",teamId:"t07",date:"2026-07-09",points:9,notes:"",isSub:false},
-  {id:"r-p08-8",playerId:"p08",teamId:"t04",date:"2026-07-09",points:9,notes:"",isSub:false},
-  {id:"r-p26-8",playerId:"p26",teamId:"t04",date:"2026-07-09",points:4,notes:"",isSub:true},
-  {id:"r-p15-8",playerId:"p15",teamId:"t08",date:"2026-07-09",points:12,notes:"",isSub:false},
-  {id:"r-p16-8",playerId:"p16",teamId:"t08",date:"2026-07-09",points:13,notes:"",isSub:false},
-  {id:"r-p21-8",playerId:"p21",teamId:"t11",date:"2026-07-09",points:10,notes:"",isSub:false},
-  {id:"r-penalty-t11-8",playerId:null,teamId:"t11",date:"2026-07-09",points:0,notes:"Absent partner penalty",isSub:false,penalty:true},
-  // Week 9 — 2026-07-16
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {id:"r-p01-9",playerId:"p01",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p02-9",playerId:"p02",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p03-9",playerId:"p03",teamId:"t02",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p04-9",playerId:"p04",teamId:"t02",date:"2026-07-16",points:7,notes:"",isSub:false},
-  {id:"r-p05-9",playerId:"p05",teamId:"t03",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p06-9",playerId:"p06",teamId:"t03",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p07-9",playerId:"p07",teamId:"t04",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p08-9",playerId:"p08",teamId:"t04",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p09-9",playerId:"p09",teamId:"t05",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p10-9",playerId:"p10",teamId:"t05",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p11-9",playerId:"p11",teamId:"t06",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p12-9",playerId:"p12",teamId:"t06",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p13-9",playerId:"p13",teamId:"t07",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p14-9",playerId:"p14",teamId:"t07",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p15-9",playerId:"p15",teamId:"t08",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p16-9",playerId:"p16",teamId:"t08",date:"2026-07-16",points:13,notes:"",isSub:false},
-  {id:"r-p17-9",playerId:"p17",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p18-9",playerId:"p18",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p19-9",playerId:"p19",teamId:"t10",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p20-9",playerId:"p20",teamId:"t10",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p21-9",playerId:"p21",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p22-9",playerId:"p22",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p23-9",playerId:"p23",teamId:"t12",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p24-9",playerId:"p24",teamId:"t12",date:"2026-07-16",points:4,notes:"",isSub:false},
-];
-REAL_SCORES.forEach(function(r){ DEFAULT_ROUNDS.push(r); });
-
-// W/L records from commissioner's spreadsheet (through week 3)
-// Encoded as synthetic matchup results — we store these as pre-loaded playoffResults
-// but actually we track them in a separate seedRecords field
-var SEED_RECORDS = {
-  "t01":{w:4,l:5,t:0},   // The Toms        4-5
-  "t02":{w:7,l:2,t:0},   // Cartwrights     7-2
-  "t03":{w:4,l:4,t:1},   // Par Tee Animals 4-4-1
-  "t04":{w:7,l:1,t:1},   // Spa Twins       7-1-1
-  "t05":{w:2,l:6,t:1},   // Nail Gunners    2-6-1
-  "t06":{w:2,l:6,t:1},   // Billy & The Kid 2-6-1
-  "t07":{w:5,l:3,t:1},   // Wreckid Playaz  5-3-1
-  "t08":{w:5,l:4,t:0},   // Hosel Rocketz   5-4
-  "t09":{w:1,l:6,t:2},   // Wilmington      1-6-2
-  "t10":{w:3,l:5,t:1},   // Blastin Gas     3-5-1
-  "t11":{w:5,l:4,t:0},   // The Gangstas    5-4
-  "t12":{w:5,l:4,t:0},   // The Rookies     5-4
-};
-
-// CTP winners weeks 1-5 (2 per week, $20 prize)
-var DEFAULT_CTP = [
-  // Week 1: Matt A, Ryan D
-  {id:"ctp-w1-1",week:1,hole:0,playerId:"p15",distance:"",notes:""},
-  {id:"ctp-w1-2",week:1,hole:0,playerId:"p05",distance:"",notes:""},
-  // Week 2: Matt A, JB (Jerry Burke)
-  {id:"ctp-w2-1",week:2,hole:0,playerId:"p15",distance:"",notes:""},
-  {id:"ctp-w2-2",week:2,hole:0,playerId:"p08",distance:"",notes:""},
-  // Week 3: Roger & Dan (tied), Billy L
-  {id:"ctp-w3-1",week:3,hole:0,playerId:"p14",distance:"tied",notes:"Tied"},
-  {id:"ctp-w3-2",week:3,hole:0,playerId:"p24",distance:"tied",notes:"Tied"},
-  {id:"ctp-w3-3",week:3,hole:0,playerId:"p11",distance:"",notes:""},
-  // Week 4: Sean, Phil
-  {id:"ctp-w4-1",week:4,hole:0,playerId:"p17",distance:"",notes:""},
-  {id:"ctp-w4-2",week:4,hole:0,playerId:"p06",distance:"",notes:""},
-  // Week 5: Ryan Davis x2
-  {id:"ctp-w5-1",week:5,hole:12,playerId:"p05",distance:"5'",slotKey:"w5-ctp1"},
-  {id:"ctp-w5-2",week:5,hole:16,playerId:"p05",distance:"10'9\"",slotKey:"w5-ctp2"},
-  // Week 6: not recorded on sheet
-  // Week 7: Paul Freeman, Mark Nalesnik
-  {id:"ctp-w7-1",week:7,hole:0,playerId:"p07",distance:"",slotKey:"w7-ctp1"},
-  {id:"ctp-w7-2",week:7,hole:0,playerId:"p09",distance:"",slotKey:"w7-ctp2"},
-  // Week 8: Mark Nalesnik, Ryan Davis
-  // Week 8: Mark Nalesnik, Ryan Davis
-  {id:"ctp-w8-1",week:8,hole:0,playerId:"p09",distance:"16'5\"",slotKey:"w8-ctp1"},
-  {id:"ctp-w8-2",week:8,hole:0,playerId:"p05",distance:"4'8\"",slotKey:"w8-ctp2"},
-  // Week 9: Tim Speziale x2 (front 9)
-  {id:"ctp-w9-1",week:9,hole:6,playerId:"p16",distance:"15'10\"",slotKey:"w9-ctp1"},
-  {id:"ctp-w9-2",week:9,hole:8,playerId:"p16",distance:"7'8\"",slotKey:"w9-ctp2"},
-  {id:"r-p01-9",playerId:"p01",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p02-9",playerId:"p02",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p03-9",playerId:"p03",teamId:"t02",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p04-9",playerId:"p04",teamId:"t02",date:"2026-07-16",points:7,notes:"",isSub:false},
-  {id:"r-p05-9",playerId:"p05",teamId:"t03",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p06-9",playerId:"p06",teamId:"t03",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p07-9",playerId:"p07",teamId:"t04",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p08-9",playerId:"p08",teamId:"t04",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p09-9",playerId:"p09",teamId:"t05",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p10-9",playerId:"p10",teamId:"t05",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p11-9",playerId:"p11",teamId:"t06",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p12-9",playerId:"p12",teamId:"t06",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p13-9",playerId:"p13",teamId:"t07",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p14-9",playerId:"p14",teamId:"t07",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p15-9",playerId:"p15",teamId:"t08",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p16-9",playerId:"p16",teamId:"t08",date:"2026-07-16",points:13,notes:"",isSub:false},
-  {id:"r-p17-9",playerId:"p17",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p18-9",playerId:"p18",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p19-9",playerId:"p19",teamId:"t10",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p20-9",playerId:"p20",teamId:"t10",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p21-9",playerId:"p21",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p22-9",playerId:"p22",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p23-9",playerId:"p23",teamId:"t12",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p24-9",playerId:"p24",teamId:"t12",date:"2026-07-16",points:4,notes:"",isSub:false},
-  // Week 10: TBD — pending results sheet
-];
-
-// 11-week rotating schedule starting June 9
-var DEFAULT_SCHEDULE = [
-  {week:1, date:"2026-05-01", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
-  {week:2, date:"2026-05-08", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
-  {week:3, date:"2026-05-15", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
-  {week:4, date:"2026-06-05", matchups:[{home:"t07",away:"t09"},{home:"t02",away:"t12"},{home:"t03",away:"t05"},{home:"t04",away:"t06"},{home:"t11",away:"t01"},{home:"t08",away:"t10"}]},
-  {week:5, date:"2026-06-12", matchups:[{home:"t06",away:"t10"},{home:"t07",away:"t12"},{home:"t09",away:"t05"},{home:"t04",away:"t01"},{home:"t11",away:"t03"},{home:"t02",away:"t08"}]},
-  {week:6, date:"2026-06-25", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
-  {week:7, date:"2026-07-02", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
-  {week:8, date:"2026-07-09", matchups:[{home:"t02",away:"t10"},{home:"t01",away:"t05"},{home:"t03",away:"t06"},{home:"t04",away:"t07"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:9, date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t11",away:"t06"},{home:"t03",away:"t12"},{home:"t04",away:"t09"},{home:"t01",away:"t10"},{home:"t08",away:"t05"}]},
-  {week:10,date:"2026-07-23", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
-  {week:11,date:"2026-07-30", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
-  {week:12,date:"2026-08-06", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
-  {week:13,date:"2026-08-13", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
-  {week:14,date:"2026-08-20", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
-  {week:15,date:"2026-08-27", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
-  {week:16,date:"2026-09-03", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
-  {week:17,date:"2026-09-10", matchups:[{home:"t02",away:"t10"},{home:"t01",away:"t05"},{home:"t03",away:"t06"},{home:"t04",away:"t07"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:18,date:"2026-09-17", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]}
-];
-
-var S = {
-  players:DEFAULT_PLAYERS,
-  teams:DEFAULT_TEAMS,
-  rounds:DEFAULT_ROUNDS,
-  schedule:DEFAULT_SCHEDULE,
-  playoffResults:[],
-  ctp:DEFAULT_CTP,
-  seedRecords:SEED_RECORDS,
-  seedIndivPrize:[
-    {week:1,playerId:"p09",points:14, quota:9.83, margin:4.17,notes:"Wk1 $50"},  // Mark Nalesnik
-    {week:2,playerId:"p16",points:17, quota:13.79,margin:3.21,notes:"Wk2 $50"},  // Tim Speziale
-    {week:3,playerId:"p23",points:13, quota:7.9,  margin:5.1, notes:"Wk3 $50"},  // Jeb Fisher
-    {week:4,playerId:"p21",points:11, quota:6.38, margin:4.62,notes:"Wk4 $50"},  // Dickie Lunden
-    {week:5,playerId:"p05",points:18, quota:11.33,margin:6.67,notes:"Wk5 $50"},  // Ryan Davis
-    {week:7, playerId:"p22",points:null,quota:null,margin:null,notes:"Wk7 $50"},  // Pittsburgh Hank
-    {week:8, playerId:"p04",points:null,quota:null,margin:null,notes:"Wk8 $50"},  // Joe Calnan
-    {week:9, playerId:"p06",points:null,quota:null,margin:null,notes:"Wk9 $50"}   // Phil Noto
-  ]
-};
-
-var KEY = 'golf_league_v30';
-var PREV_KEYS = ['golf_league_v13','golf_league_v12','golf_league_v11','golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
-
-function load(){
-  try {
-    // ALWAYS start from the code defaults — teams, players, schedule,
-    // seed rounds, CTPs and prize data are always current from the file.
-    // We only preserve manually-entered rounds and playoff results from localStorage.
-    var manualRounds = [];
-    var playoffResults = [];
-
-    // Check current and all previous keys for manually entered data
-    var allKeys = [KEY].concat(PREV_KEYS);
-    var defaultRoundIds = DEFAULT_ROUNDS.map(function(r){ return r.id; });
-
-    for(var i=0;i<allKeys.length;i++){
-      try {
-        var raw = localStorage.getItem(allKeys[i]);
-        if(!raw) continue;
-        var old = JSON.parse(raw);
-        // Grab rounds that were manually entered (not seeds, not in DEFAULT_ROUNDS)
-        var manual = (old.rounds||[]).filter(function(r){
-          return !r.seed && defaultRoundIds.indexOf(r.id)===-1;
-        });
-        if(manual.length > manualRounds.length) manualRounds = manual;
-        if((old.playoffResults||[]).length > playoffResults.length) playoffResults = old.playoffResults||[];
-      } catch(e){}
-    }
-
-    // S is already initialised with all defaults — just layer in manual data
-    manualRounds.forEach(function(r){ S.rounds.push(r); });
-    if(playoffResults.length) S.playoffResults = playoffResults;
-
-    // Persist the merged state
-    save();
-  } catch(e){ save(); }
-}
-function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function today(){ return new Date().toISOString().split('T')[0]; }
-function el(id){ return document.getElementById(id); }
-function playerById(id){ return S.players.filter(function(p){return p.id===id;})[0]; }
-function teamById(id){ return S.teams.filter(function(t){return t.id===id;})[0]; }
-function teamName(id){ var t=teamById(id); return t?t.name:'TBD'; }
-
-// ── Quota (one decimal, ignoring seed rounds for "at time" calc) ─────────
-window.glSetQuotaOverride=function(pid,val){
-  var p=S.players.filter(function(x){return x.id===pid;})[0];
-  if(!p) return;
-  var num=parseFloat(val);
-  if(isNaN(num)||val===''){ delete p.quotaOverride; }
-  else { p.quotaOverride=Math.round(num*10)/10; }
-  save();glRenderRoster();
-};
-
-// Quota = override if set, otherwise avg of ALL real rounds, otherwise starting quota
-function getQuota(pid){
-  var p=S.players.filter(function(x){return x.id===pid;})[0];
-  if(p&&p.quotaOverride!=null) return p.quotaOverride;
-  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&!r.penalty;});
-  if(rds.length){
-    return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
-  }
-  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;});
-  if(!seeds.length) return null;
-  return seeds[0].points;
-}
-
-function getQuotaAt(pid,before){
-  var rds=S.rounds.filter(function(r){return r.playerId===pid&&!r.seed&&!r.penalty&&r.date<before;});
-  if(rds.length){
-    return Math.round(rds.reduce(function(s,r){return s+r.points;},0)/rds.length*10)/10;
-  }
-  var seeds=S.rounds.filter(function(r){return r.playerId===pid&&r.seed;});
-  if(!seeds.length) return null;
-  return seeds[0].points;
-}
-
-// ── Team net for date ────────────────────────────────────────────────────
-function teamNetOnDate(teamId,date){
-  var rds=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
-  if(!rds.length) return null;
-  // If all entries are penalty/forfeit with no player scores, return large negative
-  var hasRealScores=rds.filter(function(r){return !r.penalty&&r.playerId;}).length>0;
-  if(!hasRealScores) return -99;
-  var net=0;
-  var penaltyCount=rds.filter(function(r){return r.penalty;}).length;
-  rds.filter(function(r){return !r.penalty&&r.playerId;}).forEach(function(r){
-    var q=getQuotaAt(r.playerId,r.date);
-    net+=r.points-(q!==null?q:r.points);
-  });
-  net-=(penaltyCount*3);
-  return Math.round(net*10)/10;
-}
-
-function matchupResult(m,date){
-  var hn=teamNetOnDate(m.home,date), an=teamNetOnDate(m.away,date);
-  if(hn===null||an===null) return {played:false};
-  return {played:true,homeNet:hn,awayNet:an,homeWin:hn>an,awayWin:an>hn,tie:hn===an};
-}
-
-// ── Team stats — combine seed records + live results ─────────────────────
-var SEED_RECORDS_THROUGH_WEEK = 10; // seed records cover weeks 1-10
-
-function teamStats(teamId){
-  var sr=S.seedRecords&&S.seedRecords[teamId]?S.seedRecords[teamId]:{w:0,l:0,t:0};
-  var wins=sr.w, losses=sr.l, ties=sr.t*0.5, seasonNet=0, weeksPlayed=sr.w+sr.l+sr.t;
-  S.schedule.forEach(function(week){
-    if(week.week <= SEED_RECORDS_THROUGH_WEEK) return; // already in seed records
-    week.matchups.forEach(function(m){
-      var isHome=m.home===teamId, isAway=m.away===teamId;
-      if(!isHome&&!isAway) return;
-      var res=matchupResult(m,week.date);
-      if(!res.played) return;
-      weeksPlayed++;
-      var myNet=isHome?res.homeNet:res.awayNet;
-      seasonNet+=myNet;
-      if(res.tie){ ties+=0.5; }
-      else if((isHome&&res.homeWin)||(isAway&&res.awayWin)){ wins++; }
-      else { losses++; }
-    });
-  });
-  return {wins:wins,losses:losses,ties:ties,seasonNet:Math.round(seasonNet*10)/10,weeksPlayed:weeksPlayed};
-}
-
-// ── Leaderboards ─────────────────────────────────────────────────────────
-function buildTeamLB(){
-  return S.teams.map(function(t){
-    var stats=teamStats(t.id);
-    var members=S.players.filter(function(p){return p.teamId===t.id;});
-    var pts=stats.wins+stats.ties;
-    return {team:t,members:members,pts:pts,wins:stats.wins,losses:stats.losses,ties:stats.ties,seasonNet:stats.seasonNet,weeksPlayed:stats.weeksPlayed};
-  }).sort(function(a,b){
-    if(b.pts!==a.pts) return b.pts-a.pts;
-    return b.seasonNet-a.seasonNet;
-  });
-}
-
-function buildPlayerLB(){
-  return S.players.map(function(p){
-    var rds=S.rounds.filter(function(r){return r.playerId===p.id&&!r.seed;})
-      .sort(function(a,b){return new Date(b.date)-new Date(a.date);});
-    var quota=getQuota(p.id);
-    var net=0;
-    rds.forEach(function(r){ var q=getQuotaAt(p.id,r.date); net+=r.points-(q!==null?q:r.points); });
-    return {player:p,quota:quota,rounds:rds.length,
-      lastPoints:rds[0]?rds[0].points:null,lastDate:rds[0]?rds[0].date:null,
-      seasonNet:rds.length?Math.round(net*10)/10:null};
-  }).sort(function(a,b){
-    if(a.seasonNet===null&&b.seasonNet===null) return 0;
-    if(a.seasonNet===null) return 1; if(b.seasonNet===null) return -1;
-    return b.seasonNet-a.seasonNet;
-  });
-}
-
-// ── Render: Standings ────────────────────────────────────────────────────
-var standingsSub='teams';
-function glRenderStandings(){
-  var tlb=buildTeamLB(), plb=buildPlayerLB();
-  var weeksPlayed=tlb.length?Math.max.apply(null,tlb.map(function(t){return t.weeksPlayed;})):0;
-
-  var html='<div class="gl-metrics">'
-    +'<div class="gl-metric"><div class="gl-metric-label">Teams</div><div class="gl-metric-value">'+S.teams.length+'</div></div>'
-    +'<div class="gl-metric"><div class="gl-metric-label">Players</div><div class="gl-metric-value">'+S.players.length+'</div></div>'
-    +'<div class="gl-metric"><div class="gl-metric-label">Weeks played</div><div class="gl-metric-value">'+weeksPlayed+'<span style="font-size:16px;color:var(--gl-text-light)">/18</span></div></div>'
-    +'<div class="gl-metric"><div class="gl-metric-label">Playoff spots</div><div class="gl-metric-value" style="font-size:26px">All 12</div><div class="gl-metric-sub">all teams qualify</div></div>'
-    +'</div>';
-
-  html+='<div class="gl-subtabs">'
-    +'<button class="gl-subtab'+(standingsSub==='teams'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'teams\')">&nbsp;&nbsp;Team standings&nbsp;&nbsp;</button>'
-    +'<button class="gl-subtab'+(standingsSub==='players'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'players\')">&nbsp;&nbsp;Individual standings&nbsp;&nbsp;</button>'
-    +'</div>';
-
-  if(standingsSub==='teams'){
-    html+='<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-      +'<th>#</th><th>Team</th><th>Members</th><th>W</th><th>L</th><th>T</th><th>Pts</th><th>Status</th>'
-      +'</tr></thead><tbody>';
-    tlb.forEach(function(row,i){
-      var rank=i+1;
-      var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'<span class="gl-rank-num">'+rank+'</span>';
-      var ptsDisp=row.pts%1===0?row.pts:row.pts.toFixed(1);
-      var members=row.members.map(function(p){return p.name;}).join(' &amp; ')||'<span class="gl-muted">TBA</span>';
-      var status=rank<=3
-        ?'<span class="gl-badge gl-badge-playoff">Playoff</span>'
-        :rank<=6?'<span class="gl-badge gl-badge-playoff">Playoff</span>'
-        :'<span class="gl-badge gl-badge-playoff">Playoff</span>';
-      html+='<tr>'+
-        '<td>'+medal+'</td>'+
-        '<td class="gl-pname">'+row.team.name+'</td>'+
-        '<td class="gl-muted">'+members+'</td>'+
-        '<td style="font-weight:600;color:#1a6b33;font-size:18px">'+row.wins+'</td>'+
-        '<td style="font-weight:600;color:#9b2828;font-size:18px">'+row.losses+'</td>'+
-        '<td class="gl-muted">'+(row.ties?row.ties:'—')+'</td>'+
-        '<td style="font-weight:600;font-size:18px">'+ptsDisp+'</td>'+
-        '<td>'+status+'</td>'+
-        '</tr>';
-    });
-    html+='</tbody></table></div>'
-      +'<div class="gl-notice">Sorted by win points (W=1, T=0.5, L=0). Records include all weeks played to date. All 12 teams qualify for the playoffs.</div>'
-      +'</div>';
-  } else {
-    html+='<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-      +'<th>#</th><th>Player</th><th>Team</th><th>Quota</th><th>Last score</th><th>vs Quota</th><th>Season net</th><th>Rds</th>'
-      +'</tr></thead><tbody>';
-    plb.forEach(function(row,i){
-      var rank=i+1;
-      var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'<span class="gl-rank-num">'+rank+'</span>';
-      var team=row.player.teamId?teamName(row.player.teamId):'<span class="gl-muted">Sub pool</span>';
-      var quota=row.quota!==null?row.quota:'<span class="gl-muted">—</span>';
-      var last=row.lastPoints!==null?row.lastPoints:'<span class="gl-muted">—</span>';
-      var lastD=row.lastDate?'<span class="gl-muted"> '+row.lastDate+'</span>':'';
-      var vsBadge='<span class="gl-muted">—</span>';
-      if(row.lastPoints!==null&&row.quota!==null){
-        var diff=Math.round((row.lastPoints-row.quota)*10)/10,sign=diff>=0?'+':'';
-        var cls=diff>0?'gl-badge-up':diff<0?'gl-badge-down':'gl-badge-even';
-        vsBadge='<span class="gl-badge '+cls+'">'+sign+diff+'</span>';
-      }
-      var netD='<span class="gl-muted">—</span>';
-      if(row.seasonNet!==null){
-        var s=row.seasonNet>=0?'+':'',nc=row.seasonNet>0?'gl-net-pos':row.seasonNet<0?'gl-net-neg':'';
-        netD='<span class="'+nc+'">'+s+row.seasonNet+'</span>';
-      }
-      html+='<tr><td>'+medal+'</td><td class="gl-pname">'+row.player.name+'</td><td class="gl-muted">'+team+'</td><td>'+quota+'</td><td>'+last+lastD+'</td><td>'+vsBadge+'</td><td>'+netD+'</td><td class="gl-muted">'+row.rounds+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-  }
-  el('gl-standings').innerHTML=html;
-}
-window.glStandingsSub=function(s){standingsSub=s;glRenderStandings();};
-
-// ── Render: Schedule ─────────────────────────────────────────────────────
-function glRenderSchedule(){
-  var html='';
-  S.schedule.forEach(function(week){
-    var allPlayed=week.matchups.every(function(m){return matchupResult(m,week.date).played;});
-    var anyPlayed=week.matchups.some(function(m){return matchupResult(m,week.date).played;});
-    var weekStatus=allPlayed?'<span class="gl-badge gl-badge-win">Complete</span>'
-      :anyPlayed?'<span class="gl-badge gl-badge-tie">In progress</span>'
-      :week.date<=today()?'<span class="gl-badge gl-badge-sub">Pending scores</span>':'';
-    html+='<div class="gl-card">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">'
-      +'<span class="gl-card-title" style="margin-bottom:0">Week '+week.week+' <span style="font-weight:400;font-family:\'DM Sans\',sans-serif;font-size:16px;color:var(--gl-text-light)">'+week.date+'</span></span>'
-      +weekStatus+'</div>';
-    week.matchups.forEach(function(m){
-      var res=matchupResult(m,week.date);
-      var homeT=teamById(m.home),awayT=teamById(m.away);
-      html+='<div class="gl-matchup-card">'
-        +'<div class="gl-vs-row">'
-        +'<div><div class="gl-team-side-name"'+(res.played&&res.homeWin?' style="color:#1a6b33"':res.played&&!res.homeWin&&!res.tie?' style="color:#9b2828"':'')+'>'+( homeT?homeT.name:'?')+'</div>'
-        +(res.played?'<div class="gl-team-side-detail">Net: '+(res.homeNet>=0?'+':'')+res.homeNet+'</div>':'')+'</div>'
-        +'<div class="gl-vs">vs</div>'
-        +'<div style="text-align:right"><div class="gl-team-side-name"'+(res.played&&res.awayWin?' style="color:#1a6b33"':res.played&&!res.awayWin&&!res.tie?' style="color:#9b2828"':'')+'>'+( awayT?awayT.name:'?')+'</div>'
-        +(res.played?'<div class="gl-team-side-detail">Net: '+(res.awayNet>=0?'+':'')+res.awayNet+'</div>':'')+'</div>'
-        +'</div>';
-      if(res.played){
-        html+='<div class="gl-result-row">✓ '+(res.tie?'Tie — 0.5 pts each':'Winner: <strong>'+(res.homeWin?homeT.name:awayT.name)+'</strong>')+'</div>';
-      }
-      html+='</div>';
-    });
-    html+='</div>';
-  });
-  el('gl-schedule').innerHTML=html||'<div class="gl-empty"><p>No schedule loaded.</p></div>';
-}
-
-// ── Render: Enter Score ──────────────────────────────────────────────────
-var enterWeek=null,enterMatchup=null;
-function glRenderEnter(){
-  if(!S.teams.length){el('gl-enter').innerHTML='<div class="gl-card"><p>Add teams first.</p></div>';return;}
-  if(!enterWeek){
-    var now=today();
-    for(var i=0;i<S.schedule.length;i++){ if(S.schedule[i].date<=now) enterWeek=S.schedule[i].week; }
-    if(!enterWeek) enterWeek=1;
-  }
-  var weekOpts=S.schedule.map(function(w){return '<option value="'+w.week+'"'+(w.week===enterWeek?' selected':'')+'>Week '+w.week+' — '+w.date+'</option>';}).join('');
-  el('gl-enter').innerHTML='<div class="gl-week-selector"><div class="gl-field"><label>Select week</label><select id="gl-enter-week" onchange="glEnterWeekChange()">'+weekOpts+'</select></div></div><div id="gl-matchup-list"></div>';
-  glBuildMatchupList();
-}
-window.glEnterWeekChange=function(){var w=el('gl-enter-week');if(!w)return;enterWeek=parseInt(w.value);enterMatchup=null;glBuildMatchupList();};
-window.glBuildMatchupList=function(){
-  var weekData=S.schedule.filter(function(w){return w.week===enterWeek;})[0];
-  if(!weekData){el('gl-matchup-list').innerHTML='';return;}
-  var html='';
-  weekData.matchups.forEach(function(m,mi){
-    var homeT=teamById(m.home),awayT=teamById(m.away);
-    var res=matchupResult(m,weekData.date);
-    var label=(homeT?homeT.name:'?')+' vs '+(awayT?awayT.name:'?');
-    var statusBadge=res.played?'<span class="gl-badge gl-badge-win" style="font-size:12px">Scores entered</span>':'';
-    var isOpen=enterMatchup===mi;
-    html+='<div class="gl-card" style="'+(isOpen?'border-color:var(--gl-green-light);box-shadow:0 0 0 3px rgba(74,140,92,0.12)':'')+'">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer" onclick="glSelectMatchup('+mi+')">'
-      +'<span style="font-weight:500;font-size:18px">'+label+'</span>'
-      +'<div style="display:flex;align-items:center;gap:10px">'+statusBadge
-      +'<span style="font-size:20px;color:var(--gl-text-light)">'+(isOpen?'▲':'▼')+'</span>'
-      +'</div></div>'
-      +(isOpen?'<div id="gl-score-entry" style="margin-top:20px" onclick="event.stopPropagation()"></div>':'')
-      +'</div>';
-  });
-  el('gl-matchup-list').innerHTML=html;
-  if(enterMatchup!==null) glBuildScoreEntry(weekData,weekData.matchups[enterMatchup],enterMatchup);
-};
-window.glSelectMatchup=function(mi){enterMatchup=(enterMatchup===mi)?null:mi;glBuildMatchupList();};
-window.glBuildScoreEntry=function(weekData,m,mi){
-  var seEl=el('gl-score-entry');if(!seEl)return;
-  var date=weekData.date;
-  var homeMembers=S.players.filter(function(p){return p.teamId===m.home;});
-  var awayMembers=S.players.filter(function(p){return p.teamId===m.away;});
-  function buildPanel(teamId,teamObj,members,side){
-    var existing=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
-    var subs=existing.filter(function(r){return !members.filter(function(mm){return mm.id===r.playerId;}).length;});
-    var penaltyKey='gl-penalty-'+side;
-    var existingPenalty=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&r.penalty;}).length>0;
-    var html='<div class="gl-score-panel"><div class="gl-score-panel-title">'+(teamObj?teamObj.name:'?')+'</div>';
-    members.forEach(function(p){
-      var ex=existing.filter(function(r){return r.playerId===p.id;})[0];
-      var q=getQuotaAt(p.id,date);
-      html+='<div style="margin-bottom:14px">'
-        +'<div style="font-size:16px;font-weight:500;margin-bottom:5px">'+p.name
-        +'<span style="font-weight:400;color:var(--gl-text-light);font-size:14px"> — quota: '+(q!==null?q:'n/a')+'</span></div>'
-        +'<input type="number" id="gl-pts-'+side+'-'+p.id+'" min="0" max="72" placeholder="Points" value="'+(ex?ex.points:'')+'" oninput="glShowPtsHint(\''+side+'\',\''+p.id+'\',\''+date+'\')">'
-        +'<div id="gl-phint-'+side+'-'+p.id+'" style="font-size:14px;color:var(--gl-text-mid);margin-top:4px;min-height:18px"></div>'
-        +'</div>';
-    });
-    var subOpts='<option value="">— no sub —</option>';
-    S.players.forEach(function(p){
-      if(!members.filter(function(mm){return mm.id===p.id;}).length)
-        subOpts+='<option value="'+p.id+'"'+(subs[0]&&subs[0].playerId===p.id?' selected':'')+'>'+p.name+(p.teamId?' ('+teamName(p.teamId)+')':' (sub pool)')+'</option>';
-    });
-    var exSub=subs[0];
-    html+='<div style="padding-top:10px;border-top:1px solid rgba(26,58,42,0.1)">'
-      +'<div style="font-size:13px;color:var(--gl-text-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.07em">Sub (optional)</div>'
-      +'<select id="gl-sub-'+side+'" style="margin-bottom:8px">'+subOpts+'</select>'
-      +'<input type="number" id="gl-subpts-'+side+'" min="0" max="72" placeholder="Sub points" value="'+(exSub?exSub.points:'')+'"></div>'
-      +'<div style="padding-top:10px;margin-top:8px;border-top:1px solid rgba(26,58,42,0.1)">'
-      +'<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--gl-text-mid)">'
-      +'<input type="checkbox" id="'+penaltyKey+'"'+(existingPenalty?' checked':'')+' style="width:18px;height:18px">'
-      +'Partner absent, no sub found <span style="color:#9b2828;font-size:13px">(+3 penalty to team quota)</span>'
-      +'</label></div>';
-    html+='</div>';
-    return html;
-  }
-  var html='<div class="gl-score-grid" onclick="event.stopPropagation()">'+buildPanel(m.home,teamById(m.home),homeMembers,'h')+buildPanel(m.away,teamById(m.away),awayMembers,'a')+'</div>'
-    +'<div style="margin-top:24px;padding:20px;background:var(--gl-green-pale);border-radius:var(--gl-radius);border:2px solid var(--gl-green-light)" onclick="event.stopPropagation()">'
-    +'<div style="font-size:15px;color:var(--gl-text-mid);margin-bottom:14px">When all scores are entered above, click to save this round:</div>'
-    +'<button class="gl-btn" style="width:100%;padding:18px;font-size:18px;letter-spacing:0.02em" onclick="event.stopPropagation();glSaveMatchupScores('+mi+')">&#10003; &nbsp;Save Round Scores</button>'
-    +'<div id="gl-save-hint" style="font-size:15px;color:#1a6b33;font-weight:500;margin-top:12px;text-align:center"></div>'
-    +'</div>';
-  seEl.innerHTML=html;
-  homeMembers.forEach(function(p){if(el('gl-pts-h-'+p.id)&&el('gl-pts-h-'+p.id).value)glShowPtsHint('h',p.id,date);});
-  awayMembers.forEach(function(p){if(el('gl-pts-a-'+p.id)&&el('gl-pts-a-'+p.id).value)glShowPtsHint('a',p.id,date);});
-};
-window.glShowPtsHint=function(side,pid,date){
-  var hintEl=el('gl-phint-'+side+'-'+pid);if(!hintEl)return;
-  var ptsEl=el('gl-pts-'+side+'-'+pid);if(!ptsEl)return;
-  var pts=parseFloat(ptsEl.value),q=getQuotaAt(pid,date);
-  if(q===null){hintEl.textContent='No quota yet';return;}
-  if(!isNaN(pts)){var diff=Math.round((pts-q)*10)/10;hintEl.textContent='vs quota: '+(diff>=0?'+':'')+diff;hintEl.style.color=diff>=0?'#1a6b33':'#9b2828';}
-  else{hintEl.textContent='';}
-};
-window.glSaveMatchupScores=function(mi){
-  var weekData=S.schedule.filter(function(w){return w.week===enterWeek;})[0];if(!weekData)return;
-  var m=weekData.matchups[mi],date=weekData.date,toSave=[];
-  function collectSide(side,teamId,members){
-    members.forEach(function(p){
-      var pts=parseFloat((el('gl-pts-'+side+'-'+p.id)||{value:''}).value);
-      if(!isNaN(pts)&&pts>=0)toSave.push({id:uid(),playerId:p.id,teamId:teamId,date:date,points:pts,notes:'',isSub:false});
-    });
-    var subPid=(el('gl-sub-'+side)||{value:''}).value;
-    var subPts=parseFloat((el('gl-subpts-'+side)||{value:''}).value);
-    if(subPid&&!isNaN(subPts)&&subPts>=0)toSave.push({id:uid(),playerId:subPid,teamId:teamId,date:date,points:subPts,notes:'',isSub:true});
-    // penalty flag
-    var penaltyEl=el('gl-penalty-'+side);
-    if(penaltyEl&&penaltyEl.checked)toSave.push({id:uid(),playerId:null,teamId:teamId,date:date,points:0,notes:'Absent partner penalty',isSub:false,penalty:true});
-  }
-  collectSide('h',m.home,S.players.filter(function(p){return p.teamId===m.home;}));
-  collectSide('a',m.away,S.players.filter(function(p){return p.teamId===m.away;}));
-  if(!toSave.filter(function(r){return !r.penalty;}).length){alert('Please enter at least one score.');return;}
-  S.rounds=S.rounds.filter(function(r){return r.seed||!((r.teamId===m.home||r.teamId===m.away)&&r.date===date);});
-  toSave.forEach(function(r){S.rounds.push(r);});
-  save();
-  var hint=el('gl-save-hint');
-  if(hint){
-    hint.innerHTML='&#10003; &nbsp;Round saved successfully!';
-    hint.style.color='#1a6b33';
-  }
-  // Refresh matchup list but keep this matchup open
-  glBuildMatchupList();
-};
-
-// ── Render: Roster ───────────────────────────────────────────────────────
-function glRenderRoster(){
-  var html='<div class="gl-card"><p class="gl-card-title">Add player</p>'
-    +'<div class="gl-form-grid">'
-    +'<div class="gl-field"><label>Name</label><input type="text" id="gl-p-name" placeholder="Full name"></div>'
-    +'<div class="gl-field"><label>Team</label><select id="gl-p-team"><option value="">— sub pool —</option>'
-    +S.teams.map(function(t){return '<option value="'+t.id+'">'+t.name+'</option>';}).join('')+'</select></div>'
-    +'<div class="gl-field"><label>Starting quota</label><input type="number" id="gl-p-hcp" placeholder="e.g. 14.2" step="0.1"></div>'
-    +'</div><button class="gl-btn" onclick="glAddPlayer()">Add player</button></div>';
-
-  S.teams.forEach(function(t){
-    var members=S.players.filter(function(p){return p.teamId===t.id;});
-    html+='<div class="gl-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
-      +'<span class="gl-card-title" style="margin-bottom:0">'+t.name+'</span>'
-      +'<span class="gl-muted">'+members.length+'/2</span></div>';
-    if(!members.length){html+='<p class="gl-muted">No players yet.</p>';}
-    else{
-      html+='<table class="gl-table"><thead><tr><th>Player</th><th>Calc quota</th><th>Override quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
-      members.forEach(function(p){
-        var q=getQuota(p.id),rds=S.rounds.filter(function(r){return r.playerId===p.id&&!r.seed;}).length;
-        html+='<tr><td class="gl-pname">'+p.name+'</td>'
-          +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
-          +'<td><div style="display:flex;align-items:center;gap:8px">'
-          +'<input type="number" step="0.1" placeholder="e.g. 8.75" value="'+(p.quotaOverride||'')+'" '
-          +'style="width:90px;padding:5px 8px;font-size:14px" '
-          +'onchange="glSetQuotaOverride(\''+p.id+'\',this.value)">'
-          +(p.quotaOverride?'<span class="gl-badge gl-badge-sub">override</span>':'')
-          +'</div></td>'
-          +'<td class="gl-muted">'+rds+'</td>'
-          +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
-      });
-      html+='</tbody></table>';
-    }
-    html+='</div>';
-  });
-
-  var subs=S.players.filter(function(p){return !p.teamId;});
-  if(subs.length){
-    html+='<div class="gl-card"><p class="gl-card-title">Sub pool</p>'
-      +'<table class="gl-table"><thead><tr><th>Player</th><th>Calc quota</th><th>Override quota</th><th>Rounds</th><th></th></tr></thead><tbody>';
-    subs.forEach(function(p){
-      var q=getQuota(p.id),rds=S.rounds.filter(function(r){return r.playerId===p.id&&!r.seed;}).length;
-      html+='<tr><td class="gl-pname">'+p.name+' <span class="gl-badge gl-badge-sub">sub</span></td>'
-        +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
-        +'<td><div style="display:flex;align-items:center;gap:8px">'
-        +'<input type="number" step="0.1" placeholder="e.g. 8.75" value="'+(p.quotaOverride||'')+'" '
-        +'style="width:90px;padding:5px 8px;font-size:14px" '
-        +'onchange="glSetQuotaOverride(\''+p.id+'\',this.value)">'
-        +(p.quotaOverride?'<span class="gl-badge gl-badge-sub">override</span>':'')
-        +'</div></td>'
-        +'<td class="gl-muted">'+rds+'</td>'
-        +'<td><button class="gl-btn-sm" onclick="glRemovePlayer(\''+p.id+'\')">Remove</button></td></tr>';
-    });
-    html+='</tbody></table></div>';
-  }
-  el('gl-roster').innerHTML=html;
-}
-window.glAddPlayer=function(){
-  var name=(el('gl-p-name')||{value:''}).value.trim();
-  var teamId=(el('gl-p-team')||{value:''}).value||null;
-  var hcp=(el('gl-p-hcp')||{value:''}).value.trim();
-  if(!name){alert('Please enter a name.');return;}
-  if(S.players.filter(function(p){return p.name.toLowerCase()===name.toLowerCase();}).length){alert('Player already exists.');return;}
-  if(teamId&&S.players.filter(function(p){return p.teamId===teamId;}).length>=2){alert('Teams can only have 2 permanent members.');return;}
-  var newP={id:uid(),name:name,teamId:teamId,handicap:hcp};
-  S.players.push(newP);
-  // seed quota if provided
-  if(hcp){var q=parseFloat(hcp);if(!isNaN(q)){for(var i=0;i<3;i++)S.rounds.push({id:"seed-"+newP.id+"-"+i,playerId:newP.id,teamId:teamId,date:SEED_DATE,points:q,notes:"Opening quota seed",isSub:false,seed:true});}}
-  save();glRenderRoster();
-};
-window.glRemovePlayer=function(id){
-  S.players=S.players.filter(function(x){return x.id!==id;});
-  S.rounds=S.rounds.filter(function(r){return r.playerId!==id;});
-  save();glRenderRoster();
-};
-
-// ── Render: Playoffs ─────────────────────────────────────────────────────
-function glRenderPlayoffs(){
-  var lb=buildTeamLB(),top6=lb.slice(0,6);
-  var html='<div class="gl-card"><p class="gl-card-title">Playoff seeds</p>'
-    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-    +'<th>Seed</th><th>Team</th><th>Record</th><th>Notes</th></tr></thead><tbody>';
-  top6.forEach(function(row,i){
-    var seed=i+1,rec=row.wins+'-'+row.losses+(row.ties?'-'+row.ties:'');
-    var bye=seed<=2?'<span class="gl-badge gl-badge-bye">First round bye</span>':'';
-    html+='<tr><td style="font-weight:600;font-size:18px">'+(seed<=2?'⭐ ':'')+seed+'</td>'
-      +'<td class="gl-pname">'+row.team.name+'</td>'
-      +'<td class="gl-muted">'+rec+'</td><td>'+bye+'</td></tr>';
-  });
-  html+='</tbody></table></div>'
-    +'<div class="gl-notice">Seeds 1 &amp; 2 receive a first-round bye. Seeds 3 vs 6 and 4 vs 5 play in Round 1.</div></div>';
-
-  var s=top6.map(function(r){return r.team;});
-  function pr(round,match){return S.playoffResults.filter(function(r){return r.round===round&&r.match===match;})[0]||null;}
-  var r1a={home:s[2]?s[2].name:'Seed 3',away:s[5]?s[5].name:'Seed 6'};
-  var r1b={home:s[3]?s[3].name:'Seed 4',away:s[4]?s[4].name:'Seed 5'};
-  var p3v6=pr(1,'3v6'),p4v5=pr(1,'4v5');
-  var sf1b=p3v6?(p3v6.winner===0?r1a.home:r1a.away):'Winner (3v6)';
-  var sf2b=p4v5?(p4v5.winner===0?r1b.home:r1b.away):'Winner (4v5)';
-  var psf1=pr(2,'sf1'),psf2=pr(2,'sf2');
-  var finA=psf1?(psf1.winner===0?(s[0]?s[0].name:'Seed 1'):sf1b):'Winner SF1';
-  var finB=psf2?(psf2.winner===0?(s[1]?s[1].name:'Seed 2'):sf2b):'Winner SF2';
-
-  function pmatch(round,matchKey,tA,tB){
-    var res=pr(round,matchKey);
-    var wA=res&&res.winner===0,wB=res&&res.winner===1;
-    return '<div class="gl-playoff-match"><div class="gl-playoff-team'+(wA?' winner':!tA?' tbd':'')+'">'+(tA||'TBD')+(wA?' 🏆':'')+'</div>'
-      +'<div class="gl-playoff-team'+(wB?' winner':!tB?' tbd':'')+'">'+(tB||'TBD')+(wB?' 🏆':'')+'</div></div>';
-  }
-
-  html+='<div class="gl-card"><p class="gl-card-title">Bracket</p>'
-    +'<div class="gl-playoff-bracket">'
-    +'<div class="gl-playoff-round"><div class="gl-playoff-round-title">Round 1</div>'
-    +pmatch(1,'3v6',r1a.home,r1a.away)+pmatch(1,'4v5',r1b.home,r1b.away)+'</div>'
-    +'<div class="gl-playoff-round"><div class="gl-playoff-round-title">Semifinals</div>'
-    +pmatch(2,'sf1',s[0]?s[0].name:'Seed 1',sf1b)+pmatch(2,'sf2',s[1]?s[1].name:'Seed 2',sf2b)+'</div>'
-    +'<div class="gl-playoff-round"><div class="gl-playoff-round-title">Championship</div>'
-    +pmatch(3,'final',finA,finB)+'</div></div>';
-
-  html+='<hr class="gl-sep"><p style="font-size:15px;font-weight:500;margin-bottom:16px;color:var(--gl-text-mid)">Record playoff result</p>'
-    +'<div class="gl-form-grid">'
-    +'<div class="gl-field"><label>Matchup</label><select id="gl-po-round">'
-    +'<option value="1-3v6">R1: '+r1a.home+' vs '+r1a.away+'</option>'
-    +'<option value="1-4v5">R1: '+r1b.home+' vs '+r1b.away+'</option>'
-    +'<option value="2-sf1">SF1: '+(s[0]?s[0].name:'Seed 1')+' vs '+sf1b+'</option>'
-    +'<option value="2-sf2">SF2: '+(s[1]?s[1].name:'Seed 2')+' vs '+sf2b+'</option>'
-    +'<option value="3-final">Final: '+finA+' vs '+finB+'</option>'
-    +'</select></div>'
-    +'<div class="gl-field"><label>Winner</label><select id="gl-po-winner"><option value="0">First named team</option><option value="1">Second named team</option></select></div>'
-    +'</div><button class="gl-btn" onclick="glSavePlayoffResult()">Save result</button></div>';
-
-  el('gl-playoffs').innerHTML=html;
-}
-window.glSavePlayoffResult=function(){
-  var rsel=el('gl-po-round'),wsel=el('gl-po-winner');if(!rsel||!wsel)return;
-  var parts=rsel.value.split('-'),round=parseInt(parts[0]),match=parts.slice(1).join('-'),winner=parseInt(wsel.value);
-  S.playoffResults=S.playoffResults.filter(function(r){return!(r.round===round&&r.match===match);});
-  S.playoffResults.push({round:round,match:match,winner:winner});
-  save();glRenderPlayoffs();
-};
-
-// ── Render: Prizes ───────────────────────────────────────────────────────
-function getIndivWinnerForWeek(weekDate){
-  var rounds=S.rounds.filter(function(r){return r.date===weekDate&&!r.seed;});
-  if(!rounds.length) return null;
-  var best=null,bestMargin=null;
-  rounds.forEach(function(r){
-    var q=getQuotaAt(r.playerId,r.date);if(q===null)return;
-    var margin=Math.round((r.points-q)*10)/10;
-    if(bestMargin===null||margin>bestMargin){bestMargin=margin;best={playerId:r.playerId,points:r.points,quota:q,margin:margin};}
-  });
-  return best;
-}
-function buildIndivPrizeLB(){
-  var players={};
-  S.schedule.forEach(function(week){
-    var winner=getIndivWinnerForWeek(week.date);if(!winner)return;
-    var pid=winner.playerId;
-    if(!players[pid])players[pid]={wins:0,bestMargin:null,bestWeek:null};
-    players[pid].wins++;
-    if(players[pid].bestMargin===null||winner.margin>players[pid].bestMargin){players[pid].bestMargin=winner.margin;players[pid].bestWeek=week.week;}
-  });
-  return Object.keys(players).map(function(pid){
-    var p=playerById(pid);
-    return {player:p,wins:players[pid].wins,bestMargin:players[pid].bestMargin,bestWeek:players[pid].bestWeek};
-  }).sort(function(a,b){return b.wins!==a.wins?b.wins-a.wins:b.bestMargin-a.bestMargin;});
-}
-
-function glRenderPrizes(){
-  var weekOpts=S.schedule.map(function(w){return '<option value="'+w.week+'">Week '+w.week+' — '+w.date+'</option>';}).join('');
-  var playerOpts='<option value="">— select player —</option>'+S.players.map(function(p){return '<option value="'+p.id+'">'+p.name+'</option>';}).join('');
-
-  var html='<div class="gl-card"><p class="gl-card-title">Enter closest to the pin</p>'
-    +'<div class="gl-form-grid">'
-    +'<div class="gl-field"><label>Week</label><select id="gl-ctp-week">'+weekOpts+'</select></div>'
-    +'</div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px">'
-    +'<div style="background:var(--gl-green-pale);border-radius:var(--gl-radius);padding:16px">'
-    +'<div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gl-text-mid);margin-bottom:12px">CTP #1</div>'
-    +'<div class="gl-form-grid" style="grid-template-columns:1fr">'
-    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp1-hole" min="1" max="18" placeholder="e.g. 4"></div>'
-    +'<div class="gl-field"><label>Player</label><select id="gl-ctp1-player">'+playerOpts+'</select></div>'
-    +'<div class="gl-field"><label>Distance</label><input type="text" id="gl-ctp1-dist" placeholder="e.g. 4\'2&quot;"></div>'
-    +'</div></div>'
-    +'<div style="background:var(--gl-green-pale);border-radius:var(--gl-radius);padding:16px">'
-    +'<div style="font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--gl-text-mid);margin-bottom:12px">CTP #2</div>'
-    +'<div class="gl-form-grid" style="grid-template-columns:1fr">'
-    +'<div class="gl-field"><label>Hole #</label><input type="number" id="gl-ctp2-hole" min="1" max="18" placeholder="e.g. 7"></div>'
-    +'<div class="gl-field"><label>Player</label><select id="gl-ctp2-player">'+playerOpts+'</select></div>'
-    +'<div class="gl-field"><label>Distance</label><input type="text" id="gl-ctp2-dist" placeholder="e.g. 6\'8&quot;"></div>'
-    +'</div></div>'
-    +'</div>'
-    +'<button class="gl-btn" onclick="glSaveCTP()">Save CTP results</button></div>';
-
-  var ctpRows=S.ctp.slice().sort(function(a,b){return b.week-a.week;});
-  if(ctpRows.length){
-    html+='<div class="gl-card"><p class="gl-card-title">Closest to the pin results</p>'
-      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-      +'<th>Week</th><th>Date</th><th>Hole</th><th>Winner</th><th>Distance</th><th></th>'
-      +'</tr></thead><tbody>';
-    ctpRows.forEach(function(c){
-      var week=S.schedule.filter(function(w){return w.week===c.week;})[0];
-      var date=week?week.date:'';
-      var p=playerById(c.playerId);
-      html+='<tr><td class="gl-muted">'+c.week+'</td><td class="gl-muted">'+date+'</td>'
-        +'<td style="font-weight:500">'+(c.hole?'Hole '+c.hole:'—')+'</td>'
-        +'<td class="gl-pname">'+( p?p.name:'(deleted)')+'</td>'
-        +'<td>'+(c.distance||'—')+'</td>'
-        +'<td><button class="gl-btn-sm" onclick="glDeleteCTP(\''+c.id+'\')">Del</button></td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-  }
-
-  var ctpTally={};
-  S.ctp.forEach(function(c){ctpTally[c.playerId]=(ctpTally[c.playerId]||0)+1;});
-  var ctpLB=Object.keys(ctpTally).map(function(pid){return{player:playerById(pid),wins:ctpTally[pid]};}).sort(function(a,b){return b.wins-a.wins;});
-  if(ctpLB.length){
-    html+='<div class="gl-card"><p class="gl-card-title">CTP season leaderboard</p>'
-      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr><th>#</th><th>Player</th><th>CTP wins</th></tr></thead><tbody>';
-    ctpLB.forEach(function(row,i){
-      var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'<span class="gl-rank-num">'+(i+1)+'</span>';
-      html+='<tr><td>'+medal+'</td><td class="gl-pname">'+(row.player?row.player.name:'(deleted)')+'</td><td style="font-weight:600;font-size:18px">'+row.wins+'</td></tr>';
-    });
-    html+='</tbody></table></div></div>';
-  }
-
-  html+='<hr class="gl-sep">';
-
-  html+='<div class="gl-card"><p class="gl-card-title">Weekly individual prize <span style="font-size:15px;font-weight:400;font-family:\'DM Sans\',sans-serif;color:var(--gl-text-light)">— $50 to most points over quota</span></p>'
-    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-    +'<th>Week</th><th>Date</th><th>Winner</th><th>Points</th><th>Quota</th><th>Over quota</th>'
-    +'</tr></thead><tbody>';
-  var hasAny=false;
-  S.schedule.forEach(function(week){
-    // prefer live-calculated winner
-    var winner=getIndivWinnerForWeek(week.date);
-    if(winner){
-      hasAny=true;
-      var p=playerById(winner.playerId);
-      var sign=winner.margin>=0?'+':'';
-      html+='<tr><td class="gl-muted">'+week.week+'</td><td class="gl-muted">'+week.date+'</td>'
-        +'<td class="gl-pname">🏆 '+(p?p.name:'(deleted)')+'</td>'
-        +'<td style="font-weight:600">'+winner.points+'</td>'
-        +'<td class="gl-muted">'+winner.quota+'</td>'
-        +'<td><span class="gl-badge gl-badge-up">'+sign+winner.margin+'</span></td></tr>';
-    } else {
-      // fall back to seeded prize winners
-      var seed=(S.seedIndivPrize||[]).filter(function(s){return s.week===week.week;})[0];
-      if(seed){
-        hasAny=true;
-        var p=playerById(seed.playerId);
-        var sign=seed.margin>=0?'+':'';
-        html+='<tr><td class="gl-muted">'+week.week+'</td><td class="gl-muted">'+week.date+'</td>'
-          +'<td class="gl-pname">🏆 '+(p?p.name:'(deleted)')+'</td>'
-          +'<td style="font-weight:600">'+(seed.points!==null?seed.points:'—')+'</td>'
-          +'<td class="gl-muted">'+(seed.quota!==null?seed.quota:'—')+'</td>'
-          +'<td>'+(seed.margin!==null?'<span class="gl-badge gl-badge-up">'+sign+seed.margin+'</span>':'—')+'</td></tr>';
-      }
-    }
-  });
-  if(!hasAny) html+='<tr><td colspan="6" style="text-align:center;color:var(--gl-text-light);padding:24px;font-size:15px">Winners appear automatically once scores are entered.</td></tr>';
-  html+='</tbody></table></div></div>';
-
-  var indivLB=buildIndivPrizeLB();
-  if(indivLB.length){
-    html+='<div class="gl-card"><p class="gl-card-title">Individual prize season leaderboard</p>'
-      +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-      +'<th>#</th><th>Player</th><th>Team</th><th>Wins</th><th>Best margin</th><th>Best week</th>'
-      +'</tr></thead><tbody>';
-    indivLB.forEach(function(row,i){
-      var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'<span class="gl-rank-num">'+(i+1)+'</span>';
-      var team=row.player&&row.player.teamId?teamName(row.player.teamId):'<span class="gl-muted">Sub pool</span>';
-      var sign=row.bestMargin>=0?'+':'';
-      html+='<tr><td>'+medal+'</td><td class="gl-pname">'+(row.player?row.player.name:'(deleted)')+'</td>'
-        +'<td class="gl-muted">'+team+'</td><td style="font-weight:600;font-size:18px">'+row.wins+'</td>'
-        +'<td><span class="gl-badge gl-badge-up">'+sign+row.bestMargin+'</span></td>'
-        +'<td class="gl-muted">Wk '+row.bestWeek+'</td></tr>';
-    });
-    html+='</tbody></table></div>'
-      +'<div class="gl-notice">Winners calculated automatically from entered scores — highest points above personal quota each week.</div></div>';
-  }
-  el('gl-prizes').innerHTML=html;
-}
-window.glSaveCTP=function(){
-  var week=parseInt((el('gl-ctp-week')||{value:''}).value);
-  if(!week){alert('Please select a week.');return;}
-  var entries=[
-    {pEl:'gl-ctp1-player',dEl:'gl-ctp1-dist',hEl:'gl-ctp1-hole'},
-    {pEl:'gl-ctp2-player',dEl:'gl-ctp2-dist',hEl:'gl-ctp2-hole'}
-  ];
-  var saved=0;
-  entries.forEach(function(e,idx){
-    var pid=(el(e.pEl)||{value:''}).value;
-    var dist=(el(e.dEl)||{value:''}).value.trim();
-    var hole=parseInt((el(e.hEl)||{value:''}).value)||0;
-    if(!pid) return;
-    // Remove existing entry for this week+slot (by slot index, not player)
-    var slotKey='w'+week+'-ctp'+(idx+1);
-    S.ctp=S.ctp.filter(function(c){return c.slotKey!==slotKey;});
-    S.ctp.push({id:uid(),week:week,hole:hole,playerId:pid,distance:dist,slotKey:slotKey});
-    saved++;
-  });
-  if(!saved){alert('Please select at least one player.');return;}
-  save();alert('CTP results saved!');glRenderPrizes();
-};
-window.glDeleteCTP=function(id){
-  S.ctp=S.ctp.filter(function(c){return c.id!==id;});
-  save();glRenderPrizes();
-};
-
-// ── Render: History ──────────────────────────────────────────────────────
-function glRenderHistory(){
-  var sorted=S.rounds.filter(function(r){return !r.seed;})
-    .sort(function(a,b){return b.date>a.date?1:b.date<a.date?-1:0;});
-  if(!sorted.length){
-    el('gl-history').innerHTML='<div class="gl-empty"><p>No scores entered yet.</p></div>';
-    return;
-  }
-  var html='<div class="gl-card"><p class="gl-card-title">Score history <span style="font-size:15px;font-weight:400;font-family:\'DM Sans\',sans-serif;color:var(--gl-text-light)">— delete an entry to correct it, then re-enter</span></p>'
-    +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-    +'<th>Date</th><th>Player</th><th>Team</th><th>Points</th><th>Quota</th><th>Net</th><th>Sub?</th><th></th>'
-    +'</tr></thead><tbody>';
-  sorted.forEach(function(r){
-    var p=playerById(r.playerId);
-    var q=getQuotaAt(r.playerId,r.date);
-    var net=q!==null?Math.round((r.points-q)*10)/10:null;
-    var netD='<span class="gl-muted">—</span>';
-    if(net!==null){
-      var s=net>=0?'+':'',cls=net>0?'gl-badge-up':net<0?'gl-badge-down':'gl-badge-even';
-      netD='<span class="gl-badge '+cls+'">'+s+net+'</span>';
-    }
-    html+='<tr>'
-      +'<td class="gl-muted">'+r.date+'</td>'
-      +'<td class="gl-pname">'+(p?p.name:'(deleted)')+'</td>'
-      +'<td class="gl-muted">'+(r.teamId?teamName(r.teamId):'—')+'</td>'
-      +'<td style="font-weight:600">'+r.points+'</td>'
-      +'<td class="gl-muted">'+(q!==null?q:'—')+'</td>'
-      +'<td>'+netD+'</td>'
-      +'<td>'+(r.isSub?'<span class="gl-badge gl-badge-sub">sub</span>':'')+'</td>'
-      +'<td><button class="gl-btn-sm" onclick="glDeleteHistoryRound(\''+r.id+'\')">Delete</button></td>'
-      +'</tr>';
-  });
-  html+='</tbody></table></div></div>';
-  el('gl-history').innerHTML=html;
-}
-window.glDeleteHistoryRound=function(id){
-  S.rounds=S.rounds.filter(function(r){return r.id!==id;});
-  save();glRenderHistory();
-};
-
-// ── Tab switching ────────────────────────────────────────────────────────
-var GL_TABS=['standings','schedule','enter','roster','playoffs','prizes','history'];
-window.glShowTab=function(name){
-  GL_TABS.forEach(function(t){el('gl-'+t).style.display=t===name?'':'none';});
-  document.querySelectorAll('.gl-tab').forEach(function(btn,i){btn.classList.toggle('gl-tab-active',GL_TABS[i]===name);});
-  glRender(name);
-};
-function glRender(tab){
-  tab=tab||'standings';
-  if(tab==='standings')glRenderStandings();
-  else if(tab==='schedule')glRenderSchedule();
-  else if(tab==='enter')glRenderEnter();
-  else if(tab==='roster')glRenderRoster();
-  else if(tab==='playoffs')glRenderPlayoffs();
-  else if(tab==='prizes')glRenderPrizes();
-  else if(tab==='history')glRenderHistory();
-}
-
-// ── Boot ─────────────────────────────────────────────────────────────────
-load();
-glRender('standings');
-})();
-</script>
+</body>
+</html>
