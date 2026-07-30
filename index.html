@@ -315,7 +315,7 @@ DEFAULT_PLAYERS.forEach(function(p){
   }
 });
 
-// Real scores from weeks 1-5 (absent weeks omitted)
+// Real scores from weeks 1-10 (absent weeks omitted)
 var REAL_SCORES = [
   // Week 1
   {id:"r-p01-1",playerId:"p01",teamId:"t01",date:"2026-05-01",points:6,notes:"",isSub:false},
@@ -495,26 +495,6 @@ var REAL_SCORES = [
   {id:"r-p21-8",playerId:"p21",teamId:"t11",date:"2026-07-09",points:10,notes:"",isSub:false},
   {id:"r-penalty-t11-8",playerId:null,teamId:"t11",date:"2026-07-09",points:0,notes:"Absent partner penalty",isSub:false,penalty:true},
   // Week 9 — 2026-07-16
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   {id:"r-p01-9",playerId:"p01",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
   {id:"r-p02-9",playerId:"p02",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
   {id:"r-p03-9",playerId:"p03",teamId:"t02",date:"2026-07-16",points:5,notes:"",isSub:false},
@@ -539,84 +519,72 @@ var REAL_SCORES = [
   {id:"r-p22-9",playerId:"p22",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
   {id:"r-p23-9",playerId:"p23",teamId:"t12",date:"2026-07-16",points:6,notes:"",isSub:false},
   {id:"r-p24-9",playerId:"p24",teamId:"t12",date:"2026-07-16",points:4,notes:"",isSub:false},
+  // Week 10 — 2026-07-23
+  {id:"r-p03-10",playerId:"p03",teamId:"t02",date:"2026-07-23",points:4,notes:"",isSub:false},
+  {id:"r-p04-10",playerId:"p04",teamId:"t02",date:"2026-07-23",points:4,notes:"",isSub:false},
+  {id:"r-p01-10",playerId:"p01",teamId:"t01",date:"2026-07-23",points:8,notes:"",isSub:false},
+  {id:"r-p02-10",playerId:"p02",teamId:"t01",date:"2026-07-23",points:6,notes:"",isSub:false},
+  {id:"r-p09-10",playerId:"p09",teamId:"t05",date:"2026-07-23",points:12,notes:"",isSub:false},
+  {id:"r-p10-10",playerId:"p10",teamId:"t05",date:"2026-07-23",points:7,notes:"",isSub:false},
+  {id:"r-p11-10",playerId:"p11",teamId:"t06",date:"2026-07-23",points:5,notes:"",isSub:false},
+  {id:"r-p12-10",playerId:"p12",teamId:"t06",date:"2026-07-23",points:9,notes:"",isSub:false},
+  {id:"r-p19-10",playerId:"p19",teamId:"t10",date:"2026-07-23",points:7,notes:"",isSub:false},
+  {id:"r-p20-10",playerId:"p20",teamId:"t10",date:"2026-07-23",points:0,notes:"Absent",isSub:false,penalty:true},
+  {id:"r-p17-10",playerId:"p17",teamId:"t09",date:"2026-07-23",points:12,notes:"",isSub:false},
+  {id:"r-p18-10",playerId:"p18",teamId:"t09",date:"2026-07-23",points:0,notes:"Absent",isSub:false,penalty:true},
+  {id:"r-p07-10",playerId:"p07",teamId:"t04",date:"2026-07-23",points:13,notes:"",isSub:false},
+  {id:"r-p28-10",playerId:"p28",teamId:"t04",date:"2026-07-23",points:5,notes:"",isSub:true},
+  {id:"r-p05-10",playerId:"p05",teamId:"t03",date:"2026-07-23",points:11,notes:"",isSub:false},
+  {id:"r-p06-10",playerId:"p06",teamId:"t03",date:"2026-07-23",points:12,notes:"",isSub:false},
+  {id:"r-p21-10",playerId:"p21",teamId:"t11",date:"2026-07-23",points:7,notes:"",isSub:false},
+  {id:"r-p22-10",playerId:"p22",teamId:"t11",date:"2026-07-23",points:4,notes:"",isSub:false},
+  {id:"r-p23-10",playerId:"p23",teamId:"t12",date:"2026-07-23",points:6,notes:"",isSub:false},
+  {id:"r-p24-10",playerId:"p24",teamId:"t12",date:"2026-07-23",points:8,notes:"",isSub:false},
+  {id:"r-p15-10",playerId:"p15",teamId:"t08",date:"2026-07-23",points:8,notes:"",isSub:false},
+  {id:"r-p16-10",playerId:"p16",teamId:"t08",date:"2026-07-23",points:13,notes:"",isSub:false},
+  {id:"r-p13-10",playerId:"p13",teamId:"t07",date:"2026-07-23",points:17,notes:"",isSub:false},
+  {id:"r-p14-10",playerId:"p14",teamId:"t07",date:"2026-07-23",points:2,notes:"",isSub:false},
 ];
 REAL_SCORES.forEach(function(r){ DEFAULT_ROUNDS.push(r); });
 
-// W/L records from commissioner's spreadsheet (through week 3)
-// Encoded as synthetic matchup results — we store these as pre-loaded playoffResults
-// but actually we track them in a separate seedRecords field
+// Final W/L records from commissioner's final standings (through week 11)
 var SEED_RECORDS = {
-  "t01":{w:4,l:5,t:0},   // The Toms        4-5
-  "t02":{w:7,l:2,t:0},   // Cartwrights     7-2
-  "t03":{w:4,l:4,t:1},   // Par Tee Animals 4-4-1
-  "t04":{w:7,l:1,t:1},   // Spa Twins       7-1-1
-  "t05":{w:2,l:6,t:1},   // Nail Gunners    2-6-1
-  "t06":{w:2,l:6,t:1},   // Billy & The Kid 2-6-1
-  "t07":{w:5,l:3,t:1},   // Wreckid Playaz  5-3-1
-  "t08":{w:5,l:4,t:0},   // Hosel Rocketz   5-4
-  "t09":{w:1,l:6,t:2},   // Wilmington      1-6-2
-  "t10":{w:3,l:5,t:1},   // Blastin Gas     3-5-1
-  "t11":{w:5,l:4,t:0},   // The Gangstas    5-4
-  "t12":{w:5,l:4,t:0},   // The Rookies     5-4
+  "t01":{w:4,l:6,t:0},   // The Toms - 7th seed
+  "t02":{w:7,l:3,t:0},   // The Cartwrights - 2nd seed
+  "t03":{w:4,l:6,t:0},   // Par Tee Animals - 8th seed
+  "t04":{w:8,l:2,t:0},   // Spa Twins - 1st seed
+  "t05":{w:3,l:7,t:0},   // Nail Gunners - 10th seed
+  "t06":{w:1,l:9,t:0},   // Billy & The Kid - 12th seed
+  "t07":{w:6,l:3,t:1},   // Wreckid Playaz - 3rd seed
+  "t08":{w:5,l:5,t:0},   // Hosel Rocketz - 6th seed
+  "t09":{w:2,l:8,t:0},   // Wilmington Warriors - 11th seed
+  "t10":{w:3,l:7,t:0},   // Blastin Gas - 9th seed
+  "t11":{w:5,l:4,t:1},   // The Gangstas - 5th seed
+  "t12":{w:6,l:4,t:0},   // The Rookies - 4th seed
 };
 
-// CTP winners weeks 1-5 (2 per week, $20 prize)
-var DEFAULT_CTP = [
-  // Week 1: Matt A, Ryan D
+var CTP = [
   {id:"ctp-w1-1",week:1,hole:0,playerId:"p15",distance:"",notes:""},
   {id:"ctp-w1-2",week:1,hole:0,playerId:"p05",distance:"",notes:""},
-  // Week 2: Matt A, JB (Jerry Burke)
   {id:"ctp-w2-1",week:2,hole:0,playerId:"p15",distance:"",notes:""},
   {id:"ctp-w2-2",week:2,hole:0,playerId:"p08",distance:"",notes:""},
-  // Week 3: Roger & Dan (tied), Billy L
   {id:"ctp-w3-1",week:3,hole:0,playerId:"p14",distance:"tied",notes:"Tied"},
   {id:"ctp-w3-2",week:3,hole:0,playerId:"p24",distance:"tied",notes:"Tied"},
   {id:"ctp-w3-3",week:3,hole:0,playerId:"p11",distance:"",notes:""},
-  // Week 4: Sean, Phil
   {id:"ctp-w4-1",week:4,hole:0,playerId:"p17",distance:"",notes:""},
   {id:"ctp-w4-2",week:4,hole:0,playerId:"p06",distance:"",notes:""},
-  // Week 5: Ryan Davis x2
   {id:"ctp-w5-1",week:5,hole:12,playerId:"p05",distance:"5'",slotKey:"w5-ctp1"},
   {id:"ctp-w5-2",week:5,hole:16,playerId:"p05",distance:"10'9\"",slotKey:"w5-ctp2"},
-  // Week 6: not recorded on sheet
-  // Week 7: Paul Freeman, Mark Nalesnik
   {id:"ctp-w7-1",week:7,hole:0,playerId:"p07",distance:"",slotKey:"w7-ctp1"},
   {id:"ctp-w7-2",week:7,hole:0,playerId:"p09",distance:"",slotKey:"w7-ctp2"},
-  // Week 8: Mark Nalesnik, Ryan Davis
-  // Week 8: Mark Nalesnik, Ryan Davis
   {id:"ctp-w8-1",week:8,hole:0,playerId:"p09",distance:"16'5\"",slotKey:"w8-ctp1"},
   {id:"ctp-w8-2",week:8,hole:0,playerId:"p05",distance:"4'8\"",slotKey:"w8-ctp2"},
-  // Week 9: Tim Speziale x2 (front 9)
   {id:"ctp-w9-1",week:9,hole:6,playerId:"p16",distance:"15'10\"",slotKey:"w9-ctp1"},
   {id:"ctp-w9-2",week:9,hole:8,playerId:"p16",distance:"7'8\"",slotKey:"w9-ctp2"},
-  {id:"r-p01-9",playerId:"p01",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p02-9",playerId:"p02",teamId:"t01",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p03-9",playerId:"p03",teamId:"t02",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p04-9",playerId:"p04",teamId:"t02",date:"2026-07-16",points:7,notes:"",isSub:false},
-  {id:"r-p05-9",playerId:"p05",teamId:"t03",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p06-9",playerId:"p06",teamId:"t03",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p07-9",playerId:"p07",teamId:"t04",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p08-9",playerId:"p08",teamId:"t04",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p09-9",playerId:"p09",teamId:"t05",date:"2026-07-16",points:10,notes:"",isSub:false},
-  {id:"r-p10-9",playerId:"p10",teamId:"t05",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p11-9",playerId:"p11",teamId:"t06",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p12-9",playerId:"p12",teamId:"t06",date:"2026-07-16",points:8,notes:"",isSub:false},
-  {id:"r-p13-9",playerId:"p13",teamId:"t07",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p14-9",playerId:"p14",teamId:"t07",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p15-9",playerId:"p15",teamId:"t08",date:"2026-07-16",points:12,notes:"",isSub:false},
-  {id:"r-p16-9",playerId:"p16",teamId:"t08",date:"2026-07-16",points:13,notes:"",isSub:false},
-  {id:"r-p17-9",playerId:"p17",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p18-9",playerId:"p18",teamId:"t09",date:"2026-07-16",points:9,notes:"",isSub:false},
-  {id:"r-p19-9",playerId:"p19",teamId:"t10",date:"2026-07-16",points:4,notes:"",isSub:false},
-  {id:"r-p20-9",playerId:"p20",teamId:"t10",date:"2026-07-16",points:1,notes:"",isSub:false},
-  {id:"r-p21-9",playerId:"p21",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p22-9",playerId:"p22",teamId:"t11",date:"2026-07-16",points:5,notes:"",isSub:false},
-  {id:"r-p23-9",playerId:"p23",teamId:"t12",date:"2026-07-16",points:6,notes:"",isSub:false},
-  {id:"r-p24-9",playerId:"p24",teamId:"t12",date:"2026-07-16",points:4,notes:"",isSub:false},
-  // Week 10: TBD — pending results sheet
+  {id:"ctp-w10-1",week:10,hole:12,playerId:"p21",distance:"4'4\"",slotKey:"w10-ctp1"},
+  {id:"ctp-w10-2",week:10,hole:0,playerId:"p07",distance:"",slotKey:"w10-ctp2"},
 ];
 
-// 11-week rotating schedule starting June 9
 var DEFAULT_SCHEDULE = [
   {week:1, date:"2026-05-01", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
   {week:2, date:"2026-05-08", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
@@ -629,13 +597,6 @@ var DEFAULT_SCHEDULE = [
   {week:9, date:"2026-07-16", matchups:[{home:"t02",away:"t07"},{home:"t11",away:"t06"},{home:"t03",away:"t12"},{home:"t04",away:"t09"},{home:"t01",away:"t10"},{home:"t08",away:"t05"}]},
   {week:10,date:"2026-07-23", matchups:[{home:"t01",away:"t02"},{home:"t09",away:"t10"},{home:"t05",away:"t06"},{home:"t03",away:"t04"},{home:"t11",away:"t12"},{home:"t07",away:"t08"}]},
   {week:11,date:"2026-07-30", matchups:[{home:"t02",away:"t11"},{home:"t06",away:"t09"},{home:"t04",away:"t12"},{home:"t05",away:"t10"},{home:"t03",away:"t08"},{home:"t07",away:"t01"}]},
-  {week:12,date:"2026-08-06", matchups:[{home:"t02",away:"t09"},{home:"t05",away:"t11"},{home:"t04",away:"t10"},{home:"t07",away:"t03"},{home:"t01",away:"t06"},{home:"t08",away:"t12"}]},
-  {week:13,date:"2026-08-13", matchups:[{home:"t02",away:"t06"},{home:"t10",away:"t07"},{home:"t03",away:"t09"},{home:"t12",away:"t05"},{home:"t08",away:"t01"},{home:"t11",away:"t04"}]},
-  {week:14,date:"2026-08-20", matchups:[{home:"t06",away:"t07"},{home:"t01",away:"t12"},{home:"t03",away:"t02"},{home:"t04",away:"t05"},{home:"t09",away:"t08"},{home:"t11",away:"t10"}]},
-  {week:15,date:"2026-08-27", matchups:[{home:"t10",away:"t12"},{home:"t04",away:"t02"},{home:"t03",away:"t01"},{home:"t05",away:"t07"},{home:"t09",away:"t11"},{home:"t08",away:"t06"}]},
-  {week:16,date:"2026-09-03", matchups:[{home:"t06",away:"t12"},{home:"t09",away:"t01"},{home:"t05",away:"t02"},{home:"t03",away:"t10"},{home:"t04",away:"t08"},{home:"t07",away:"t11"}]},
-  {week:17,date:"2026-09-10", matchups:[{home:"t02",away:"t10"},{home:"t01",away:"t05"},{home:"t03",away:"t06"},{home:"t04",away:"t07"},{home:"t12",away:"t09"},{home:"t08",away:"t11"}]},
-  {week:18,date:"2026-09-17", matchups:[{home:"t02",away:"t07"},{home:"t10",away:"t01"},{home:"t04",away:"t09"},{home:"t03",away:"t12"},{home:"t11",away:"t06"},{home:"t08",away:"t05"}]}
 ];
 
 var S = {
@@ -644,41 +605,24 @@ var S = {
   rounds:DEFAULT_ROUNDS,
   schedule:DEFAULT_SCHEDULE,
   playoffResults:[],
-  ctp:DEFAULT_CTP,
+  ctp:CTP,
   seedRecords:SEED_RECORDS,
-  seedIndivPrize:[
-    {week:1,playerId:"p09",points:14, quota:9.83, margin:4.17,notes:"Wk1 $50"},  // Mark Nalesnik
-    {week:2,playerId:"p16",points:17, quota:13.79,margin:3.21,notes:"Wk2 $50"},  // Tim Speziale
-    {week:3,playerId:"p23",points:13, quota:7.9,  margin:5.1, notes:"Wk3 $50"},  // Jeb Fisher
-    {week:4,playerId:"p21",points:11, quota:6.38, margin:4.62,notes:"Wk4 $50"},  // Dickie Lunden
-    {week:5,playerId:"p05",points:18, quota:11.33,margin:6.67,notes:"Wk5 $50"},  // Ryan Davis
-    {week:7, playerId:"p22",points:null,quota:null,margin:null,notes:"Wk7 $50"},  // Pittsburgh Hank
-    {week:8, playerId:"p04",points:null,quota:null,margin:null,notes:"Wk8 $50"},  // Joe Calnan
-    {week:9, playerId:"p06",points:null,quota:null,margin:null,notes:"Wk9 $50"}   // Phil Noto
-  ]
 };
 
-var KEY = 'golf_league_v30';
-var PREV_KEYS = ['golf_league_v13','golf_league_v12','golf_league_v11','golf_league_v10','golf_league_v9','golf_league_v8','golf_league_v7','golf_league_v6','golf_league_v5'];
+var KEY = 'golf_league_v31';
+var PREV_KEYS = ['golf_league_v30','golf_league_v13','golf_league_v12'];
 
 function load(){
   try {
-    // ALWAYS start from the code defaults — teams, players, schedule,
-    // seed rounds, CTPs and prize data are always current from the file.
-    // We only preserve manually-entered rounds and playoff results from localStorage.
     var manualRounds = [];
     var playoffResults = [];
-
-    // Check current and all previous keys for manually entered data
     var allKeys = [KEY].concat(PREV_KEYS);
     var defaultRoundIds = DEFAULT_ROUNDS.map(function(r){ return r.id; });
-
     for(var i=0;i<allKeys.length;i++){
       try {
         var raw = localStorage.getItem(allKeys[i]);
         if(!raw) continue;
         var old = JSON.parse(raw);
-        // Grab rounds that were manually entered (not seeds, not in DEFAULT_ROUNDS)
         var manual = (old.rounds||[]).filter(function(r){
           return !r.seed && defaultRoundIds.indexOf(r.id)===-1;
         });
@@ -686,12 +630,8 @@ function load(){
         if((old.playoffResults||[]).length > playoffResults.length) playoffResults = old.playoffResults||[];
       } catch(e){}
     }
-
-    // S is already initialised with all defaults — just layer in manual data
     manualRounds.forEach(function(r){ S.rounds.push(r); });
     if(playoffResults.length) S.playoffResults = playoffResults;
-
-    // Persist the merged state
     save();
   } catch(e){ save(); }
 }
@@ -703,7 +643,6 @@ function playerById(id){ return S.players.filter(function(p){return p.id===id;})
 function teamById(id){ return S.teams.filter(function(t){return t.id===id;})[0]; }
 function teamName(id){ var t=teamById(id); return t?t.name:'TBD'; }
 
-// ── Quota (one decimal, ignoring seed rounds for "at time" calc) ─────────
 window.glSetQuotaOverride=function(pid,val){
   var p=S.players.filter(function(x){return x.id===pid;})[0];
   if(!p) return;
@@ -713,7 +652,6 @@ window.glSetQuotaOverride=function(pid,val){
   save();glRenderRoster();
 };
 
-// Quota = override if set, otherwise avg of ALL real rounds, otherwise starting quota
 function getQuota(pid){
   var p=S.players.filter(function(x){return x.id===pid;})[0];
   if(p&&p.quotaOverride!=null) return p.quotaOverride;
@@ -736,11 +674,9 @@ function getQuotaAt(pid,before){
   return seeds[0].points;
 }
 
-// ── Team net for date ────────────────────────────────────────────────────
 function teamNetOnDate(teamId,date){
   var rds=S.rounds.filter(function(r){return r.teamId===teamId&&r.date===date&&!r.seed;});
   if(!rds.length) return null;
-  // If all entries are penalty/forfeit with no player scores, return large negative
   var hasRealScores=rds.filter(function(r){return !r.penalty&&r.playerId;}).length>0;
   if(!hasRealScores) return -99;
   var net=0;
@@ -759,14 +695,13 @@ function matchupResult(m,date){
   return {played:true,homeNet:hn,awayNet:an,homeWin:hn>an,awayWin:an>hn,tie:hn===an};
 }
 
-// ── Team stats — combine seed records + live results ─────────────────────
-var SEED_RECORDS_THROUGH_WEEK = 10; // seed records cover weeks 1-10
+var SEED_RECORDS_THROUGH_WEEK = 11;
 
 function teamStats(teamId){
   var sr=S.seedRecords&&S.seedRecords[teamId]?S.seedRecords[teamId]:{w:0,l:0,t:0};
   var wins=sr.w, losses=sr.l, ties=sr.t*0.5, seasonNet=0, weeksPlayed=sr.w+sr.l+sr.t;
   S.schedule.forEach(function(week){
-    if(week.week <= SEED_RECORDS_THROUGH_WEEK) return; // already in seed records
+    if(week.week <= SEED_RECORDS_THROUGH_WEEK) return;
     week.matchups.forEach(function(m){
       var isHome=m.home===teamId, isAway=m.away===teamId;
       if(!isHome&&!isAway) return;
@@ -783,7 +718,6 @@ function teamStats(teamId){
   return {wins:wins,losses:losses,ties:ties,seasonNet:Math.round(seasonNet*10)/10,weeksPlayed:weeksPlayed};
 }
 
-// ── Leaderboards ─────────────────────────────────────────────────────────
 function buildTeamLB(){
   return S.teams.map(function(t){
     var stats=teamStats(t.id);
@@ -813,24 +747,20 @@ function buildPlayerLB(){
   });
 }
 
-// ── Render: Standings ────────────────────────────────────────────────────
 var standingsSub='teams';
 function glRenderStandings(){
   var tlb=buildTeamLB(), plb=buildPlayerLB();
   var weeksPlayed=tlb.length?Math.max.apply(null,tlb.map(function(t){return t.weeksPlayed;})):0;
-
   var html='<div class="gl-metrics">'
     +'<div class="gl-metric"><div class="gl-metric-label">Teams</div><div class="gl-metric-value">'+S.teams.length+'</div></div>'
     +'<div class="gl-metric"><div class="gl-metric-label">Players</div><div class="gl-metric-value">'+S.players.length+'</div></div>'
-    +'<div class="gl-metric"><div class="gl-metric-label">Weeks played</div><div class="gl-metric-value">'+weeksPlayed+'<span style="font-size:16px;color:var(--gl-text-light)">/18</span></div></div>'
+    +'<div class="gl-metric"><div class="gl-metric-label">Weeks played</div><div class="gl-metric-value">'+weeksPlayed+'<span style="font-size:16px;color:var(--gl-text-light)">/11</span></div></div>'
     +'<div class="gl-metric"><div class="gl-metric-label">Playoff spots</div><div class="gl-metric-value" style="font-size:26px">All 12</div><div class="gl-metric-sub">all teams qualify</div></div>'
     +'</div>';
-
   html+='<div class="gl-subtabs">'
     +'<button class="gl-subtab'+(standingsSub==='teams'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'teams\')">&nbsp;&nbsp;Team standings&nbsp;&nbsp;</button>'
     +'<button class="gl-subtab'+(standingsSub==='players'?' gl-subtab-active':'')+'" onclick="glStandingsSub(\'players\')">&nbsp;&nbsp;Individual standings&nbsp;&nbsp;</button>'
     +'</div>';
-
   if(standingsSub==='teams'){
     html+='<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
       +'<th>#</th><th>Team</th><th>Members</th><th>W</th><th>L</th><th>T</th><th>Pts</th><th>Status</th>'
@@ -840,10 +770,7 @@ function glRenderStandings(){
       var medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':'<span class="gl-rank-num">'+rank+'</span>';
       var ptsDisp=row.pts%1===0?row.pts:row.pts.toFixed(1);
       var members=row.members.map(function(p){return p.name;}).join(' &amp; ')||'<span class="gl-muted">TBA</span>';
-      var status=rank<=3
-        ?'<span class="gl-badge gl-badge-playoff">Playoff</span>'
-        :rank<=6?'<span class="gl-badge gl-badge-playoff">Playoff</span>'
-        :'<span class="gl-badge gl-badge-playoff">Playoff</span>';
+      var status='<span class="gl-badge gl-badge-playoff">Playoff</span>';
       html+='<tr>'+
         '<td>'+medal+'</td>'+
         '<td class="gl-pname">'+row.team.name+'</td>'+
@@ -856,7 +783,7 @@ function glRenderStandings(){
         '</tr>';
     });
     html+='</tbody></table></div>'
-      +'<div class="gl-notice">Sorted by win points (W=1, T=0.5, L=0). Records include all weeks played to date. All 12 teams qualify for the playoffs.</div>'
+      +'<div class="gl-notice">Sorted by win points. All 12 teams qualify for the playoffs.</div>'
       +'</div>';
   } else {
     html+='<div class="gl-card"><div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
@@ -888,7 +815,6 @@ function glRenderStandings(){
 }
 window.glStandingsSub=function(s){standingsSub=s;glRenderStandings();};
 
-// ── Render: Schedule ─────────────────────────────────────────────────────
 function glRenderSchedule(){
   var html='';
   S.schedule.forEach(function(week){
@@ -922,7 +848,6 @@ function glRenderSchedule(){
   el('gl-schedule').innerHTML=html||'<div class="gl-empty"><p>No schedule loaded.</p></div>';
 }
 
-// ── Render: Enter Score ──────────────────────────────────────────────────
 var enterWeek=null,enterMatchup=null;
 function glRenderEnter(){
   if(!S.teams.length){el('gl-enter').innerHTML='<div class="gl-card"><p>Add teams first.</p></div>';return;}
@@ -1027,7 +952,6 @@ window.glSaveMatchupScores=function(mi){
     var subPid=(el('gl-sub-'+side)||{value:''}).value;
     var subPts=parseFloat((el('gl-subpts-'+side)||{value:''}).value);
     if(subPid&&!isNaN(subPts)&&subPts>=0)toSave.push({id:uid(),playerId:subPid,teamId:teamId,date:date,points:subPts,notes:'',isSub:true});
-    // penalty flag
     var penaltyEl=el('gl-penalty-'+side);
     if(penaltyEl&&penaltyEl.checked)toSave.push({id:uid(),playerId:null,teamId:teamId,date:date,points:0,notes:'Absent partner penalty',isSub:false,penalty:true});
   }
@@ -1042,11 +966,9 @@ window.glSaveMatchupScores=function(mi){
     hint.innerHTML='&#10003; &nbsp;Round saved successfully!';
     hint.style.color='#1a6b33';
   }
-  // Refresh matchup list but keep this matchup open
   glBuildMatchupList();
 };
 
-// ── Render: Roster ───────────────────────────────────────────────────────
 function glRenderRoster(){
   var html='<div class="gl-card"><p class="gl-card-title">Add player</p>'
     +'<div class="gl-form-grid">'
@@ -1112,7 +1034,6 @@ window.glAddPlayer=function(){
   if(teamId&&S.players.filter(function(p){return p.teamId===teamId;}).length>=2){alert('Teams can only have 2 permanent members.');return;}
   var newP={id:uid(),name:name,teamId:teamId,handicap:hcp};
   S.players.push(newP);
-  // seed quota if provided
   if(hcp){var q=parseFloat(hcp);if(!isNaN(q)){for(var i=0;i<3;i++)S.rounds.push({id:"seed-"+newP.id+"-"+i,playerId:newP.id,teamId:teamId,date:SEED_DATE,points:q,notes:"Opening quota seed",isSub:false,seed:true});}}
   save();glRenderRoster();
 };
@@ -1122,7 +1043,6 @@ window.glRemovePlayer=function(id){
   save();glRenderRoster();
 };
 
-// ── Render: Playoffs ─────────────────────────────────────────────────────
 function glRenderPlayoffs(){
   var lb=buildTeamLB(),top6=lb.slice(0,6);
   var html='<div class="gl-card"><p class="gl-card-title">Playoff seeds</p>'
@@ -1187,33 +1107,6 @@ window.glSavePlayoffResult=function(){
   save();glRenderPlayoffs();
 };
 
-// ── Render: Prizes ───────────────────────────────────────────────────────
-function getIndivWinnerForWeek(weekDate){
-  var rounds=S.rounds.filter(function(r){return r.date===weekDate&&!r.seed;});
-  if(!rounds.length) return null;
-  var best=null,bestMargin=null;
-  rounds.forEach(function(r){
-    var q=getQuotaAt(r.playerId,r.date);if(q===null)return;
-    var margin=Math.round((r.points-q)*10)/10;
-    if(bestMargin===null||margin>bestMargin){bestMargin=margin;best={playerId:r.playerId,points:r.points,quota:q,margin:margin};}
-  });
-  return best;
-}
-function buildIndivPrizeLB(){
-  var players={};
-  S.schedule.forEach(function(week){
-    var winner=getIndivWinnerForWeek(week.date);if(!winner)return;
-    var pid=winner.playerId;
-    if(!players[pid])players[pid]={wins:0,bestMargin:null,bestWeek:null};
-    players[pid].wins++;
-    if(players[pid].bestMargin===null||winner.margin>players[pid].bestMargin){players[pid].bestMargin=winner.margin;players[pid].bestWeek=week.week;}
-  });
-  return Object.keys(players).map(function(pid){
-    var p=playerById(pid);
-    return {player:p,wins:players[pid].wins,bestMargin:players[pid].bestMargin,bestWeek:players[pid].bestWeek};
-  }).sort(function(a,b){return b.wins!==a.wins?b.wins-a.wins:b.bestMargin-a.bestMargin;});
-}
-
 function glRenderPrizes(){
   var weekOpts=S.schedule.map(function(w){return '<option value="'+w.week+'">Week '+w.week+' — '+w.date+'</option>';}).join('');
   var playerOpts='<option value="">— select player —</option>'+S.players.map(function(p){return '<option value="'+p.id+'">'+p.name+'</option>';}).join('');
@@ -1273,14 +1166,12 @@ function glRenderPrizes(){
   }
 
   html+='<hr class="gl-sep">';
-
   html+='<div class="gl-card"><p class="gl-card-title">Weekly individual prize <span style="font-size:15px;font-weight:400;font-family:\'DM Sans\',sans-serif;color:var(--gl-text-light)">— $50 to most points over quota</span></p>'
     +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
     +'<th>Week</th><th>Date</th><th>Winner</th><th>Points</th><th>Quota</th><th>Over quota</th>'
     +'</tr></thead><tbody>';
   var hasAny=false;
   S.schedule.forEach(function(week){
-    // prefer live-calculated winner
     var winner=getIndivWinnerForWeek(week.date);
     if(winner){
       hasAny=true;
@@ -1291,19 +1182,6 @@ function glRenderPrizes(){
         +'<td style="font-weight:600">'+winner.points+'</td>'
         +'<td class="gl-muted">'+winner.quota+'</td>'
         +'<td><span class="gl-badge gl-badge-up">'+sign+winner.margin+'</span></td></tr>';
-    } else {
-      // fall back to seeded prize winners
-      var seed=(S.seedIndivPrize||[]).filter(function(s){return s.week===week.week;})[0];
-      if(seed){
-        hasAny=true;
-        var p=playerById(seed.playerId);
-        var sign=seed.margin>=0?'+':'';
-        html+='<tr><td class="gl-muted">'+week.week+'</td><td class="gl-muted">'+week.date+'</td>'
-          +'<td class="gl-pname">🏆 '+(p?p.name:'(deleted)')+'</td>'
-          +'<td style="font-weight:600">'+(seed.points!==null?seed.points:'—')+'</td>'
-          +'<td class="gl-muted">'+(seed.quota!==null?seed.quota:'—')+'</td>'
-          +'<td>'+(seed.margin!==null?'<span class="gl-badge gl-badge-up">'+sign+seed.margin+'</span>':'—')+'</td></tr>';
-      }
     }
   });
   if(!hasAny) html+='<tr><td colspan="6" style="text-align:center;color:var(--gl-text-light);padding:24px;font-size:15px">Winners appear automatically once scores are entered.</td></tr>';
@@ -1313,7 +1191,7 @@ function glRenderPrizes(){
   if(indivLB.length){
     html+='<div class="gl-card"><p class="gl-card-title">Individual prize season leaderboard</p>'
       +'<div class="gl-table-wrap"><table class="gl-table"><thead><tr>'
-      +'<th>#</th><th>Player</th><th>Team</th><th>Wins</th><th>Best margin</th><th>Best week</th>'
+      +'<th>#</th><th>Player</th><th>Team</th><th>Wins</th><th>Best margin</th>'
       +'</tr></thead><tbody>';
     indivLB.forEach(function(row,i){
       var medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'<span class="gl-rank-num">'+(i+1)+'</span>';
@@ -1321,8 +1199,7 @@ function glRenderPrizes(){
       var sign=row.bestMargin>=0?'+':'';
       html+='<tr><td>'+medal+'</td><td class="gl-pname">'+(row.player?row.player.name:'(deleted)')+'</td>'
         +'<td class="gl-muted">'+team+'</td><td style="font-weight:600;font-size:18px">'+row.wins+'</td>'
-        +'<td><span class="gl-badge gl-badge-up">'+sign+row.bestMargin+'</span></td>'
-        +'<td class="gl-muted">Wk '+row.bestWeek+'</td></tr>';
+        +'<td><span class="gl-badge gl-badge-up">'+sign+row.bestMargin+'</span></td></tr>';
     });
     html+='</tbody></table></div>'
       +'<div class="gl-notice">Winners calculated automatically from entered scores — highest points above personal quota each week.</div></div>';
@@ -1342,7 +1219,6 @@ window.glSaveCTP=function(){
     var dist=(el(e.dEl)||{value:''}).value.trim();
     var hole=parseInt((el(e.hEl)||{value:''}).value)||0;
     if(!pid) return;
-    // Remove existing entry for this week+slot (by slot index, not player)
     var slotKey='w'+week+'-ctp'+(idx+1);
     S.ctp=S.ctp.filter(function(c){return c.slotKey!==slotKey;});
     S.ctp.push({id:uid(),week:week,hole:hole,playerId:pid,distance:dist,slotKey:slotKey});
@@ -1356,7 +1232,33 @@ window.glDeleteCTP=function(id){
   save();glRenderPrizes();
 };
 
-// ── Render: History ──────────────────────────────────────────────────────
+function getIndivWinnerForWeek(weekDate){
+  var rounds=S.rounds.filter(function(r){return r.date===weekDate&&!r.seed;});
+  if(!rounds.length) return null;
+  var best=null,bestMargin=null;
+  rounds.forEach(function(r){
+    var q=getQuotaAt(r.playerId,r.date);if(q===null)return;
+    var margin=Math.round((r.points-q)*10)/10;
+    if(bestMargin===null||margin>bestMargin){bestMargin=margin;best={playerId:r.playerId,points:r.points,quota:q,margin:margin};}
+  });
+  return best;
+}
+
+function buildIndivPrizeLB(){
+  var players={};
+  S.schedule.forEach(function(week){
+    var winner=getIndivWinnerForWeek(week.date);if(!winner)return;
+    var pid=winner.playerId;
+    if(!players[pid])players[pid]={wins:0,bestMargin:null};
+    players[pid].wins++;
+    if(players[pid].bestMargin===null||winner.margin>players[pid].bestMargin){players[pid].bestMargin=winner.margin;}
+  });
+  return Object.keys(players).map(function(pid){
+    var p=playerById(pid);
+    return {player:p,wins:players[pid].wins,bestMargin:players[pid].bestMargin};
+  }).sort(function(a,b){return b.wins!==a.wins?b.wins-a.wins:b.bestMargin-a.bestMargin;});
+}
+
 function glRenderHistory(){
   var sorted=S.rounds.filter(function(r){return !r.seed;})
     .sort(function(a,b){return b.date>a.date?1:b.date<a.date?-1:0;});
@@ -1396,7 +1298,6 @@ window.glDeleteHistoryRound=function(id){
   save();glRenderHistory();
 };
 
-// ── Tab switching ────────────────────────────────────────────────────────
 var GL_TABS=['standings','schedule','enter','roster','playoffs','prizes','history'];
 window.glShowTab=function(name){
   GL_TABS.forEach(function(t){el('gl-'+t).style.display=t===name?'':'none';});
@@ -1414,7 +1315,6 @@ function glRender(tab){
   else if(tab==='history')glRenderHistory();
 }
 
-// ── Boot ─────────────────────────────────────────────────────────────────
 load();
 glRender('standings');
 })();
